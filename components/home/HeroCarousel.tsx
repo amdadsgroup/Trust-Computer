@@ -136,7 +136,7 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
       onTouchEnd={onTouchEnd}
       onKeyDown={handleKeyDown}
       tabIndex={0}
-      className="relative w-full h-[240px] sm:h-[340px] md:h-[400px] lg:h-[440px] rounded-2xl overflow-hidden shadow-lg group bg-slate-950 outline-none focus:ring-2 focus:ring-brand-600 touch-pan-y"
+      className="relative w-full h-[180px] xs:h-[210px] sm:h-[280px] md:h-[360px] lg:h-[440px] rounded-2xl overflow-hidden shadow-md group bg-slate-950 outline-none focus:ring-2 focus:ring-brand-600 touch-pan-y"
     >
       {/* Slides */}
       {activeSlides.map((slide, index) => {
@@ -148,8 +148,11 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
               isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
           >
-            {/* Desktop & Mobile Responsive Image */}
-            <div className="relative w-full h-full">
+            <Link
+              href={slide.buttonUrl || '/products'}
+              className="relative w-full h-full block cursor-pointer"
+            >
+              {/* Desktop Image */}
               <Image
                 src={slide.desktopImageUrl}
                 alt={slide.title}
@@ -158,6 +161,7 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
                 className="object-cover object-center hidden sm:block"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
+              {/* Mobile Image */}
               <Image
                 src={slide.mobileImageUrl || slide.desktopImageUrl}
                 alt={slide.title}
@@ -166,32 +170,7 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
                 className="object-cover object-center sm:hidden"
                 sizes="100vw"
               />
-
-              {/* Gradient Scrim for readable text overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent flex flex-col justify-end p-6 sm:p-8">
-                <div className="max-w-xl space-y-2">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight drop-shadow-md">
-                    {slide.title}
-                  </h2>
-                  {slide.subtitle && (
-                    <p className="text-xs sm:text-sm text-slate-200 line-clamp-2 drop-shadow">
-                      {slide.subtitle}
-                    </p>
-                  )}
-                  {slide.buttonUrl && (
-                    <div className="pt-2">
-                      <Link
-                        href={slide.buttonUrl}
-                        className="inline-flex items-center gap-2 bg-accent-500 hover:bg-accent-600 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-lg transform hover:scale-105"
-                      >
-                        <span>{slide.buttonText || 'Shop Now'}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
+            </Link>
           </div>
         );
       })}
@@ -200,19 +179,27 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
       {activeSlides.length > 1 && (
         <>
           <button
-            onClick={prevSlide}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition focus:opacity-100 focus:outline-none"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              prevSlide();
+            }}
+            className="absolute left-2.5 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition focus:opacity-100 focus:outline-none"
             aria-label="Previous Slide"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
 
           <button
-            onClick={nextSlide}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/40 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition focus:opacity-100 focus:outline-none"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              nextSlide();
+            }}
+            className="absolute right-2.5 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition focus:opacity-100 focus:outline-none"
             aria-label="Next Slide"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </>
       )}
