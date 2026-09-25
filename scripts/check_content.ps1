@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Drawing
 
-function Check-LogoContent($path, $label) {
+function Test-LogoContent($path, $label) {
     Write-Output "=== $label ==="
     $fileBytes = [System.IO.File]::ReadAllBytes($path)
     $ms = New-Object System.IO.MemoryStream($fileBytes, $false)
@@ -27,5 +27,5 @@ function Check-LogoContent($path, $label) {
     $ms.Dispose()
 }
 
-Check-LogoContent "C:\Users\NEED ELECTRO\.gemini\antigravity-ide\brain\1e4af885-fc5c-468d-9f8b-c585b4d61d6b\.user_uploaded\media_1790234960095.jpg" "Uploaded Media"
-Check-LogoContent "c:\Trust Computer\logo.jpeg" "c:\Trust Computer\logo.jpeg"
+Test-LogoContent "C:\Users\NEED ELECTRO\.gemini\antigravity-ide\brain\1e4af885-fc5c-468d-9f8b-c585b4d61d6b\.user_uploaded\media_1790234960095.jpg" "Uploaded Media"
+Test-LogoContent "c:\Trust Computer\logo.jpeg" "c:\Trust Computer\logo.jpeg"
