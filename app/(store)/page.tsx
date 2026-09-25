@@ -143,35 +143,66 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Side Promotion Cards (Desktop view) */}
-            <div className="hidden lg:grid lg:col-span-4 grid-cols-1 gap-4 h-full">
-              <Link
-                href="/contact"
-                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
-                title="Customer Support & Feedback"
-              >
-                <Image
-                  src="/images/side-banner-feedback.jpg"
-                  alt="Customer Feedback & Queries"
-                  fill
-                  priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </Link>
+            {(() => {
+              const sideBanner1 =
+                activeBanners.find(
+                  (b) =>
+                    b.id === 'banner-customer-support' ||
+                    b.desktopImageUrl.includes('feedback') ||
+                    b.desktopImageUrl.includes('support')
+                ) ||
+                activeBanners[2] || {
+                  desktopImageUrl: '/images/side-banner-feedback.jpg',
+                  title: 'Customer Care & Warranty Support',
+                  buttonUrl: '/contact',
+                };
 
-              <Link
-                href="/categories/cctv-surveillance"
-                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
-                title="Build Your Custom PC & CCTV Setup With Us"
-              >
-                <Image
-                  src="/images/side-banner-service.jpg"
-                  alt="PC & CCTV Setup"
-                  fill
-                  priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-              </Link>
-            </div>
+              const sideBanner2 =
+                activeBanners.find(
+                  (b) =>
+                    b.id === 'banner-custom-setup' ||
+                    b.desktopImageUrl.includes('service') ||
+                    b.desktopImageUrl.includes('setup') ||
+                    b.desktopImageUrl.includes('custom')
+                ) ||
+                activeBanners[3] || {
+                  desktopImageUrl: '/images/side-banner-service.jpg',
+                  title: 'Custom PC Building & Workstations',
+                  buttonUrl: '/categories/cctv-surveillance',
+                };
+
+              return (
+                <div className="hidden lg:grid lg:col-span-4 grid-cols-1 gap-4 h-full">
+                  <Link
+                    href={sideBanner1.buttonUrl || '/contact'}
+                    className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
+                    title={sideBanner1.title}
+                  >
+                    <Image
+                      src={sideBanner1.desktopImageUrl}
+                      alt={sideBanner1.title}
+                      fill
+                      priority
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </Link>
+
+                  <Link
+                    href={sideBanner2.buttonUrl || '/categories/cctv-surveillance'}
+                    className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
+                    title={sideBanner2.title}
+                  >
+                    <Image
+                      src={sideBanner2.desktopImageUrl}
+                      alt={sideBanner2.title}
+                      fill
+                      priority
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </Link>
+                </div>
+              );
+            })()}
           </section>
         )}
 

@@ -14,8 +14,8 @@ interface HeroCarouselProps {
 const defaultFallbackBanners: ActiveBanner[] = [
   {
     id: 'banner-tech-deals',
-    title: 'TECH MEGA DEAL FEST',
-    subtitle: 'Special discounts & official warranty on laptops, CCTV & accessories',
+    title: 'PREMIUM LAPTOPS & WORKSTATIONS',
+    subtitle: 'Official warranty, Intel Core & AMD Ryzen laptops, mechanical keyboards & accessories',
     description: null,
     desktopImageUrl: '/images/hero-banner-1.jpg',
     mobileImageUrl: '/images/hero-banner-1.jpg',
@@ -26,20 +26,20 @@ const defaultFallbackBanners: ActiveBanner[] = [
   },
   {
     id: 'banner-pc-cctv',
-    title: 'HIGH PERFORMANCE PC & CCTV SOLUTIONS',
-    subtitle: 'Trusted computer showroom & surveillance installation in Moulvibazar',
+    title: 'CCTV & SECURITY SURVEILLANCE SOLUTIONS',
+    subtitle: '4K IP & ColorVu cameras, NVR monitoring systems & professional installation in Moulvibazar',
     description: null,
     desktopImageUrl: '/images/hero-banner-2.jpg',
     mobileImageUrl: '/images/hero-banner-2.jpg',
-    buttonText: 'Explore CCTV & PC',
+    buttonText: 'Explore CCTV & Security',
     buttonUrl: '/categories/cctv-surveillance',
     type: 'PROMOTIONAL',
     priority: 8,
   },
   {
     id: 'banner-customer-support',
-    title: '24/7 CUSTOMER CARE & SUPPORT',
-    subtitle: 'Expert technical assistance, genuine warranty & feedback helpdesk',
+    title: 'CUSTOMER CARE & WARRANTY SUPPORT',
+    subtitle: 'Expert technical assistance, genuine warranty & trusted after-sales service',
     description: null,
     desktopImageUrl: '/images/side-banner-feedback.jpg',
     mobileImageUrl: '/images/side-banner-feedback.jpg',
@@ -50,12 +50,12 @@ const defaultFallbackBanners: ActiveBanner[] = [
   },
   {
     id: 'banner-custom-setup',
-    title: 'CUSTOM PC & CCTV SURVEILLANCE SETUP',
-    subtitle: 'Build your dream workstation and complete security installation',
+    title: 'CUSTOM PC BUILDING & WORKSTATIONS',
+    subtitle: 'Precision hardware assembly, liquid cooling & high-performance rigs',
     description: null,
     desktopImageUrl: '/images/side-banner-service.jpg',
     mobileImageUrl: '/images/side-banner-service.jpg',
-    buttonText: 'Get Custom Quote',
+    buttonText: 'Get Custom Build',
     buttonUrl: '/categories/cctv-surveillance',
     type: 'PROMOTIONAL',
     priority: 4,
@@ -63,8 +63,8 @@ const defaultFallbackBanners: ActiveBanner[] = [
 ];
 
 export default function HeroCarousel({ banners }: HeroCarouselProps) {
-  // Always include all active banners or the full 4-banner set for seamless mobile cycling
-  const activeSlides = banners && banners.length >= 4 ? banners : defaultFallbackBanners;
+  // Use database banners managed by admin if available, or fall back to high-res defaults
+  const activeSlides = banners && banners.length > 0 ? banners : defaultFallbackBanners;
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
