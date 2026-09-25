@@ -4,50 +4,29 @@ const prisma = new PrismaClient();
 async function testCategory() {
   try {
     const slug = 'desktop-components';
-    console.log('Finding category with slug:', slug);
+    console.log('Testing category include query for slug:', slug);
     const category = await prisma.category.findUnique({
       where: { slug },
-    });
-    console.log('Category found:', category);
-
-    if (!category) {
-      console.log('Category not found!');
-      return;
-    }
-
-    const where = {
-      categoryId: category.id,
-      isActive: true,
-    };
-
-    console.log('Running Promise.all queries...');
-    const [products, totalCount, categoryBrands] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        include: {
-          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-          category: true,
-          brand: true,
-        },
-        orderBy: { createdAt: 'desc' },
-      }),
-      prisma.product.count({ where }),
-      prisma.brand.findMany({
-        where: {
-          products: {
-            some: {
-              categoryId: category.id,
-              isActive: true,
-            },
+      include: {
+        products: {
+          where: { isActive: true },
+          include: {
+            images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+            category: true,
+            brand: true,
           },
+          orderBy: { createdAt: 'desc' },
+          take: 60,
         },
-        orderBy: { name: 'asc' },
-      }),
-    ]);
-
-    console.log('Success! Products:', products.length, 'Total:', totalCount, 'Brands:', categoryBrands.length);
+      },
+    });
+    console.log('Category found:', category ? category.name : 'NULL');
+    if (category) {
+      console.log('Category ID:', category.id);
+      console.log('Products:', category.products.length);
+    }
   } catch (err) {
-    console.error('Error in category query:', err);
+    console.error('Error:', err);
   } finally {
     await prisma.$disconnect();
   }

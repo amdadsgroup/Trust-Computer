@@ -42,8 +42,13 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   let categoryBrands: any[] = [];
 
   try {
-    category = await prisma.category.findUnique({
-      where: { slug: params.slug },
+    category = await prisma.category.findFirst({
+      where: {
+        slug: {
+          equals: params.slug,
+          mode: 'insensitive',
+        },
+      },
       include: {
         products: {
           where: {
@@ -78,7 +83,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   }
 
   if (!category) {
-    notFound();
+    const fallbackName = params.slug
+      .split('-')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+
+    category = {
+      id: params.slug,
+      name: fallbackName,
+      slug: params.slug,
+      description: `মৌলভীবাজারে সেরা মূল্যে ${fallbackName} কিনুন Trust Computer থেকে। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার।`,
+    };
   }
 
   // URL helper for filters
