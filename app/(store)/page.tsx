@@ -142,11 +142,11 @@ export default async function HomePage() {
               <HeroCarousel banners={activeBanners} />
             </div>
 
-            {/* Right: Side Promotion Cards */}
-            <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-4 h-full">
+            {/* Right: Side Promotion Cards (Desktop view) */}
+            <div className="hidden lg:grid lg:col-span-4 grid-cols-1 gap-4 h-full">
               <Link
                 href="/contact"
-                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[190px] sm:h-[210px] block border border-slate-200"
+                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
                 title="Customer Support & Feedback"
               >
                 <Image
@@ -160,7 +160,7 @@ export default async function HomePage() {
 
               <Link
                 href="/categories/cctv-surveillance"
-                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[190px] sm:h-[210px] block border border-slate-200"
+                className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
                 title="Build Your Custom PC & CCTV Setup With Us"
               >
                 <Image

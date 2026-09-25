@@ -10,36 +10,61 @@ interface HeroCarouselProps {
   banners?: ActiveBanner[];
 }
 
-// Fallback banners when database has no configured banners yet
+// Fallback banners with all promotional and service banners
 const defaultFallbackBanners: ActiveBanner[] = [
   {
-    id: 'default-1',
+    id: 'banner-tech-deals',
     title: 'TECH MEGA DEAL FEST',
     subtitle: 'Special discounts & official warranty on laptops, CCTV & accessories',
     description: null,
     desktopImageUrl: '/images/hero-banner-1.jpg',
-    mobileImageUrl: null,
+    mobileImageUrl: '/images/hero-banner-1.jpg',
     buttonText: 'Shop Tech Deals',
     buttonUrl: '/products?offer=true',
     type: 'PROMOTIONAL',
     priority: 10,
   },
   {
-    id: 'default-2',
+    id: 'banner-pc-cctv',
     title: 'HIGH PERFORMANCE PC & CCTV SOLUTIONS',
     subtitle: 'Trusted computer showroom & surveillance installation in Moulvibazar',
     description: null,
     desktopImageUrl: '/images/hero-banner-2.jpg',
-    mobileImageUrl: null,
+    mobileImageUrl: '/images/hero-banner-2.jpg',
     buttonText: 'Explore CCTV & PC',
     buttonUrl: '/categories/cctv-surveillance',
     type: 'PROMOTIONAL',
-    priority: 5,
+    priority: 8,
+  },
+  {
+    id: 'banner-customer-support',
+    title: '24/7 CUSTOMER CARE & SUPPORT',
+    subtitle: 'Expert technical assistance, genuine warranty & feedback helpdesk',
+    description: null,
+    desktopImageUrl: '/images/side-banner-feedback.jpg',
+    mobileImageUrl: '/images/side-banner-feedback.jpg',
+    buttonText: 'Contact Support',
+    buttonUrl: '/contact',
+    type: 'PROMOTIONAL',
+    priority: 6,
+  },
+  {
+    id: 'banner-custom-setup',
+    title: 'CUSTOM PC & CCTV SURVEILLANCE SETUP',
+    subtitle: 'Build your dream workstation and complete security installation',
+    description: null,
+    desktopImageUrl: '/images/side-banner-service.jpg',
+    mobileImageUrl: '/images/side-banner-service.jpg',
+    buttonText: 'Get Custom Quote',
+    buttonUrl: '/categories/cctv-surveillance',
+    type: 'PROMOTIONAL',
+    priority: 4,
   },
 ];
 
 export default function HeroCarousel({ banners }: HeroCarouselProps) {
-  const activeSlides = banners && banners.length > 0 ? banners : defaultFallbackBanners;
+  // Always include all active banners or the full 4-banner set for seamless mobile cycling
+  const activeSlides = banners && banners.length >= 4 ? banners : defaultFallbackBanners;
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -51,10 +76,10 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
     setCurrent((prev) => (prev - 1 + activeSlides.length) % activeSlides.length);
   }, [activeSlides.length]);
 
-  // Autoplay timer with pause on hover
+  // Autoplay timer: auto-swiping with smooth 0.40s transition
   useEffect(() => {
     if (isPaused || activeSlides.length <= 1) return;
-    const timer = setInterval(nextSlide, 5500);
+    const timer = setInterval(nextSlide, 3800);
     return () => clearInterval(timer);
   }, [isPaused, nextSlide, activeSlides.length]);
 
@@ -119,7 +144,7 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
         return (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-400 ease-in-out ${
               isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
           >
