@@ -1,13 +1,12 @@
-# Trust Computer-Moulvibazar E-Commerce Web Application
+# Trust Computer E-Commerce Web Application
 
 A full-stack, production-oriented e-commerce web application engineered for **Trust Computer-Moulvibazar**, the premier technology, computer accessories, CCTV, and networking equipment retail destination in Moulvibazar, Bangladesh.
 
 ---
 
-## 🏢 Business & Client Profile
+## 🏢 Business Profile
 
-- **Business Name:** Trust Computer-Moulvibazar
-- **Owner:** Shiblu Ahmed
+- **Business Name:** Trust Computer
 - **Business Type:** Computer, Laptop, Desktop PC Components, Accessories, CCTV Equipment, Networking Devices
 - **Store Location:** T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh
 - **Phone:** `01753-765372`
@@ -87,15 +86,6 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 │   └── seed.js                  # Seed script for initial setup & categories
 └── tests/                       # Vitest test suite for critical business logic
 ```
-
----
-
-## 🔒 Security Principles
-
-1. **Never Trust the Client:** All product prices, discounts, stock calculations, and payment statuses are validated and computed strictly on the server.
-2. **Role-Based Access Control (RBAC):** Admin endpoints and server actions enforce authenticated sessions with explicit permission checks (`OWNER`, `ADMIN`, `STAFF`).
-3. **Transaction Safety:** Checkout atomically locks inventory rows and records immutable ledger entries to prevent overselling.
-4. **Data Privacy:** Public order tracking requires both the Order Number and the matching Phone Number, never exposing personal identifiers or address details to unverified users.
 
 ---
 
