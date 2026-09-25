@@ -27,8 +27,9 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   try {
     const category = await prisma.category.findUnique({
       where: { slug: params.slug },
+      select: { name: true, description: true },
     });
-    if (!category) return { title: 'Category Not Found' };
+    if (!category) return { title: 'Category Not Found | Trust Computer' };
     return {
       title: `${category.name} | Trust Computer-Moulvibazar`,
       description:
@@ -36,72 +37,86 @@ export async function generateMetadata({ params }: CategoryPageProps) {
         `মৌলভীবাজারে সেরা মূল্যে ${category.name} কিনুন Trust Computer থেকে। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার।`,
     };
   } catch {
-    return { title: 'Category' };
+    return { title: 'Category | Trust Computer-Moulvibazar' };
   }
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
   const sp = searchParams || {};
-  const category = await prisma.category.findUnique({
-    where: { slug: params.slug },
-  });
+  let category: any = null;
+  let products: any[] = [];
+  let totalCount = 0;
+  let categoryBrands: any[] = [];
+
+  try {
+    category = await prisma.category.findUnique({
+      where: { slug: params.slug },
+    });
+
+    if (category) {
+      // Construct filtering
+      const where: Prisma.ProductWhereInput = {
+        categoryId: category.id,
+        isActive: true,
+      };
+
+      if (sp.brand) {
+        where.brand = { slug: sp.brand };
+      }
+
+      if (sp.inStockOnly === 'true') {
+        where.stock = { gt: 0 };
+      }
+
+      if (sp.minPrice || sp.maxPrice) {
+        where.sellingPrice = {};
+        if (sp.minPrice) {
+          where.sellingPrice.gte = parseFloat(sp.minPrice);
+        }
+        if (sp.maxPrice) {
+          where.sellingPrice.lte = parseFloat(sp.maxPrice);
+        }
+      }
+
+      // Sorting
+      let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' };
+      if (sp.sort === 'price_asc') {
+        orderBy = { sellingPrice: 'asc' };
+      } else if (sp.sort === 'price_desc') {
+        orderBy = { sellingPrice: 'desc' };
+      } else if (sp.sort === 'name_asc') {
+        orderBy = { name: 'asc' };
+      }
+
+      const [fetchedProducts, count, brands] = await Promise.all([
+        prisma.product.findMany({
+          where,
+          include: {
+            images: { orderBy: { sortOrder: 'asc' }, take: 1 },
+            category: true,
+            brand: true,
+          },
+          orderBy,
+        }),
+        prisma.product.count({ where }),
+        prisma.brand.findMany({
+          where: { isActive: true },
+          orderBy: { name: 'asc' },
+          take: 20,
+        }),
+      ]);
+
+      products = fetchedProducts;
+      totalCount = count;
+      categoryBrands = brands;
+    }
+  } catch (err) {
+    console.error('Error fetching category page:', err);
+  }
 
   if (!category) {
     notFound();
   }
-
-  // Construct filtering
-  const where: Prisma.ProductWhereInput = {
-    categoryId: category.id,
-    isActive: true,
-  };
-
-  if (sp.brand) {
-    where.brand = { slug: sp.brand };
-  }
-
-  if (sp.inStockOnly === 'true') {
-    where.stock = { gt: 0 };
-  }
-
-  if (sp.minPrice || sp.maxPrice) {
-    where.sellingPrice = {};
-    if (sp.minPrice) {
-      where.sellingPrice.gte = parseFloat(sp.minPrice);
-    }
-    if (sp.maxPrice) {
-      where.sellingPrice.lte = parseFloat(sp.maxPrice);
-    }
-  }
-
-  // Sorting
-  let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' };
-  if (sp.sort === 'price_asc') {
-    orderBy = { sellingPrice: 'asc' };
-  } else if (sp.sort === 'price_desc') {
-    orderBy = { sellingPrice: 'desc' };
-  } else if (sp.sort === 'name_asc') {
-    orderBy = { name: 'asc' };
-  }
-
-  // Fetch products and brands available in this category
-  const [products, totalCount, categoryBrands] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: {
-        images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-        category: true,
-        brand: true,
-      },
-      orderBy,
-    }),
-    prisma.product.count({ where }),
-    prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { name: 'asc' },
-      take: 20,
-    }),
-  ]);
 
   // URL helper for filters
   const buildFilterUrl = (key: string, value: string | null) => {
