@@ -24,21 +24,14 @@ interface CategoryPageProps {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps) {
-  try {
-    const category = await prisma.category.findUnique({
-      where: { slug: params.slug },
-      select: { name: true, description: true },
-    });
-    if (!category) return { title: 'Category Not Found | Trust Computer' };
-    return {
-      title: `${category.name} | Trust Computer-Moulvibazar`,
-      description:
-        category.description ||
-        `মৌলভীবাজারে সেরা মূল্যে ${category.name} কিনুন Trust Computer থেকে। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার।`,
-    };
-  } catch {
-    return { title: 'Category | Trust Computer-Moulvibazar' };
-  }
+  const title = params.slug
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+  return {
+    title: `${title} | Trust Computer-Moulvibazar`,
+    description: `Shop authentic ${title} in Moulvibazar at Trust Computer. Genuine products with official warranty.`,
+  };
 }
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
@@ -51,64 +44,34 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   try {
     category = await prisma.category.findUnique({
       where: { slug: params.slug },
-    });
-
-    if (category) {
-      // Construct filtering
-      const where: Prisma.ProductWhereInput = {
-        categoryId: category.id,
-        isActive: true,
-      };
-
-      if (sp.brand) {
-        where.brand = { slug: sp.brand };
-      }
-
-      if (sp.inStockOnly === 'true') {
-        where.stock = { gt: 0 };
-      }
-
-      if (sp.minPrice || sp.maxPrice) {
-        where.sellingPrice = {};
-        if (sp.minPrice) {
-          where.sellingPrice.gte = parseFloat(sp.minPrice);
-        }
-        if (sp.maxPrice) {
-          where.sellingPrice.lte = parseFloat(sp.maxPrice);
-        }
-      }
-
-      // Sorting
-      let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' };
-      if (sp.sort === 'price_asc') {
-        orderBy = { sellingPrice: 'asc' };
-      } else if (sp.sort === 'price_desc') {
-        orderBy = { sellingPrice: 'desc' };
-      } else if (sp.sort === 'name_asc') {
-        orderBy = { name: 'asc' };
-      }
-
-      const [fetchedProducts, count, brands] = await Promise.all([
-        prisma.product.findMany({
-          where,
+      include: {
+        products: {
+          where: {
+            isActive: true,
+            ...(sp.brand ? { brand: { slug: sp.brand } } : {}),
+            ...(sp.inStockOnly === 'true' ? { stock: { gt: 0 } } : {}),
+          },
           include: {
             images: { orderBy: { sortOrder: 'asc' }, take: 1 },
             category: true,
             brand: true,
           },
-          orderBy,
-        }),
-        prisma.product.count({ where }),
-        prisma.brand.findMany({
-          where: { isActive: true },
-          orderBy: { name: 'asc' },
-          take: 20,
-        }),
-      ]);
+          orderBy:
+            sp.sort === 'price_asc'
+              ? { sellingPrice: 'asc' }
+              : sp.sort === 'price_desc'
+              ? { sellingPrice: 'desc' }
+              : sp.sort === 'name_asc'
+              ? { name: 'asc' }
+              : { createdAt: 'desc' },
+          take: 60,
+        },
+      },
+    });
 
-      products = fetchedProducts;
-      totalCount = count;
-      categoryBrands = brands;
+    if (category) {
+      products = category.products || [];
+      totalCount = products.length;
     }
   } catch (err) {
     console.error('Error fetching category page:', err);
