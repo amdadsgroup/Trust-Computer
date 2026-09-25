@@ -7,6 +7,7 @@ import { PackageOpen, ChevronRight, Home, Filter, SlidersHorizontal, Check, Shie
 import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 
 interface CategoryPageProps {
   params: {
@@ -96,15 +97,9 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }),
     prisma.product.count({ where }),
     prisma.brand.findMany({
-      where: {
-        products: {
-          some: {
-            categoryId: category.id,
-            isActive: true,
-          },
-        },
-      },
+      where: { isActive: true },
       orderBy: { name: 'asc' },
+      take: 20,
     }),
   ]);
 

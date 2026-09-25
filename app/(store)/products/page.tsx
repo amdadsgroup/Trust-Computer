@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
 
 interface ProductsPageProps {
   searchParams: {
