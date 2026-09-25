@@ -22,7 +22,8 @@ interface ProductsPageProps {
 }
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
-  const page = Math.max(1, parseInt(searchParams.page || '1', 10));
+  const sp = searchParams || {};
+  const page = Math.max(1, parseInt(sp.page || '1', 10));
   const pageSize = 12;
 
   // Build Prisma where filter
@@ -30,43 +31,43 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     isActive: true,
   };
 
-  if (searchParams.search) {
+  if (sp.search) {
     where.OR = [
-      { name: { contains: searchParams.search, mode: 'insensitive' } },
-      { sku: { contains: searchParams.search, mode: 'insensitive' } },
-      { description: { contains: searchParams.search, mode: 'insensitive' } },
+      { name: { contains: sp.search, mode: 'insensitive' } },
+      { sku: { contains: sp.search, mode: 'insensitive' } },
+      { description: { contains: sp.search, mode: 'insensitive' } },
     ];
   }
 
-  if (searchParams.category) {
-    where.category = { slug: searchParams.category };
+  if (sp.category) {
+    where.category = { slug: sp.category };
   }
 
-  if (searchParams.brand) {
-    where.brand = { slug: searchParams.brand };
+  if (sp.brand) {
+    where.brand = { slug: sp.brand };
   }
 
-  if (searchParams.inStockOnly === 'true') {
+  if (sp.inStockOnly === 'true') {
     where.stock = { gt: 0 };
   }
 
-  if (searchParams.minPrice || searchParams.maxPrice) {
+  if (sp.minPrice || sp.maxPrice) {
     where.sellingPrice = {};
-    if (searchParams.minPrice) {
-      where.sellingPrice.gte = parseFloat(searchParams.minPrice);
+    if (sp.minPrice) {
+      where.sellingPrice.gte = parseFloat(sp.minPrice);
     }
-    if (searchParams.maxPrice) {
-      where.sellingPrice.lte = parseFloat(searchParams.maxPrice);
+    if (sp.maxPrice) {
+      where.sellingPrice.lte = parseFloat(sp.maxPrice);
     }
   }
 
   // Sorting
   let orderBy: Prisma.ProductOrderByWithRelationInput = { createdAt: 'desc' };
-  if (searchParams.sort === 'price_asc') {
+  if (sp.sort === 'price_asc') {
     orderBy = { sellingPrice: 'asc' };
-  } else if (searchParams.sort === 'price_desc') {
+  } else if (sp.sort === 'price_desc') {
     orderBy = { sellingPrice: 'desc' };
-  } else if (searchParams.sort === 'name_asc') {
+  } else if (sp.sort === 'name_asc') {
     orderBy = { name: 'asc' };
   }
 
@@ -107,11 +108,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   // Helper to build URL query with filters
   const buildFilterUrl = (key: string, value: string | null) => {
     const params = new URLSearchParams();
-    if (searchParams.search) params.set('search', searchParams.search);
-    if (searchParams.category) params.set('category', searchParams.category);
-    if (searchParams.brand) params.set('brand', searchParams.brand);
-    if (searchParams.sort) params.set('sort', searchParams.sort);
-    if (searchParams.inStockOnly) params.set('inStockOnly', searchParams.inStockOnly);
+    if (sp.search) params.set('search', sp.search);
+    if (sp.category) params.set('category', sp.category);
+    if (sp.brand) params.set('brand', sp.brand);
+    if (sp.sort) params.set('sort', sp.sort);
+    if (sp.inStockOnly) params.set('inStockOnly', sp.inStockOnly);
 
     if (value === null) {
       params.delete(key);
@@ -125,11 +126,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   };
 
   const hasActiveFilters = Boolean(
-    searchParams.search ||
-      searchParams.category ||
-      searchParams.brand ||
-      searchParams.sort ||
-      searchParams.inStockOnly
+    sp.search ||
+      sp.category ||
+      sp.brand ||
+      sp.sort ||
+      sp.inStockOnly
   );
 
   return (
@@ -141,11 +142,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <Link href="/" className="hover:text-brand transition">হোম</Link>
             <span>/</span>
             <span className="text-slate-800 font-medium">পণ্য ক্যাটালগ</span>
-            {searchParams.category && (
+            {sp.category && (
               <>
                 <span>/</span>
                 <span className="text-brand font-semibold capitalize">
-                  {searchParams.category.replace('-', ' ')}
+                  {sp.category.replace('-', ' ')}
                 </span>
               </>
             )}
@@ -163,9 +164,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           <MobileFilterDrawer
             categories={categories}
             brands={brands}
-            currentCategory={searchParams.category}
-            currentBrand={searchParams.brand}
-            inStockOnly={searchParams.inStockOnly}
+            currentCategory={sp.category}
+            currentBrand={sp.brand}
+            inStockOnly={sp.inStockOnly}
             totalCount={totalCount}
           />
 
@@ -175,7 +176,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             </label>
             <select
               id="sort-select"
-              defaultValue={searchParams.sort || 'newest'}
+              defaultValue={sp.sort || 'newest'}
               className="bg-white border border-slate-200 text-xs font-medium text-slate-800 rounded-xl px-3 py-2 outline-none focus:border-[#0084d6] cursor-pointer shadow-sm"
             >
               <option value="newest">Newest</option>
@@ -216,7 +217,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 <Link
                   href={buildFilterUrl('category', null)}
                   className={`block px-2.5 py-1.5 rounded-lg transition ${
-                    !searchParams.category
+                    !sp.category
                       ? 'bg-brand text-white font-semibold'
                       : 'text-slate-600 hover:bg-slate-50'
                   }`}
@@ -228,7 +229,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     key={cat.id}
                     href={buildFilterUrl('category', cat.slug)}
                     className={`block px-2.5 py-1.5 rounded-lg transition ${
-                      searchParams.category === cat.slug
+                      sp.category === cat.slug
                         ? 'bg-brand text-white font-semibold'
                         : 'text-slate-600 hover:bg-slate-50'
                     }`}
@@ -249,7 +250,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <Link
                     href={buildFilterUrl('brand', null)}
                     className={`block px-2.5 py-1.5 rounded-lg transition ${
-                      !searchParams.brand
+                      !sp.brand
                         ? 'bg-brand text-white font-semibold'
                         : 'text-slate-600 hover:bg-slate-50'
                     }`}
@@ -261,7 +262,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       key={b.id}
                       href={buildFilterUrl('brand', b.slug)}
                       className={`block px-2.5 py-1.5 rounded-lg transition ${
-                        searchParams.brand === b.slug
+                        sp.brand === b.slug
                           ? 'bg-brand text-white font-semibold'
                           : 'text-slate-600 hover:bg-slate-50'
                       }`}
@@ -282,10 +283,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 <Link
                   href={buildFilterUrl(
                     'inStockOnly',
-                    searchParams.inStockOnly === 'true' ? null : 'true'
+                    sp.inStockOnly === 'true' ? null : 'true'
                   )}
                   className={`block px-2.5 py-1.5 rounded-lg border transition ${
-                    searchParams.inStockOnly === 'true'
+                    sp.inStockOnly === 'true'
                       ? 'border-brand bg-brand-50 text-brand-700 font-bold'
                       : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}

@@ -11,7 +11,7 @@ export const brand = {
   shortName: 'Trust Computer',
   officialFullName: 'Trust Computer-Moulvibazar',
   tagline: 'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️',
-  owner: 'Shiblu Ahmed',
+  owner: 'Trust Computer',
   phone: '01753-765372',
   email: 'trustcomputermb@gmail.com',
   address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',

@@ -226,8 +226,8 @@ export const translations: Translations = {
     bn: 'আমাদের পরিচিতি ও অঙ্গীকার',
   },
   'about.intro_p1': {
-    en: 'Trust Computer-Moulvibazar is an established and highly reputed technology vendor based in Moulvibazar, Sylhet. Under the expert leadership of proprietor Shiblu Ahmed, we serve customers across Moulvibazar district and adjacent regions with genuine computer hardware, laptops, corporate and residential CCTV surveillance systems, and networking solutions.',
-    bn: 'Trust Computer-Moulvibazar মৌলভীবাজার জেলার একটি প্রতিষ্ঠিত এবং নির্ভরযোগ্য প্রযুক্তি সামগ্রী বিক্রেতা প্রতিষ্ঠান। আমাদের স্বত্বাধিকারী শিবলু আহমেদ (Shiblu Ahmed) এর দক্ষ পরিচালনায় আমরা মৌলভীবাজারবাসী এবং আশপাশের উপজেলার সম্মানিত গ্রাহকদের জন্য গুণগত মানসম্পন্ন কম্পিউটার হার্ডওয়্যার, ল্যাপটপ, হোম ও করপোরেট সিসিটিভি সার্ভেইল্যান্স সিস্টেম, এবং নেটওয়ার্কিং ইকুইপমেন্ট সরবরাহ করে আসছি।',
+    en: 'Trust Computer-Moulvibazar is an established and highly reputed technology vendor based in Moulvibazar, Sylhet. We serve customers across Moulvibazar district and adjacent regions with genuine computer hardware, laptops, corporate and residential CCTV surveillance systems, and networking solutions.',
+    bn: 'Trust Computer-Moulvibazar মৌলভীবাজার জেলার একটি প্রতিষ্ঠিত এবং নির্ভরযোগ্য প্রযুক্তি সামগ্রী বিক্রেতা প্রতিষ্ঠান। আমরা মৌলভীবাজারবাসী এবং আশপাশের উপজেলার সম্মানিত গ্রাহকদের জন্য গুণগত মানসম্পন্ন কম্পিউটার হার্ডওয়্যার, ল্যাপটপ, হোম ও করপোরেট সিসিটিভি সার্ভেইল্যান্স সিস্টেম, এবং নেটওয়ার্কিং ইকুইপমেন্ট সরবরাহ করে আসছি।',
   },
   'about.intro_p2': {
     en: 'Our primary goal is delivering guaranteed authentic products backed by official manufacturer warranties, prompt after-sales technical support, and building long-lasting trust with every individual and corporate client.',

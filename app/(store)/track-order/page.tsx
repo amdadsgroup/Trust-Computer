@@ -23,13 +23,14 @@ interface TrackOrderPageProps {
 }
 
 export default async function TrackOrderPage({ searchParams }: TrackOrderPageProps) {
+  const sp = searchParams || {};
   let order: any = null;
   let error: string | null = null;
 
-  if (searchParams.orderNumber && searchParams.phone) {
+  if (sp.orderNumber && sp.phone) {
     const validation = orderTrackingSchema.safeParse({
-      orderNumber: searchParams.orderNumber.trim(),
-      phone: searchParams.phone.trim(),
+      orderNumber: sp.orderNumber.trim(),
+      phone: sp.phone.trim(),
     });
 
     if (!validation.success) {
@@ -38,8 +39,8 @@ export default async function TrackOrderPage({ searchParams }: TrackOrderPagePro
       try {
         order = await prisma.order.findFirst({
           where: {
-            orderNumber: searchParams.orderNumber.trim(),
-            customerPhone: searchParams.phone.trim(),
+            orderNumber: sp.orderNumber.trim(),
+            customerPhone: sp.phone.trim(),
           },
           include: {
             items: true,
@@ -119,7 +120,7 @@ export default async function TrackOrderPage({ searchParams }: TrackOrderPagePro
                 name="orderNumber"
                 required
                 placeholder="e.g. TC-20260924-1234"
-                defaultValue={searchParams.orderNumber || ''}
+                defaultValue={sp.orderNumber || ''}
                 className="w-full text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#0084d6] focus:bg-white transition uppercase font-mono"
               />
             </div>
@@ -133,7 +134,7 @@ export default async function TrackOrderPage({ searchParams }: TrackOrderPagePro
                 name="phone"
                 required
                 placeholder="01XXXXXXXXX"
-                defaultValue={searchParams.phone || ''}
+                defaultValue={sp.phone || ''}
                 className="w-full text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#0084d6] focus:bg-white transition"
               />
             </div>

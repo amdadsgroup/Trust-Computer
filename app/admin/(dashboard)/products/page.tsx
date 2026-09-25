@@ -15,17 +15,18 @@ interface AdminProductsPageProps {
 }
 
 export default async function AdminProductsPage({ searchParams }: AdminProductsPageProps) {
+  const sp = searchParams || {};
   const where: any = {};
 
-  if (searchParams.search) {
+  if (sp.search) {
     where.OR = [
-      { name: { contains: searchParams.search, mode: 'insensitive' } },
-      { sku: { contains: searchParams.search, mode: 'insensitive' } },
+      { name: { contains: sp.search, mode: 'insensitive' } },
+      { sku: { contains: sp.search, mode: 'insensitive' } },
     ];
   }
 
-  if (searchParams.category) {
-    where.categoryId = searchParams.category;
+  if (sp.category) {
+    where.categoryId = sp.category;
   }
 
   let products: any[] = [];
@@ -78,7 +79,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
           <input
             type="text"
             name="search"
-            defaultValue={searchParams.search || ''}
+            defaultValue={sp.search || ''}
             placeholder="পণ্যের নাম বা SKU দিয়ে খুঁজুন..."
             className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs outline-none focus:border-brand"
           />
@@ -88,7 +89,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
         <form method="GET" action="/admin/products">
           <select
             name="category"
-            defaultValue={searchParams.category || ''}
+            defaultValue={sp.category || ''}
             className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none cursor-pointer"
           >
             <option value="">সকল ক্যাটাগরি</option>

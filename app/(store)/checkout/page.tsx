@@ -310,7 +310,7 @@ export default function CheckoutPage() {
                   type="text"
                   required
                   autoComplete="name"
-                  placeholder="e.g. Shiblu Ahmed"
+                  placeholder="e.g. Tanvir Ahmed"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="w-full text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 sm:py-2.5 outline-none focus:border-[#0084d6] focus:bg-white transition"

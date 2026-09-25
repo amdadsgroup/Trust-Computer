@@ -298,7 +298,7 @@ export default function CustomerAddressesPage() {
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
-                    placeholder="e.g. Shiblu Ahmed"
+                    placeholder="e.g. Tanvir Ahmed"
                     className="w-full text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-[#0084d6] focus:bg-white transition"
                   />
                 </div>

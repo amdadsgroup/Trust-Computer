@@ -98,7 +98,7 @@ function RegisterForm() {
             <input
               type="text"
               required
-              placeholder="e.g. Shiblu Ahmed"
+              placeholder="e.g. Tanvir Ahmed"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="w-full text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl pl-3.5 pr-10 py-2.5 outline-none focus:border-[#0084d6] focus:bg-white transition"
