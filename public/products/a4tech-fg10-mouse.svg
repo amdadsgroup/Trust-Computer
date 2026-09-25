@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <linearGradient id="mouseBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="60%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- Wireless Mouse -->
+  <g filter="url(#shadow)">
+    <!-- Ergonomic Oval Mouse Shell -->
+    <path d="M400,180 C490,180 540,260 540,420 C540,560 480,620 400,620 C320,620 260,560 260,420 C260,260 310,180 400,180 Z" fill="url(#mouseBody)" stroke="#475569" stroke-width="4"/>
+
+    <!-- Anti-slip Blue/Orange Accent Side Grip -->
+    <path d="M260,340 C280,380 280,460 260,500" stroke="#0084d6" stroke-width="12" stroke-linecap="round"/>
+    <path d="M540,340 C520,380 520,460 540,500" stroke="#0084d6" stroke-width="12" stroke-linecap="round"/>
+
+    <!-- Left / Right Click Split -->
+    <line x1="400" y1="180" x2="400" y2="340" stroke="#0f172a" stroke-width="4"/>
+
+    <!-- Rubber Scroll Wheel -->
+    <rect x="390" y="240" width="20" height="50" rx="6" fill="#0284c7" stroke="#cbd5e1" stroke-width="2"/>
+
+    <!-- DPI Button -->
+    <rect x="393" y="315" width="14" height="20" rx="3" fill="#64748b"/>
+
+    <!-- A4Tech Fstyler Brand Palm Logo -->
+    <text x="400" y="490" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="20" fill="#ffffff" letter-spacing="2">A4TECH</text>
+    <text x="400" y="515" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#38bdf8" letter-spacing="1">FSTYLER FG10</text>
+    <text x="400" y="545" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="12" fill="#94a3b8">2.4G Wireless 2000 DPI</text>
+
+    <!-- Tiny Nano USB Dongle floating nearby -->
+    <g transform="translate(560, 480)">
+      <rect x="0" y="0" width="40" height="24" rx="4" fill="#0f172a" stroke="#64748b" stroke-width="1.5"/>
+      <rect x="32" y="4" width="18" height="16" rx="2" fill="#cbd5e1"/>
+      <text x="16" y="16" text-anchor="middle" font-family="monospace" font-size="8" fill="#ffffff">USB</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- Monitor Assembly -->
+  <g filter="url(#shadow)">
+    <!-- Stand Base (Circular) -->
+    <ellipse cx="400" cy="620" rx="140" ry="30" fill="#1e293b" stroke="#334155" stroke-width="3"/>
+    <ellipse cx="400" cy="615" rx="130" ry="25" fill="#0f172a"/>
+
+    <!-- Stand Neck -->
+    <polygon points="380,480 420,480 415,615 385,615" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+
+    <!-- Screen Bezel -->
+    <rect x="140" y="180" width="520" height="320" rx="14" fill="#0f172a" stroke="#334155" stroke-width="4"/>
+    
+    <!-- Active Display Panel -->
+    <rect x="155" y="195" width="490" height="275" rx="6" fill="#1e293b"/>
+    <rect x="155" y="195" width="490" height="275" rx="6" fill="#0284c7" opacity="0.1"/>
+
+    <!-- On-screen graphics -->
+    <text x="400" y="320" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="2">ASUS Eye Care</text>
+    <text x="400" y="355" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="16" fill="#38bdf8">21.5" Full HD (1920x1080) • 75Hz • 1ms</text>
+    
+    <!-- Asus Logo Center Bottom Bezel -->
+    <text x="400" y="490" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="14" fill="#ffffff" letter-spacing="2">ASUS</text>
+  </g>
+</svg>

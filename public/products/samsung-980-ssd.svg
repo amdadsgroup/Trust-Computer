@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- M.2 2280 Stick -->
+  <g filter="url(#shadow)">
+    <!-- Black PCB -->
+    <rect x="140" y="320" width="520" height="160" rx="8" fill="#090d16" stroke="#1e293b" stroke-width="3"/>
+    
+    <!-- Left Mounting Semicircle Notch -->
+    <circle cx="140" cy="400" r="16" fill="#f1f5f9"/>
+
+    <!-- Right Gold Pin Connector (M-Key) -->
+    <rect x="635" y="335" width="25" height="130" fill="#065f46"/>
+    <g fill="#eab308">
+      
+        <rect x="645" y="345" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="354" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="363" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="372" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="381" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="390" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="399" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="408" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="417" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="426" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="435" width="12" height="5" rx="1"/>
+      
+        <rect x="645" y="444" width="12" height="5" rx="1"/>
+      
+    </g>
+
+    <!-- Samsung Heat Spreader Sticker -->
+    <rect x="180" y="335" width="440" height="130" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+
+    <!-- Samsung Brand & Model -->
+    <text x="210" y="380" font-family="system-ui, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="2">SAMSUNG</text>
+    <text x="210" y="420" font-family="system-ui, sans-serif" font-weight="900" font-size="36" fill="#38bdf8">980</text>
+    <text x="290" y="420" font-family="system-ui, sans-serif" font-weight="700" font-size="20" fill="#94a3b8">NVMe M.2 SSD</text>
+
+    <!-- Capacity Badge -->
+    <rect x="490" y="355" width="110" height="40" rx="6" fill="#0284c7"/>
+    <text x="545" y="382" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="20" fill="#ffffff">500 GB</text>
+
+    <text x="210" y="450" font-family="system-ui, sans-serif" font-weight="600" font-size="12" fill="#64748b">PCIe 3.0 x4 • Sequential Read Up to 3,100 MB/s</text>
+  </g>
+</svg>

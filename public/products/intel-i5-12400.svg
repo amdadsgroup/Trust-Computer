@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <linearGradient id="pcb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="ihs" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="50%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- CPU LGA 1700 -->
+  <g filter="url(#shadow)">
+    <!-- Substrate PCB (Blue) -->
+    <rect x="220" y="160" width="360" height="480" rx="12" fill="url(#pcb)" stroke="#0284c7" stroke-width="4"/>
+
+    <!-- Gold Corner Alignment Triangle -->
+    <polygon points="230,170 260,170 230,200" fill="#fbbf24"/>
+
+    <!-- Nickel Integrated Heat Spreader (IHS) -->
+    <rect x="250" y="190" width="300" height="420" rx="16" fill="url(#ihs)" stroke="#94a3b8" stroke-width="3"/>
+    
+    <!-- IHS Edge Wings (LGA 1700 rectangular shape) -->
+    <path d="M250,250 L240,260 L240,320 L250,330" fill="none" stroke="#94a3b8" stroke-width="3"/>
+    <path d="M550,250 L560,260 L560,320 L550,330" fill="none" stroke="#94a3b8" stroke-width="3"/>
+
+    <!-- Laser Etching Text on IHS -->
+    <text x="400" y="270" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="34" fill="#006699" letter-spacing="3">intel®</text>
+    <text x="400" y="325" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="38" fill="#0f172a" letter-spacing="1">CORE™ i5</text>
+    <text x="400" y="365" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="22" fill="#334155">i5-12400</text>
+    
+    <text x="400" y="420" text-anchor="middle" font-family="monospace" font-size="13" fill="#475569">SRL5Y 2.50GHz</text>
+    <text x="400" y="445" text-anchor="middle" font-family="monospace" font-size="13" fill="#475569">MALAY X238F923</text>
+    <text x="400" y="480" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="700" font-size="14" fill="#0284c7">12th Gen Alder Lake • LGA1700</text>
+    
+    <!-- 2D DataMatrix Simulation -->
+    <rect x="365" y="515" width="70" height="70" fill="#0f172a" rx="4"/>
+    <rect x="375" y="525" width="20" height="20" fill="#ffffff"/>
+    <rect x="405" y="525" width="20" height="20" fill="#ffffff"/>
+    <rect x="375" y="555" width="20" height="20" fill="#ffffff"/>
+    <circle cx="415" cy="565" r="5" fill="#ffffff"/>
+  </g>
+</svg>

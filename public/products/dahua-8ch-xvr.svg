@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <linearGradient id="casing" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="10%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="26" flood-opacity="0.18"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- XVR 3D Box -->
+  <g filter="url(#shadow)">
+    <!-- Top Face (Perspective) -->
+    <polygon points="120,380 240,260 680,260 560,380" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <!-- Top Vents -->
+    <line x1="280" y1="280" x2="640" y2="280" stroke="#0f172a" stroke-width="3"/>
+    <line x1="270" y1="300" x2="630" y2="300" stroke="#0f172a" stroke-width="3"/>
+    <line x1="260" y1="320" x2="620" y2="320" stroke="#0f172a" stroke-width="3"/>
+    <line x1="250" y1="340" x2="610" y2="340" stroke="#0f172a" stroke-width="3"/>
+
+    <!-- Right Side Face -->
+    <polygon points="560,380 680,260 680,360 560,490" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+
+    <!-- Front Bezel -->
+    <polygon points="120,380 560,380 560,490 120,490" fill="url(#casing)" stroke="#334155" stroke-width="3"/>
+
+    <!-- Red Accent Indicator Line (Dahua style) -->
+    <rect x="120" y="482" width="440" height="8" fill="#E91D26"/>
+
+    <!-- Brand & Model -->
+    <text x="150" y="425" font-family="system-ui, sans-serif" font-weight="900" font-size="28" fill="#ffffff" letter-spacing="3">alhua</text>
+    <circle cx="137" cy="415" r="7" fill="#E91D26"/>
+    <text x="150" y="450" font-family="system-ui, sans-serif" font-weight="700" font-size="13" fill="#38bdf8" letter-spacing="1.5">WizSense AI 8-CHANNEL XVR</text>
+
+    <!-- Front USB Port -->
+    <rect x="490" y="415" width="28" height="12" rx="2" fill="#0284c7" stroke="#64748b" stroke-width="1.5"/>
+
+    <!-- LED Status Indicators -->
+    <circle cx="430" cy="421" r="5" fill="#22c55e"/> <!-- PWR -->
+    <circle cx="450" cy="421" r="5" fill="#3b82f6"/> <!-- NET -->
+    <circle cx="470" cy="421" r="5" fill="#eab308"/> <!-- HDD -->
+
+    <text x="430" y="442" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">PWR</text>
+    <text x="450" y="442" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">NET</text>
+    <text x="470" y="442" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">HDD</text>
+  </g>
+</svg>

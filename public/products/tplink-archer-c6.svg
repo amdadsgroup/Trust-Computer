@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </radialGradient>
+    <linearGradient id="routerBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="60%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)" rx="32"/>
+
+  <!-- 4 Antennas Standing -->
+  <g stroke="#1e293b" stroke-width="16" stroke-linecap="round">
+    <!-- Antenna 1 (Far Left) -->
+    <line x1="200" y1="440" x2="150" y2="180"/>
+    <!-- Antenna 2 (Inner Left) -->
+    <line x1="320" y1="400" x2="300" y2="150"/>
+    <!-- Antenna 3 (Inner Right) -->
+    <line x1="480" y1="400" x2="500" y2="150"/>
+    <!-- Antenna 4 (Far Right) -->
+    <line x1="600" y1="440" x2="650" y2="180"/>
+  </g>
+
+  <!-- Router Main Unit -->
+  <g filter="url(#shadow)">
+    <!-- Main Diamond Pattern Body -->
+    <polygon points="160,490 280,420 520,420 640,490 520,560 280,560" fill="url(#routerBody)" stroke="#334155" stroke-width="3"/>
+
+    <!-- Diamond Texture Facets -->
+    <polygon points="280,420 400,450 400,530 280,560" fill="#1e293b" opacity="0.6"/>
+    <polygon points="520,420 400,450 400,530 520,560" fill="#0f172a" opacity="0.8"/>
+    <polygon points="160,490 280,420 400,450 280,560" fill="#334155" opacity="0.4"/>
+    <polygon points="640,490 520,420 400,450 520,560" fill="#020617" opacity="0.7"/>
+
+    <!-- TP-Link Brand Logo Center -->
+    <circle cx="400" cy="490" r="32" fill="#0f172a" stroke="#0084d6" stroke-width="2"/>
+    <text x="400" y="496" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#38bdf8" letter-spacing="1">tp-link</text>
+
+    <!-- Front Green LED Light Indicators -->
+    <g fill="#22c55e">
+      <circle cx="340" cy="542" r="3"/>
+      <circle cx="360" cy="542" r="3"/>
+      <circle cx="380" cy="542" r="3"/>
+      <circle cx="400" cy="542" r="3"/>
+      <circle cx="420" cy="542" r="3"/>
+      <circle cx="440" cy="542" r="3"/>
+    </g>
+
+    <!-- Badge info -->
+    <text x="400" y="620" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="800" font-size="20" fill="#0f172a">Archer C6 AC1200</text>
+    <text x="400" y="645" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="14" fill="#0084d6">MU-MIMO Full Gigabit Dual-Band Wi-Fi</text>
+  </g>
+</svg>

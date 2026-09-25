@@ -1,0 +1,216 @@
+Final Technology Stack
+Trust Computer-Moulvibazar E-commerce Web Application
+
+Client: Shiblu Ahmed · Developed by Amdads Group
+
+Frontend
+
+Next.js · React · TypeScript
+
+UI & Styling
+
+Tailwind CSS · shadcn/ui · Lucide Icons
+
+Backend Platform
+
+Supabase PostgreSQL · Supabase Auth · Supabase Storage
+
+Database ORM
+
+Prisma ORM · Database migrations
+
+Validation & Backend Logic
+
+Zod · Next.js Server Actions · Route Handlers
+
+Deployment & Version Control
+
+Vercel · Git · GitHub
+
+Complete stack by function
+
+Category
+
+	
+
+Selected technology
+
+
+
+
+Frontend framework
+
+	
+
+Next.js (App Router)
+
+
+
+
+UI library
+
+	
+
+React
+
+
+
+
+Programming language
+
+	
+
+TypeScript
+
+
+
+
+CSS framework
+
+	
+
+Tailwind CSS
+
+
+
+
+UI components
+
+	
+
+shadcn/ui
+
+
+
+
+Icons
+
+	
+
+Lucide
+
+
+
+
+Backend
+
+	
+
+Next.js Server Actions and Route Handlers
+
+
+
+
+Database
+
+	
+
+Supabase PostgreSQL
+
+
+
+
+ORM
+
+	
+
+Prisma
+
+
+
+
+Authentication
+
+	
+
+Supabase Auth
+
+
+
+
+File and image storage
+
+	
+
+Supabase Storage
+
+
+
+
+Security
+
+	
+
+Supabase RLS + server-side authorization
+
+
+
+
+Form validation
+
+	
+
+Zod
+
+
+
+
+Payment integration
+
+	
+
+SSLCOMMERZ, bKash, or Nagad (subject to client selection and merchant onboarding)
+
+
+
+
+WhatsApp integration
+
+	
+
+WhatsApp Click-to-Chat
+
+
+
+
+Charts and reports
+
+	
+
+Recharts
+
+
+
+
+Unit testing
+
+	
+
+Vitest
+
+
+
+
+End-to-end testing
+
+	
+
+Playwright
+
+
+
+
+Hosting
+
+	
+
+Vercel
+
+
+
+
+Version control
+
+	
+
+Git + GitHub
