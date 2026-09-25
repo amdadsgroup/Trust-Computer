@@ -42,15 +42,15 @@ describe('Trust Computer - Real Catalog Sync & Demo Removal', () => {
     }
   });
 
-  it('should maintain comprehensive seed script with authentic items, categories and brands', () => {
+  it('should maintain comprehensive seed script with authentic settings, categories and brands', () => {
     const seedContent = fs.readFileSync(path.join(process.cwd(), 'prisma', 'seed.js'), 'utf-8');
-    expect(seedContent).toContain('HK-DS2CE10DF0TF');
-    expect(seedContent).toContain('DH-XVR1B08-I');
-    expect(seedContent).toContain('WD-PURPLE-2TB');
-    expect(seedContent).toContain('TPL-ARCHER-C6');
-    expect(seedContent).toContain('INTEL-I5-12400');
     expect(seedContent).toContain('cctv-surveillance');
     expect(seedContent).toContain('desktop-components');
+    expect(seedContent).toContain('laptops-notebooks');
+    expect(seedContent).toContain('networking-equipment');
+    expect(seedContent).toContain('hikvision');
+    expect(seedContent).toContain('dahua');
+    expect(seedContent).toContain('tp-link');
     expect(seedContent).toContain('trustcomputermb@gmail.com');
   });
 
