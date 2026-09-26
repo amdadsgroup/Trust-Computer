@@ -3,6 +3,8 @@ import Link from 'next/link';
 import prisma from '@/lib/db';
 import ProductCard from '@/components/products/ProductCard';
 import MobileFilterDrawer from '@/components/products/MobileFilterDrawer';
+import CategoryBrowseBar from '@/components/products/CategoryBrowseBar';
+import ProductSortSelect from '@/components/products/ProductSortSelect';
 import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
 
@@ -78,8 +80,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   let categories: any[] = [];
   let brands: any[] = [];
 
+  let totalStoreCount = 0;
+
   try {
-    const [fetchedProducts, count, fetchedCategories, fetchedBrands] = await Promise.all([
+    const [fetchedProducts, count, fetchedCategories, fetchedBrands, totalInStore] = await Promise.all([
       prisma.product.findMany({
         where,
         orderBy,
@@ -92,14 +96,28 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         },
       }),
       prisma.product.count({ where }),
-      prisma.category.findMany({ where: { isActive: true }, orderBy: { sortOrder: 'asc' } }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        include: {
+          _count: {
+            select: {
+              products: {
+                where: { isActive: true },
+              },
+            },
+          },
+        },
+      }),
       prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+      prisma.product.count({ where: { isActive: true } }),
     ]);
 
     products = fetchedProducts;
     totalCount = count;
     categories = fetchedCategories;
     brands = fetchedBrands;
+    totalStoreCount = totalInStore;
   } catch (e) {
     console.error('Error fetching product catalog:', e);
   }
@@ -135,9 +153,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 space-y-6">
       {/* Breadcrumb & Title */}
-      <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-xs text-slate-500 mb-1 flex items-center gap-1.5">
             <Link href="/" className="hover:text-brand transition">হোম</Link>
@@ -171,23 +189,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             totalCount={totalCount}
           />
 
-          <div className="flex items-center gap-2">
-            <label htmlFor="sort-select" className="hidden sm:inline text-xs font-semibold text-slate-600">
-              Sort:
-            </label>
-            <select
-              id="sort-select"
-              defaultValue={sp.sort || 'newest'}
-              className="bg-white border border-slate-200 text-xs font-medium text-slate-800 rounded-xl px-3 py-2 outline-none focus:border-[#0084d6] cursor-pointer shadow-sm"
-            >
-              <option value="newest">Newest</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-              <option value="name_asc">Name: A to Z</option>
-            </select>
-          </div>
+          <ProductSortSelect currentSort={sp.sort} />
         </div>
       </div>
+
+      {/* Prominent Category Browser Section (Browse Categories & All Products) */}
+      <CategoryBrowseBar
+        categories={categories.map((c) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          description: c.description,
+          productCount: c._count?.products ?? 0,
+        }))}
+        currentCategory={sp.category}
+        totalProductsCount={totalStoreCount}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* Desktop Sidebar Filters */}

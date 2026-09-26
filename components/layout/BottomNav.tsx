@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Grid, Search, ShoppingBag, User } from 'lucide-react';
+import { Home, Package, Search, ShoppingBag, User } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
 import MobileSearchModal from '../search/MobileSearchModal';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
@@ -30,10 +30,10 @@ export default function BottomNav() {
       isActive: pathname === '/',
     },
     {
-      label: t('nav.categories', 'Categories'),
-      href: '/categories',
-      icon: Grid,
-      isActive: pathname.startsWith('/categories'),
+      label: t('nav.products', 'Products'),
+      href: '/products',
+      icon: Package,
+      isActive: pathname.startsWith('/products') || pathname.startsWith('/categories'),
     },
     {
       label: t('nav.search_placeholder', 'Search'),

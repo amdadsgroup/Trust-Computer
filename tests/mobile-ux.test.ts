@@ -27,7 +27,7 @@ describe('Mobile App-Like Experience & PWA Configuration', () => {
     const fs = require('fs');
     const bottomNavContent = fs.readFileSync('components/layout/BottomNav.tsx', 'utf-8');
     expect(bottomNavContent).toContain("'Home'");
-    expect(bottomNavContent).toContain("'Categories'");
+    expect(bottomNavContent).toContain("'Products'");
     expect(bottomNavContent).toContain("'Search'");
     expect(bottomNavContent).toContain("'Cart'");
     expect(bottomNavContent).toContain("'Account'");

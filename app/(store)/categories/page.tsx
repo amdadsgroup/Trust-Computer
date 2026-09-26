@@ -278,6 +278,21 @@ export default async function CategoriesPage() {
         </div>
       </div>
 
+      {/* 2.5 Quick Navigation Tabs: Categories vs All Products */}
+      <div className="flex items-center gap-2">
+        <span className="px-4 py-2 rounded-xl bg-brand text-white font-bold text-xs shadow-xs flex items-center gap-1.5">
+          <Layers className="w-3.5 h-3.5" />
+          <span>ক্যাটাগরি সমূহ (Categories)</span>
+        </span>
+        <Link
+          href="/products"
+          className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand hover:border-brand-300 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs"
+        >
+          <Boxes className="w-3.5 h-3.5" />
+          <span>সকল পণ্য ব্রাউজ করুন (Browse All Products)</span>
+        </Link>
+      </div>
+
       {/* 3. Categories Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -299,7 +314,7 @@ export default async function CategoriesPage() {
             return (
               <Link
                 key={cat.id || cat.slug}
-                href={`/categories/${cat.slug}`}
+                href={`/products?category=${cat.slug}`}
                 className="group relative bg-white rounded-2xl border border-slate-200/90 hover:border-brand-400 p-5 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden"
               >
                 {/* Subtle top corner gradient */}

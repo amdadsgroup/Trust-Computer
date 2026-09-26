@@ -83,6 +83,10 @@ export const translations: Translations = {
     en: 'Categories',
     bn: 'ক্যাটাগরি',
   },
+  'nav.products': {
+    en: 'Products',
+    bn: 'পণ্যসমূহ',
+  },
   'nav.language': {
     en: 'Language',
     bn: 'ভাষা',
