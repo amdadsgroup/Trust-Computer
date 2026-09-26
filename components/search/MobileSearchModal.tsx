@@ -129,7 +129,43 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
           <div className="grid grid-cols-2 gap-2 text-xs">
             <button
               onClick={() => {
-                router.push('/categories/cctv-surveillance');
+                router.push('/categories/laptop-computer');
+                onClose();
+              }}
+              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
+            >
+              💻 Laptop & Computer
+            </button>
+            <button
+              onClick={() => {
+                router.push('/categories/monitor');
+                onClose();
+              }}
+              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
+            >
+              🖥️ Monitor
+            </button>
+            <button
+              onClick={() => {
+                router.push('/categories/gaming');
+                onClose();
+              }}
+              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
+            >
+              🎮 Gaming
+            </button>
+            <button
+              onClick={() => {
+                router.push('/categories/computer-accessories');
+                onClose();
+              }}
+              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
+            >
+              ⌨️ Computer Accessories
+            </button>
+            <button
+              onClick={() => {
+                router.push('/categories/cctv-security');
                 onClose();
               }}
               className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
@@ -138,30 +174,21 @@ export default function MobileSearchModal({ isOpen, onClose }: MobileSearchModal
             </button>
             <button
               onClick={() => {
-                router.push('/categories/desktop-components');
+                router.push('/categories/networking');
                 onClose();
               }}
               className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
             >
-              🖥️ Desktop & PC
+              📶 Networking
             </button>
             <button
               onClick={() => {
-                router.push('/categories/laptops-notebooks');
+                router.push('/categories/power-electronics');
                 onClose();
               }}
-              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
+              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200 col-span-2"
             >
-              💻 All Laptops
-            </button>
-            <button
-              onClick={() => {
-                router.push('/categories/networking-equipment');
-                onClose();
-              }}
-              className="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-left font-semibold text-slate-200"
-            >
-              📶 Wi-Fi & Routers
+              ⚡ Power & Electronics
             </button>
           </div>
         </div>

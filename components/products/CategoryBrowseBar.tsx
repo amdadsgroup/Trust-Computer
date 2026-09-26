@@ -14,6 +14,7 @@ import {
   HardDrive,
   Zap,
   Keyboard,
+  Gamepad2,
   Layers,
   ChevronRight,
   X,
@@ -39,32 +40,26 @@ function getIcon(slug: string, name: string) {
   const s = slug.toLowerCase();
   const n = name.toLowerCase();
 
-  if (s.includes('cctv') || s.includes('camera') || s.includes('surveillance') || n.includes('cctv')) {
-    return <Camera className="w-4 h-4 text-rose-500" />;
+  if (s.includes('cctv') || s.includes('security') || s.includes('camera') || s.includes('surveillance') || n.includes('cctv')) {
+    return <Camera className="w-4 h-4 text-emerald-500" />;
   }
-  if (s.includes('laptop') || s.includes('notebook') || n.includes('laptop')) {
-    return <Laptop className="w-4 h-4 text-sky-500" />;
-  }
-  if (s.includes('desktop') || s.includes('component') || s.includes('cpu') || s.includes('processor')) {
-    return <Cpu className="w-4 h-4 text-indigo-500" />;
-  }
-  if (s.includes('network') || s.includes('router') || s.includes('wifi')) {
-    return <Wifi className="w-4 h-4 text-emerald-500" />;
-  }
-  if (s.includes('printer') || s.includes('scanner')) {
-    return <Printer className="w-4 h-4 text-amber-500" />;
+  if (s.includes('laptop') || s.includes('computer') || s.includes('notebook') || s.includes('desktop') || n.includes('laptop')) {
+    return <Laptop className="w-4 h-4 text-brand-600" />;
   }
   if (s.includes('monitor') || s.includes('display')) {
-    return <Monitor className="w-4 h-4 text-purple-500" />;
+    return <Monitor className="w-4 h-4 text-indigo-500" />;
   }
-  if (s.includes('storage') || s.includes('ssd') || s.includes('hdd')) {
-    return <HardDrive className="w-4 h-4 text-cyan-500" />;
+  if (s.includes('gaming')) {
+    return <Gamepad2 className="w-4 h-4 text-rose-500" />;
   }
-  if (s.includes('power') || s.includes('ups')) {
-    return <Zap className="w-4 h-4 text-yellow-500" />;
+  if (s.includes('network') || s.includes('router') || s.includes('wifi')) {
+    return <Wifi className="w-4 h-4 text-teal-500" />;
+  }
+  if (s.includes('power') || s.includes('electronic') || s.includes('ups')) {
+    return <Zap className="w-4 h-4 text-amber-500" />;
   }
   if (s.includes('accessories') || s.includes('keyboard') || s.includes('mouse')) {
-    return <Keyboard className="w-4 h-4 text-blue-500" />;
+    return <Keyboard className="w-4 h-4 text-sky-500" />;
   }
 
   return <Boxes className="w-4 h-4 text-brand-600" />;

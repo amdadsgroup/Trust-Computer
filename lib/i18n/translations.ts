@@ -92,19 +92,19 @@ export const translations: Translations = {
     bn: 'ভাষা',
   },
 
-  // Categories
-  'cat.desktop': { en: 'Desktop', bn: 'ডেস্কটপ' },
-  'cat.laptop': { en: 'Laptop', bn: 'ল্যাপটপ' },
-  'cat.component': { en: 'Component', bn: 'কম্পোনেন্ট' },
+  // 7 Official Categories for Trust Computer
+  'cat.laptop_computer': { en: 'Laptop & Computer', bn: 'ল্যাপটপ ও কম্পিউটার' },
   'cat.monitor': { en: 'Monitor', bn: 'মনিটর' },
-  'cat.power_ups': { en: 'Power / UPS', bn: 'পাওয়ার ও ইউপিএস' },
-  'cat.office_equipment': { en: 'Printers & Scanners', bn: 'প্রিন্টার ও স্ক্যানার' },
-  'cat.security': { en: 'CCTV & Security', bn: 'সিসিটিভি ও সিকিউরিটি' },
-  'cat.networking': { en: 'Networking', bn: 'নেটওয়ার্কিং' },
-  'cat.software': { en: 'Software', bn: 'সফটওয়্যার' },
-  'cat.server_storage': { en: 'Server & Storage', bn: 'স্টোরেজ ও এসএসডি' },
-  'cat.accessories': { en: 'Accessories', bn: 'এক্সেসরিজ' },
   'cat.gaming': { en: 'Gaming', bn: 'গেমিং' },
+  'cat.accessories': { en: 'Computer Accessories', bn: 'কম্পিউটার এক্সেসরিজ' },
+  'cat.cctv_security': { en: 'CCTV & Security', bn: 'সিসিটিভি ও সিকিউরিটি' },
+  'cat.networking': { en: 'Networking', bn: 'নেটওয়ার্কিং' },
+  'cat.power_electronics': { en: 'Power & Electronics', bn: 'পাওয়ার ও ইলেকট্রনিক্স' },
+
+  // Compatibility aliases
+  'cat.security': { en: 'CCTV & Security', bn: 'সিসিটিভি ও সিকিউরিটি' },
+  'cat.desktop': { en: 'Laptop & Computer', bn: 'ল্যাপটপ ও কম্পিউটার' },
+  'cat.laptop': { en: 'Laptop & Computer', bn: 'ল্যাপটপ ও কম্পিউটার' },
 
   // Product Card & Catalog
   'product.add_to_cart': {

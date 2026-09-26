@@ -23,8 +23,17 @@ interface CategoryPageProps {
   };
 }
 
+const SLUG_ALIASES: Record<string, { canonical: string; name: string }> = {
+  'desktop-components': { canonical: 'laptop-computer', name: 'Laptop & Computer' },
+  'laptops-notebooks': { canonical: 'laptop-computer', name: 'Laptop & Computer' },
+  'cctv-surveillance': { canonical: 'cctv-security', name: 'CCTV & Security' },
+  'networking-equipment': { canonical: 'networking', name: 'Networking' },
+  'printers-scanners': { canonical: 'computer-accessories', name: 'Computer Accessories' },
+};
+
 export async function generateMetadata({ params }: CategoryPageProps) {
-  const title = params.slug
+  const alias = SLUG_ALIASES[params.slug.toLowerCase()];
+  const title = alias?.name || params.slug
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
@@ -41,11 +50,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   let totalCount = 0;
   let categoryBrands: any[] = [];
 
+  const aliasInfo = SLUG_ALIASES[params.slug.toLowerCase()];
+  const searchSlugs = [params.slug];
+  if (aliasInfo) {
+    searchSlugs.push(aliasInfo.canonical);
+  }
+
   try {
     category = await prisma.category.findFirst({
       where: {
         slug: {
-          equals: params.slug,
+          in: searchSlugs,
           mode: 'insensitive',
         },
       },
@@ -83,7 +98,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   }
 
   if (!category) {
-    const fallbackName = params.slug
+    const fallbackName = aliasInfo?.name || params.slug
       .split('-')
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
@@ -91,7 +106,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     category = {
       id: params.slug,
       name: fallbackName,
-      slug: params.slug,
+      slug: aliasInfo?.canonical || params.slug,
       description: `Shop authentic ${fallbackName} at best prices from Trust Computer in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar.`,
     };
   }

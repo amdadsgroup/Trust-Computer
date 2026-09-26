@@ -38,84 +38,73 @@ function getCategoryIconAndStyle(slug: string, name: string) {
   const s = slug.toLowerCase();
   const n = name.toLowerCase();
 
-  if (s.includes('cctv') || s.includes('camera') || s.includes('surveillance') || n.includes('cctv')) {
+  // 1. Laptop & Computer
+  if (s.includes('laptop') || s.includes('computer') || s.includes('desktop') || n.includes('laptop') || n.includes('computer')) {
     return {
-      icon: <Camera className="w-7 h-7 text-rose-600" />,
-      bg: 'bg-rose-50 border-rose-100 group-hover:border-rose-300',
-      badge: 'bg-rose-100 text-rose-700',
-      accent: 'from-rose-500/10 to-transparent',
+      icon: <Laptop className="w-7 h-7 text-brand-600" />,
+      bg: 'bg-blue-50 border-blue-100 group-hover:border-blue-300',
+      badge: 'bg-blue-100 text-blue-700',
+      accent: 'from-blue-500/10 to-transparent',
     };
   }
-  if (s.includes('laptop') || s.includes('notebook') || n.includes('laptop')) {
+
+  // 2. Monitor
+  if (s.includes('monitor') || s.includes('display') || n.includes('monitor')) {
     return {
-      icon: <Laptop className="w-7 h-7 text-sky-600" />,
-      bg: 'bg-sky-50 border-sky-100 group-hover:border-sky-300',
-      badge: 'bg-sky-100 text-sky-700',
-      accent: 'from-sky-500/10 to-transparent',
-    };
-  }
-  if (s.includes('desktop') || s.includes('component') || s.includes('cpu') || s.includes('processor')) {
-    return {
-      icon: <Cpu className="w-7 h-7 text-indigo-600" />,
+      icon: <Monitor className="w-7 h-7 text-indigo-600" />,
       bg: 'bg-indigo-50 border-indigo-100 group-hover:border-indigo-300',
       badge: 'bg-indigo-100 text-indigo-700',
       accent: 'from-indigo-500/10 to-transparent',
     };
   }
-  if (s.includes('network') || s.includes('router') || s.includes('wifi')) {
+
+  // 3. Gaming
+  if (s.includes('gaming') || n.includes('gaming')) {
     return {
-      icon: <Wifi className="w-7 h-7 text-emerald-600" />,
+      icon: <Gamepad2 className="w-7 h-7 text-rose-600" />,
+      bg: 'bg-rose-50 border-rose-100 group-hover:border-rose-300',
+      badge: 'bg-rose-100 text-rose-700',
+      accent: 'from-rose-500/10 to-transparent',
+    };
+  }
+
+  // 4. Computer Accessories
+  if (s.includes('accessories') || s.includes('keyboard') || s.includes('mouse') || n.includes('accessories')) {
+    return {
+      icon: <Keyboard className="w-7 h-7 text-sky-600" />,
+      bg: 'bg-sky-50 border-sky-100 group-hover:border-sky-300',
+      badge: 'bg-sky-100 text-sky-700',
+      accent: 'from-sky-500/10 to-transparent',
+    };
+  }
+
+  // 5. CCTV & Security
+  if (s.includes('cctv') || s.includes('security') || s.includes('surveillance') || s.includes('camera') || n.includes('cctv')) {
+    return {
+      icon: <ShieldCheck className="w-7 h-7 text-emerald-600" />,
       bg: 'bg-emerald-50 border-emerald-100 group-hover:border-emerald-300',
       badge: 'bg-emerald-100 text-emerald-700',
       accent: 'from-emerald-500/10 to-transparent',
     };
   }
-  if (s.includes('printer') || s.includes('scanner')) {
+
+  // 6. Networking
+  if (s.includes('network') || s.includes('router') || s.includes('wifi') || n.includes('network')) {
     return {
-      icon: <Printer className="w-7 h-7 text-amber-600" />,
+      icon: <Wifi className="w-7 h-7 text-teal-600" />,
+      bg: 'bg-teal-50 border-teal-100 group-hover:border-teal-300',
+      badge: 'bg-teal-100 text-teal-700',
+      accent: 'from-teal-500/10 to-transparent',
+    };
+  }
+
+  // 7. Power & Electronics
+  if (s.includes('power') || s.includes('electronic') || s.includes('ups') || n.includes('power')) {
+    return {
+      icon: <Zap className="w-7 h-7 text-amber-500" />,
       bg: 'bg-amber-50 border-amber-100 group-hover:border-amber-300',
       badge: 'bg-amber-100 text-amber-700',
       accent: 'from-amber-500/10 to-transparent',
-    };
-  }
-  if (s.includes('monitor') || s.includes('display')) {
-    return {
-      icon: <Monitor className="w-7 h-7 text-purple-600" />,
-      bg: 'bg-purple-50 border-purple-100 group-hover:border-purple-300',
-      badge: 'bg-purple-100 text-purple-700',
-      accent: 'from-purple-500/10 to-transparent',
-    };
-  }
-  if (s.includes('storage') || s.includes('ssd') || s.includes('hdd') || s.includes('harddrive')) {
-    return {
-      icon: <HardDrive className="w-7 h-7 text-cyan-600" />,
-      bg: 'bg-cyan-50 border-cyan-100 group-hover:border-cyan-300',
-      badge: 'bg-cyan-100 text-cyan-700',
-      accent: 'from-cyan-500/10 to-transparent',
-    };
-  }
-  if (s.includes('power') || s.includes('ups')) {
-    return {
-      icon: <Zap className="w-7 h-7 text-yellow-600" />,
-      bg: 'bg-yellow-50 border-yellow-100 group-hover:border-yellow-300',
-      badge: 'bg-yellow-100 text-yellow-700',
-      accent: 'from-yellow-500/10 to-transparent',
-    };
-  }
-  if (s.includes('gaming')) {
-    return {
-      icon: <Gamepad2 className="w-7 h-7 text-red-600" />,
-      bg: 'bg-red-50 border-red-100 group-hover:border-red-300',
-      badge: 'bg-red-100 text-red-700',
-      accent: 'from-red-500/10 to-transparent',
-    };
-  }
-  if (s.includes('server')) {
-    return {
-      icon: <Server className="w-7 h-7 text-slate-700" />,
-      bg: 'bg-slate-100 border-slate-200 group-hover:border-slate-400',
-      badge: 'bg-slate-200 text-slate-800',
-      accent: 'from-slate-500/10 to-transparent',
     };
   }
 
@@ -165,44 +154,51 @@ export default async function CategoriesPage() {
     categories = [
       {
         id: '1',
-        name: 'Desktop Components',
-        slug: 'desktop-components',
-        description: 'Processors, Motherboards, RAM, Power Supplies, Casing and Graphics Cards.',
+        name: 'Laptop & Computer',
+        slug: 'laptop-computer',
+        description: 'Brand new official laptops, desktop systems, processors, motherboards, RAM and PC components in Moulvibazar.',
         _count: { products: 0 },
       },
       {
         id: '2',
-        name: 'Laptops & Notebooks',
-        slug: 'laptops-notebooks',
-        description: 'Latest Intel & AMD Laptops from ASUS, HP, Dell, Lenovo & Acer with official warranty.',
+        name: 'Monitor',
+        slug: 'monitor',
+        description: 'IPS, LED, 100Hz-180Hz gaming and office monitors with crisp resolution and eye-care technology.',
         _count: { products: 0 },
       },
       {
         id: '3',
-        name: 'CCTV & Surveillance',
-        slug: 'cctv-surveillance',
-        description: 'HD & IP CCTV Cameras, XVR, NVR, Power Supplies, Cables and Complete Installation in Moulvibazar.',
+        name: 'Gaming',
+        slug: 'gaming',
+        description: 'Gaming peripherals, RGB mechanical keyboards, high DPI precision mice, and performance headsets.',
         _count: { products: 0 },
       },
       {
         id: '4',
-        name: 'Networking Equipment',
-        slug: 'networking-equipment',
-        description: 'Wi-Fi Routers, Mesh Systems, Switches, Range Extenders, Patch Cords & Accessories.',
+        name: 'Computer Accessories',
+        slug: 'computer-accessories',
+        description: 'Ergonomic keyboards, mice, soundbars, headphones, webcams, cables, adapters, and daily PC peripherals.',
         _count: { products: 0 },
       },
       {
         id: '5',
-        name: 'Printers & Scanners',
-        slug: 'printers-scanners',
-        description: 'Ink Tank, Laser Printers, Document Scanners and Genuine Inks & Toners.',
+        name: 'CCTV & Security',
+        slug: 'cctv-security',
+        description: 'High definition CCTV cameras, ColorVu night vision, DVR/XVR, surveillance hard drives & installation.',
         _count: { products: 0 },
       },
       {
         id: '6',
-        name: 'Computer Accessories',
-        slug: 'computer-accessories',
-        description: 'Keyboards, Mice, Headsets, Speakers, Webcams, Adapters and Cables.',
+        name: 'Networking',
+        slug: 'networking',
+        description: 'Dual-band Wi-Fi routers, Gigabit network switches, Cat6 cables, range extenders, and connectivity gear.',
+        _count: { products: 0 },
+      },
+      {
+        id: '7',
+        name: 'Power & Electronics',
+        slug: 'power-electronics',
+        description: 'Reliable offline and online UPS systems, surge protectors, voltage stabilizers, and power backup units.',
         _count: { products: 0 },
       },
     ];

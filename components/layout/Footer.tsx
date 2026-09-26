@@ -124,28 +124,38 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
-                <Link href="/categories/cctv-surveillance" className="hover:text-white transition">
-                  {t('cat.security', 'CCTV & Surveillance Cameras')}
+                <Link href="/categories/laptop-computer" className="hover:text-white transition">
+                  {t('cat.laptop_computer', 'Laptop & Computer')}
                 </Link>
               </li>
               <li>
-                <Link href="/categories/desktop-components" className="hover:text-white transition">
-                  {t('cat.desktop', 'Desktop PC & Components')}
+                <Link href="/categories/monitor" className="hover:text-white transition">
+                  {t('cat.monitor', 'Monitor')}
                 </Link>
               </li>
               <li>
-                <Link href="/categories/laptops-notebooks" className="hover:text-white transition">
-                  {t('cat.laptop', 'Laptops & Notebooks')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/categories/networking-equipment" className="hover:text-white transition">
-                  {t('cat.networking', 'Routers & Networking Equipment')}
+                <Link href="/categories/gaming" className="hover:text-white transition">
+                  {t('cat.gaming', 'Gaming')}
                 </Link>
               </li>
               <li>
                 <Link href="/categories/computer-accessories" className="hover:text-white transition">
-                  {t('cat.accessories', 'Keyboards, Mice & Accessories')}
+                  {t('cat.accessories', 'Computer Accessories')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/categories/cctv-security" className="hover:text-white transition">
+                  {t('cat.cctv_security', 'CCTV & Security')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/categories/networking" className="hover:text-white transition">
+                  {t('cat.networking', 'Networking')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/categories/power-electronics" className="hover:text-white transition">
+                  {t('cat.power_electronics', 'Power & Electronics')}
                 </Link>
               </li>
               <li>

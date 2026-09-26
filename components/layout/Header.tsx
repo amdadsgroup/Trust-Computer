@@ -38,18 +38,13 @@ export default function Header() {
   };
 
   const navCategories = [
-    { key: 'cat.desktop', name: t('cat.desktop', 'Desktop'), href: '/categories/desktop-components' },
-    { key: 'cat.laptop', name: t('cat.laptop', 'Laptop'), href: '/categories/laptops-notebooks' },
-    { key: 'cat.component', name: t('cat.component', 'Component'), href: '/categories/desktop-components' },
-    { key: 'cat.monitor', name: t('cat.monitor', 'Monitor'), href: '/products?search=Monitor' },
-    { key: 'cat.power_ups', name: t('cat.power_ups', 'Power / UPS'), href: '/products?search=UPS' },
-    { key: 'cat.security', name: t('cat.security', 'CCTV & Security'), href: '/categories/cctv-surveillance' },
-    { key: 'cat.networking', name: t('cat.networking', 'Networking'), href: '/categories/networking-equipment' },
-    { key: 'cat.office_equipment', name: t('cat.office_equipment', 'Printers & Scanners'), href: '/categories/printers-scanners' },
-    { key: 'cat.server_storage', name: t('cat.server_storage', 'Server & Storage'), href: '/products?search=SSD' },
-    { key: 'cat.accessories', name: t('cat.accessories', 'Accessories'), href: '/categories/computer-accessories' },
-    { key: 'cat.gaming', name: t('cat.gaming', 'Gaming'), href: '/products?search=Gaming' },
-    { key: 'cat.software', name: t('cat.software', 'Software'), href: '/products?search=Software' },
+    { key: 'cat.laptop_computer', name: t('cat.laptop_computer', 'Laptop & Computer'), href: '/categories/laptop-computer' },
+    { key: 'cat.monitor', name: t('cat.monitor', 'Monitor'), href: '/categories/monitor' },
+    { key: 'cat.gaming', name: t('cat.gaming', 'Gaming'), href: '/categories/gaming' },
+    { key: 'cat.accessories', name: t('cat.accessories', 'Computer Accessories'), href: '/categories/computer-accessories' },
+    { key: 'cat.cctv_security', name: t('cat.cctv_security', 'CCTV & Security'), href: '/categories/cctv-security' },
+    { key: 'cat.networking', name: t('cat.networking', 'Networking'), href: '/categories/networking' },
+    { key: 'cat.power_electronics', name: t('cat.power_electronics', 'Power & Electronics'), href: '/categories/power-electronics' },
   ];
 
   return (

@@ -69,44 +69,50 @@ async function main() {
   });
   console.log(`✓ Owner account verified: ${ownerUser.email}`);
 
-  // 3. Categories
+  // 3. Official 7 Categories
   console.log('3. Upserting Store Categories...');
   const categoriesData = [
     {
-      name: 'CCTV & Surveillance',
-      slug: 'cctv-surveillance',
-      description: 'High definition ColorVu CCTV cameras, DVRs, XVRs, surveillance hard drives & security accessories in Moulvibazar.',
+      name: 'Laptop & Computer',
+      slug: 'laptop-computer',
+      description: 'Official brand laptops, pre-built PCs, processors, motherboards, RAM and components (desktop-components & laptops-notebooks).',
       sortOrder: 1,
     },
     {
-      name: 'Desktop & Components',
-      slug: 'desktop-components',
-      description: 'Processors, Motherboards, RAM, NVMe SSDs, Graphics Cards, Power Supplies and Cases for custom PC builds.',
+      name: 'Monitor',
+      slug: 'monitor',
+      description: 'High refresh rate gaming monitors, color-accurate graphic displays, and office monitors.',
       sortOrder: 2,
     },
     {
-      name: 'Laptops & Notebooks',
-      slug: 'laptops-notebooks',
-      description: 'Official brand new business, student, and high performance laptops with authorized manufacturer warranties.',
+      name: 'Gaming',
+      slug: 'gaming',
+      description: 'Gaming gear, RGB mechanical keyboards, high DPI precision gaming mice, and headsets.',
       sortOrder: 3,
-    },
-    {
-      name: 'Networking Equipment',
-      slug: 'networking-equipment',
-      description: 'Dual-band Wi-Fi Routers, Gigabit Network Switches, Cat6 Cables, Access Points & Fiber connectors.',
-      sortOrder: 4,
     },
     {
       name: 'Computer Accessories',
       slug: 'computer-accessories',
-      description: 'Ergonomic keyboards, gaming mouse, headphones, soundbars, webcams, and heavy duty computer cables.',
+      description: 'Ergonomic keyboards, mouse, headphones, soundbars, webcams, and computer peripherals.',
+      sortOrder: 4,
+    },
+    {
+      name: 'CCTV & Security',
+      slug: 'cctv-security',
+      description: 'High definition ColorVu CCTV cameras, DVRs, XVRs, cctv-surveillance & security solutions in Moulvibazar.',
       sortOrder: 5,
     },
     {
-      name: 'Printers & Scanners',
-      slug: 'printers-scanners',
-      description: 'Reliable inkjet, laser, and all-in-one multifunction business printers and barcode scanners.',
+      name: 'Networking',
+      slug: 'networking',
+      description: 'Dual-band Wi-Fi Routers, networking-equipment, Gigabit Switches, Cat6 Cables & Access Points.',
       sortOrder: 6,
+    },
+    {
+      name: 'Power & Electronics',
+      slug: 'power-electronics',
+      description: 'Reliable UPS power backups, voltage stabilizers, surge protectors, and power electronic accessories.',
+      sortOrder: 7,
     },
   ];
 
