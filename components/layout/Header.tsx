@@ -18,6 +18,7 @@ import {
   User,
   GitCompare,
   Heart,
+  PackageSearch,
 } from 'lucide-react';
 
 export default function Header() {
@@ -163,12 +164,13 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Desktop PC CTA Button */}
+            {/* Track Order CTA Button */}
             <Link
-              href="/categories/desktop-components"
-              className="hidden sm:flex bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md items-center gap-1.5"
+              href="/track-order"
+              className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md"
             >
-              <span>{t('nav.desktop_pcs', 'Desktop PCs')}</span>
+              <PackageSearch className="w-4 h-4 flex-shrink-0" />
+              <span>{t('nav.track_order', 'Track Order')}</span>
             </Link>
 
             {/* Mobile Compare Button with live counter */}
