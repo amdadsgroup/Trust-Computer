@@ -28,20 +28,20 @@ export default function StoreError({
 
       <div className="space-y-2">
         <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-          সাময়িক ত্রুটি দেখা দিয়েছে (Something went wrong)
+          Something went wrong
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-          পৃষ্ঠাটি লোড হতে সমস্যা হয়েছে। অনুগ্রহ করে পুনরায় চেষ্টা করুন অথবা সরাসরি আমাদের সাথে যোগাযোগ করুন।
+          We encountered an error loading this page. Please try again or contact our support team.
         </p>
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
         <button
           onClick={() => reset()}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-700 text-white font-bold text-xs px-6 py-3 rounded-xl transition shadow"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-700 text-white font-bold text-xs px-6 py-3 rounded-xl transition shadow cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />
-          <span>পুনরায় চেষ্টা করুন (Retry)</span>
+          <span>Try Again</span>
         </button>
 
         <Link
@@ -49,7 +49,7 @@ export default function StoreError({
           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs px-6 py-3 rounded-xl transition"
         >
           <Home className="w-4 h-4" />
-          <span>মূল পাতা (Home)</span>
+          <span>Return Home</span>
         </Link>
       </div>
 
@@ -61,7 +61,7 @@ export default function StoreError({
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 hover:text-emerald-700"
         >
           <MessageCircle className="w-4 h-4" />
-          <span>সরাসরি হোয়াটসঅ্যাপে সাহায্য নিন</span>
+          <span>Need help? Chat with us on WhatsApp</span>
         </a>
       </div>
     </div>

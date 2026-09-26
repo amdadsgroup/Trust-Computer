@@ -164,3 +164,51 @@ export async function toggleProductActiveAction(productId: string, currentState:
     return { error: e.message || 'Failed to update product status.' };
   }
 }
+
+export async function deleteProductAction(productId: string) {
+  const session = await requireAuth();
+
+  try {
+    const orderItemsCount = await prisma.orderItem.count({
+      where: { productId },
+    });
+
+    if (orderItemsCount > 0) {
+      await prisma.product.update({
+        where: { id: productId },
+        data: { isActive: false },
+      });
+
+      await recordAuditLog({
+        userId: session.userId,
+        action: 'PRODUCT_ARCHIVE',
+        entityType: 'Product',
+        entityId: productId,
+        details: { reason: 'Product has order items; archived instead of deleted' },
+      });
+
+      revalidatePath('/products');
+      revalidatePath('/admin/products');
+      return { success: true, message: 'Product archived because it has associated customer orders.' };
+    }
+
+    await prisma.inventoryMovement.deleteMany({ where: { productId } });
+    await prisma.productImage.deleteMany({ where: { productId } });
+    await prisma.product.delete({ where: { id: productId } });
+
+    await recordAuditLog({
+      userId: session.userId,
+      action: 'PRODUCT_DELETE',
+      entityType: 'Product',
+      entityId: productId,
+      details: {},
+    });
+
+    revalidatePath('/products');
+    revalidatePath('/admin/products');
+    return { success: true };
+  } catch (e: any) {
+    return { error: e.message || 'Failed to delete product.' };
+  }
+}
+

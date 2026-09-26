@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import prisma from '@/lib/db';
-import { Plus, Search, ExternalLink, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Search, ExternalLink, Package, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
+import { toggleProductActiveAction, deleteProductAction } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -111,12 +112,11 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         </form>
 
-        <form method="GET" action="/admin/products">
+        <form method="GET" action="/admin/products" className="flex items-center gap-2">
           {sp.search && <input type="hidden" name="search" value={sp.search} />}
           <select
             name="category"
             defaultValue={sp.category || ''}
-            onChange={(e) => e.target.form?.submit()}
             className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none cursor-pointer"
           >
             <option value="">All Categories</option>
@@ -126,6 +126,12 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
               </option>
             ))}
           </select>
+          <button
+            type="submit"
+            className="px-3.5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl transition cursor-pointer"
+          >
+            Filter
+          </button>
         </form>
       </div>
 
@@ -211,15 +217,24 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                       </td>
 
                       <td className="py-3 px-4">
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            p.isActive
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-slate-100 text-slate-500 border border-slate-200'
-                          }`}
+                        <form
+                          action={async () => {
+                            'use server';
+                            await toggleProductActiveAction(p.id, p.isActive);
+                          }}
                         >
-                          {p.isActive ? 'Active' : 'Inactive'}
-                        </span>
+                          <button
+                            type="submit"
+                            title="Click to toggle active status"
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition hover:opacity-80 cursor-pointer ${
+                              p.isActive
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                : 'bg-slate-100 text-slate-500 border border-slate-200'
+                            }`}
+                          >
+                            {p.isActive ? 'Active' : 'Inactive'}
+                          </button>
+                        </form>
                       </td>
 
                       <td className="py-3 px-4 text-right">
@@ -239,6 +254,21 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                           >
                             Adjust Stock
                           </Link>
+
+                          <form
+                            action={async () => {
+                              'use server';
+                              await deleteProductAction(p.id);
+                            }}
+                          >
+                            <button
+                              type="submit"
+                              title="Delete or Archive Product"
+                              className="text-slate-400 hover:text-rose-600 transition p-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </form>
                         </div>
                       </td>
                     </tr>

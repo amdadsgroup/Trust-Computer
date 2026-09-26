@@ -14,7 +14,7 @@ export default function NotFound() {
           404 — Page Not Found
         </span>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-          পৃষ্ঠাটি খুঁজে পাওয়া যায়নি
+          Page Not Found
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
           The requested page or product could not be located. It may have been moved or is currently unavailable in our catalog.
@@ -27,7 +27,7 @@ export default function NotFound() {
           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand hover:bg-brand-700 text-white font-bold text-xs px-6 py-3 rounded-xl transition shadow"
         >
           <Search className="w-4 h-4" />
-          <span>পণ্য ক্যাটালগ দেখুন (Browse Catalog)</span>
+          <span>Browse Catalog</span>
         </Link>
 
         <Link
@@ -35,7 +35,7 @@ export default function NotFound() {
           className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs px-6 py-3 rounded-xl transition"
         >
           <Home className="w-4 h-4" />
-          <span>মূল পাতা (Home)</span>
+          <span>Back to Home</span>
         </Link>
       </div>
 

@@ -111,7 +111,7 @@ export default function AdminLoginPage() {
                   <span>Signing in...</span>
                 </>
               ) : (
-                <span>Sign In (Access Dashboard)</span>
+                <span>Sign In</span>
               )}
             </button>
           </form>
