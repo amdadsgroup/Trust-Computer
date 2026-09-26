@@ -18,7 +18,8 @@ const COOKIE_NAME = process.env.AUTH_COOKIE_NAME || 'trust_admin_session';
 const SECRET_KEY = new TextEncoder().encode(AUTH_SECRET);
 
 export async function hashPassword(plainText: string): Promise<string> {
-  const salt = await bcrypt.genSalt(12);
+  // 10 rounds = ~100ms on serverless (secure & fast). 12 rounds = ~400ms (too slow for Vercel).
+  const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(plainText, salt);
 }
 

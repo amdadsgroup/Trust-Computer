@@ -3,7 +3,8 @@ import Link from 'next/link';
 import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { Plus, Tag, CheckCircle2, XCircle, Calendar, Users } from 'lucide-react';
+import { Plus, Tag, CheckCircle2, XCircle, Calendar, Users, Trash2 } from 'lucide-react';
+import { toggleCouponActiveAction, deleteCouponAction } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -155,34 +156,63 @@ export default async function AdminCouponsPage() {
                       )}
                     </td>
                     <td className="px-4 py-3">
-                      {isActive ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3" />
-                          Active
-                        </span>
-                      ) : isExpired ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
-                          <XCircle className="w-3 h-3" />
-                          Expired
-                        </span>
-                      ) : isScheduled ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
-                          <Calendar className="w-3 h-3" />
-                          Scheduled
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
-                          Inactive
-                        </span>
-                      )}
-                    </td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/admin/coupons/${coupon.id}/edit`}
-                        className="text-xs text-brand-600 hover:underline font-semibold"
+                      <form
+                        action={async () => {
+                          'use server';
+                          await toggleCouponActiveAction(coupon.id, coupon.isActive);
+                        }}
                       >
-                        Edit
-                      </Link>
+                        <button
+                          type="submit"
+                          title="Click to toggle coupon active status"
+                          className="cursor-pointer transition hover:opacity-80"
+                        >
+                          {isActive ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                              <CheckCircle2 className="w-3 h-3" />
+                              Active
+                            </span>
+                          ) : isExpired ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                              <XCircle className="w-3 h-3" />
+                              Expired
+                            </span>
+                          ) : isScheduled ? (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                              <Calendar className="w-3 h-3" />
+                              Scheduled
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                              Inactive
+                            </span>
+                          )}
+                        </button>
+                      </form>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-3">
+                        <Link
+                          href={`/admin/coupons/${coupon.id}/edit`}
+                          className="text-xs text-brand font-semibold hover:underline"
+                        >
+                          Edit
+                        </Link>
+                        <form
+                          action={async () => {
+                            'use server';
+                            await deleteCouponAction(coupon.id);
+                          }}
+                        >
+                          <button
+                            type="submit"
+                            title="Delete Coupon"
+                            className="text-slate-400 hover:text-rose-600 transition p-1"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </form>
+                      </div>
                     </td>
                   </tr>
                 );
