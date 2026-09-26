@@ -7,9 +7,9 @@ import { requireRole, recordAuditLog } from '@/lib/auth';
 import { z } from 'zod';
 
 const userCreateSchema = z.object({
-  name: z.string().min(2, 'নাম অন্তত ২ অক্ষরের হতে হবে'),
-  email: z.string().email('সঠিক ইমেইল ঠিকানা দিন'),
-  password: z.string().min(8, 'পাসওয়ার্ড ন্যূনতম ৮ অক্ষরের হতে হবে'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
   role: z.enum(['OWNER', 'ADMIN', 'STAFF']),
   phone: z.string().optional(),
 });
@@ -30,13 +30,13 @@ export async function createUserAction(formData: FormData) {
 
   // Only OWNER can create other OWNER accounts
   if (role === 'OWNER' && session.role !== 'OWNER') {
-    return { error: 'শুধুমাত্র বর্তমান ওনার নতুন ওনার অ্যাকাউন্ট তৈরি করতে পারেন।' };
+    return { error: 'Only existing Owners can create another Owner account.' };
   }
 
   try {
     const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) {
-      return { error: 'এই ইমেইল ঠিকানা দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট রয়েছে।' };
+      return { error: 'An account with this email address already exists.' };
     }
 
     const salt = await bcrypt.genSalt(12);
@@ -64,7 +64,7 @@ export async function createUserAction(formData: FormData) {
     revalidatePath('/admin/users');
     return { success: true };
   } catch (err: any) {
-    return { error: err.message || 'স্টাফ অ্যাকাউন্ট তৈরিতে ত্রুটি হয়েছে।' };
+    return { error: err.message || 'Failed to create staff account.' };
   }
 }
 
@@ -72,16 +72,16 @@ export async function toggleUserStatusAction(targetUserId: string) {
   const session = await requireRole(['OWNER', 'ADMIN']);
 
   if (targetUserId === session.userId) {
-    return { error: 'আপনি নিজের অ্যাকাউন্ট নিষ্ক্রিয় করতে পারবেন না।' };
+    return { error: 'You cannot deactivate your own account.' };
   }
 
   try {
     const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
-    if (!targetUser) return { error: 'ব্যবহারকারী পাওয়া যায়নি।' };
+    if (!targetUser) return { error: 'User not found.' };
 
     // Prevent non-owners from toggling owners
     if (targetUser.role === 'OWNER' && session.role !== 'OWNER') {
-      return { error: 'ওনার অ্যাকাউন্ট পরিবর্তনের অনুমতি আপনার নেই।' };
+      return { error: 'You do not have permission to modify an Owner account.' };
     }
 
     const updated = await prisma.user.update({
@@ -100,7 +100,7 @@ export async function toggleUserStatusAction(targetUserId: string) {
     revalidatePath('/admin/users');
     return { success: true };
   } catch (err: any) {
-    return { error: err.message || 'স্ট্যাটাস পরিবর্তনে সমস্যা হয়েছে।' };
+    return { error: err.message || 'Failed to update user status.' };
   }
 }
 
@@ -109,7 +109,7 @@ export async function updateUserRoleAction(targetUserId: string, newRole: 'OWNER
 
   try {
     const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
-    if (!targetUser) return { error: 'ব্যবহারকারী পাওয়া যায়নি।' };
+    if (!targetUser) return { error: 'User not found.' };
 
     const updated = await prisma.user.update({
       where: { id: targetUserId },
@@ -127,6 +127,6 @@ export async function updateUserRoleAction(targetUserId: string, newRole: 'OWNER
     revalidatePath('/admin/users');
     return { success: true };
   } catch (err: any) {
-    return { error: err.message || 'রোল পরিবর্তনে সমস্যা হয়েছে।' };
+    return { error: err.message || 'Failed to update user role.' };
   }
 }

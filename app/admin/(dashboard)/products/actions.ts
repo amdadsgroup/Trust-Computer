@@ -69,10 +69,10 @@ export async function createProductAction(formData: FormData) {
 
     if (existing) {
       if (existing.sku === sku) {
-        return { error: `এই SKU (${sku}) ইতিমধ্যে ব্যবহৃত হয়েছে। ভিন্ন SKU দিন।` };
+        return { error: `This SKU (${sku}) is already in use. Please enter a unique SKU.` };
       }
       if (existing.slug === slug) {
-        return { error: `এই স্লাগ (${slug}) ইতিমধ্যে ব্যবহৃত হয়েছে। ভিন্ন স্লাগ দিন।` };
+        return { error: `This URL slug (${slug}) is already in use. Please enter a unique slug.` };
       }
     }
 
@@ -113,7 +113,7 @@ export async function createProductAction(formData: FormData) {
             quantity: stock,
             previousStock: 0,
             newStock: stock,
-            reason: 'পণ্য তৈরি ও প্রাথমিক স্টক অন্তর্ভুক্তি',
+            reason: 'Initial stock on product creation',
             createdByUserId: session.userId,
           },
         });
@@ -136,7 +136,7 @@ export async function createProductAction(formData: FormData) {
     return { success: true, productId: product.id };
   } catch (error: any) {
     console.error('Failed to create product:', error);
-    return { error: error.message || 'পণ্য তৈরিতে ব্যর্থ হয়েছে।' };
+    return { error: error.message || 'Failed to create product.' };
   }
 }
 
@@ -161,6 +161,6 @@ export async function toggleProductActiveAction(productId: string, currentState:
     revalidatePath('/admin/products');
     return { success: true };
   } catch (e: any) {
-    return { error: e.message || 'স্ট্যাটাস পরিবর্তনে ত্রুটি হয়েছে।' };
+    return { error: e.message || 'Failed to update product status.' };
   }
 }

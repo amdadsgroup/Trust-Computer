@@ -59,7 +59,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [items, isHydrated]);
 
-  const addItem = (newItem: Omit<CartItem, 'quantity'>, quantity = 1) => {
+  const addItem = React.useCallback((newItem: Omit<CartItem, 'quantity'>, quantity = 1) => {
     setItems((currentItems) => {
       const existingIndex = currentItems.findIndex((i) => i.productId === newItem.productId);
       if (existingIndex > -1) {
@@ -71,15 +71,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return [...currentItems, { ...newItem, quantity: Math.min(quantity, newItem.stock || 20) }];
     });
     setIsOpen(true);
-  };
+  }, []);
 
-  const removeItem = (productId: string) => {
+  const removeItem = React.useCallback((productId: string) => {
     setItems((current) => current.filter((i) => i.productId !== productId));
-  };
+  }, []);
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = React.useCallback((productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId);
+      setItems((current) => current.filter((i) => i.productId !== productId));
       return;
     }
     setItems((current) =>
@@ -91,29 +91,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         return item;
       })
     );
-  };
+  }, []);
 
-  const clearCart = () => {
+  const clearCart = React.useCallback(() => {
     setItems([]);
-  };
+  }, []);
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+  const subtotal = React.useMemo(() => {
+    return items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  }, [items]);
+
+  const totalItems = React.useMemo(() => {
+    return items.reduce((acc, item) => acc + item.quantity, 0);
+  }, [items]);
+
+  const contextValue = React.useMemo(
+    () => ({
+      items,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      subtotal,
+      totalItems,
+      isOpen,
+      setIsOpen,
+    }),
+    [items, addItem, removeItem, updateQuantity, clearCart, subtotal, totalItems, isOpen]
+  );
 
   return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        subtotal,
-        totalItems,
-        isOpen,
-        setIsOpen,
-      }}
-    >
+    <CartContext.Provider value={contextValue}>
       {children}
     </CartContext.Provider>
   );

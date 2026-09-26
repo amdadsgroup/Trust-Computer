@@ -18,40 +18,35 @@ const DEFAULT_SECTIONS = [
   { sectionKey: 'SHOWROOM_INFO', title: 'Showroom & Verified Trust', subtitle: 'Visit Our Physical Outlet in Kusumbagh, Moulvibazar', sortOrder: 6, isVisible: true },
 ];
 
-/**
- * Gets homepage sections config or defaults
- */
-export async function getHomepageSections(): Promise<HomepageSectionConfig[]> {
-  try {
-    const existing = await prisma.homepageSection.findMany({
-      orderBy: { sortOrder: 'asc' },
-    });
+import { unstable_cache, revalidateTag } from 'next/cache';
 
-    if (existing.length > 0) {
-      return existing;
-    }
-
-    // Seed default sections if empty
-    for (const def of DEFAULT_SECTIONS) {
-      await prisma.homepageSection.upsert({
-        where: { sectionKey: def.sectionKey },
-        update: {},
-        create: def,
+export const getHomepageSections = unstable_cache(
+  async (): Promise<HomepageSectionConfig[]> => {
+    try {
+      const existing = await prisma.homepageSection.findMany({
+        orderBy: { sortOrder: 'asc' },
       });
-    }
 
-    return await prisma.homepageSection.findMany({
-      orderBy: { sortOrder: 'asc' },
-    });
-  } catch (error) {
-    console.error('Error fetching homepage sections:', error);
-    // Return in-memory fallback
-    return DEFAULT_SECTIONS.map((s, index) => ({
-      id: `default-${index}`,
-      ...s,
-    }));
-  }
-}
+      if (existing.length > 0) {
+        return existing;
+      }
+
+      // Return default sections directly to avoid build-time race condition
+      return DEFAULT_SECTIONS.map((s, index) => ({
+        id: `default-${index}`,
+        ...s,
+      }));
+    } catch (error) {
+      console.error('Error fetching homepage sections:', error);
+      return DEFAULT_SECTIONS.map((s, index) => ({
+        id: `default-${index}`,
+        ...s,
+      }));
+    }
+  },
+  ['homepage-sections'],
+  { revalidate: 300, tags: ['homepage-sections'] }
+);
 
 /**
  * Updates a specific section's visibility and title
@@ -60,10 +55,21 @@ export async function updateHomepageSection(
   sectionKey: string,
   data: { isVisible?: boolean; sortOrder?: number; title?: string; subtitle?: string }
 ) {
-  return await prisma.homepageSection.update({
+  const result = await prisma.homepageSection.upsert({
     where: { sectionKey },
-    data,
+    update: data,
+    create: {
+      sectionKey,
+      title: data.title || sectionKey,
+      subtitle: data.subtitle || null,
+      sortOrder: data.sortOrder ?? 0,
+      isVisible: data.isVisible ?? true,
+    },
   });
+  try {
+    revalidateTag('homepage-sections');
+  } catch {}
+  return result;
 }
 
 /**

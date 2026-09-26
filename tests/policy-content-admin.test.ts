@@ -86,11 +86,11 @@ describe('Trust Computer - Policies, Content Management & Admin Routes', () => {
     expect(footerContent).toContain('/policies/terms');
   });
 
-  it('should verify about page contains Shiblu Ahmed and Amdads Group attribution', () => {
+  it('should verify about page does not expose owner personal name and contains developer attribution', () => {
     const aboutClientPath = path.join(process.cwd(), 'components', 'about', 'AboutPageClient.tsx');
     const aboutContent = fs.readFileSync(aboutClientPath, 'utf-8');
 
-    expect(aboutContent).toContain('Shiblu Ahmed');
+    expect(aboutContent).not.toContain('Shiblu Ahmed');
     expect(aboutContent).toContain('Amdads Group');
     expect(aboutContent).toContain('T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar');
     expect(aboutContent).toContain('01753-765372');

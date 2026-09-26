@@ -8,6 +8,8 @@ import ProductSortSelect from '@/components/products/ProductSortSelect';
 import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
 
+import { unstable_cache } from 'next/cache';
+
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
@@ -24,6 +26,63 @@ interface ProductsPageProps {
   };
 }
 
+const productSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  sku: true,
+  sellingPrice: true,
+  compareAtPrice: true,
+  stock: true,
+  lowStockThreshold: true,
+  warrantyInfo: true,
+  images: {
+    select: { url: true, altText: true },
+    orderBy: { sortOrder: 'asc' as const },
+    take: 1,
+  },
+  category: {
+    select: { name: true, slug: true },
+  },
+  brand: {
+    select: { name: true, slug: true },
+  },
+};
+
+const getCachedFilterMetadata = unstable_cache(
+  async () => {
+    const [categories, brands, totalInStore] = await Promise.all([
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { sortOrder: 'asc' },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          _count: {
+            select: {
+              products: {
+                where: { isActive: true },
+              },
+            },
+          },
+        },
+      }),
+      prisma.brand.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, slug: true },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.product.count({ where: { isActive: true } }),
+    ]);
+
+    return { categories, brands, totalInStore };
+  },
+  ['catalog-filter-metadata'],
+  { revalidate: 120, tags: ['categories', 'brands', 'products'] }
+);
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const sp = searchParams || {};
   const page = Math.max(1, parseInt(sp.page || '1', 10));
@@ -38,7 +97,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     where.OR = [
       { name: { contains: sp.search, mode: 'insensitive' } },
       { sku: { contains: sp.search, mode: 'insensitive' } },
-      { description: { contains: sp.search, mode: 'insensitive' } },
     ];
   }
 
@@ -79,45 +137,28 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   let totalCount = 0;
   let categories: any[] = [];
   let brands: any[] = [];
-
   let totalStoreCount = 0;
 
   try {
-    const [fetchedProducts, count, fetchedCategories, fetchedBrands, totalInStore] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        orderBy,
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        include: {
-          images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-          category: true,
-          brand: true,
-        },
-      }),
-      prisma.product.count({ where }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-        include: {
-          _count: {
-            select: {
-              products: {
-                where: { isActive: true },
-              },
-            },
-          },
-        },
-      }),
-      prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
-      prisma.product.count({ where: { isActive: true } }),
+    const [productData, metaData] = await Promise.all([
+      Promise.all([
+        prisma.product.findMany({
+          where,
+          orderBy,
+          skip: (page - 1) * pageSize,
+          take: pageSize,
+          select: productSelect,
+        }),
+        prisma.product.count({ where }),
+      ]),
+      getCachedFilterMetadata(),
     ]);
 
-    products = fetchedProducts;
-    totalCount = count;
-    categories = fetchedCategories;
-    brands = fetchedBrands;
-    totalStoreCount = totalInStore;
+    products = productData[0];
+    totalCount = productData[1];
+    categories = metaData.categories;
+    brands = metaData.brands;
+    totalStoreCount = metaData.totalInStore;
   } catch (e) {
     console.error('Error fetching product catalog:', e);
   }

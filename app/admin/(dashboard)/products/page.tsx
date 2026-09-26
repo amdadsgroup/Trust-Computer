@@ -2,8 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import prisma from '@/lib/db';
-import { Plus, Search, ExternalLink, Package, AlertCircle } from 'lucide-react';
-import { toggleProductActiveAction } from './actions';
+import { Plus, Search, ExternalLink, Package, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,17 +10,20 @@ interface AdminProductsPageProps {
   searchParams: {
     search?: string;
     category?: string;
+    page?: string;
   };
 }
 
 export default async function AdminProductsPage({ searchParams }: AdminProductsPageProps) {
   const sp = searchParams || {};
   const where: any = {};
+  const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
+  const pageSize = 25;
 
-  if (sp.search) {
+  if (sp.search?.trim()) {
     where.OR = [
-      { name: { contains: sp.search, mode: 'insensitive' } },
-      { sku: { contains: sp.search, mode: 'insensitive' } },
+      { name: { contains: sp.search.trim(), mode: 'insensitive' } },
+      { sku: { contains: sp.search.trim(), mode: 'insensitive' } },
     ];
   }
 
@@ -30,26 +32,48 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   }
 
   let products: any[] = [];
+  let totalCount = 0;
   let categories: any[] = [];
 
   try {
-    const [fetchedProducts, fetchedCategories] = await Promise.all([
+    const [fetchedProducts, count, fetchedCategories] = await Promise.all([
       prisma.product.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        include: {
-          category: true,
-          brand: true,
-          images: { take: 1 },
+        take: pageSize,
+        skip: (currentPage - 1) * pageSize,
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          sku: true,
+          sellingPrice: true,
+          compareAtPrice: true,
+          stock: true,
+          lowStockThreshold: true,
+          isActive: true,
+          isFeatured: true,
+          category: { select: { id: true, name: true } },
+          brand: { select: { id: true, name: true } },
+          images: { take: 1, select: { url: true } },
         },
       }),
-      prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+      prisma.product.count({ where }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      }),
     ]);
+
     products = fetchedProducts;
+    totalCount = count;
     categories = fetchedCategories;
   } catch (e) {
     console.error('Error fetching admin products:', e);
   }
+
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
@@ -57,10 +81,10 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            পণ্য ব্যবস্থাপনা (Product Inventory)
+            Product Inventory
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            মোট {products.length} টি পণ্য ডাটাবেজে রয়েছে
+            Showing {products.length} of {totalCount} total products
           </p>
         </div>
 
@@ -69,30 +93,33 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
           className="bg-brand hover:bg-brand-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition shadow flex items-center gap-2 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
-          <span>নতুন পণ্য যুক্ত করুন</span>
+          <span>Add New Product</span>
         </Link>
       </div>
 
       {/* Filter and Search Bar */}
       <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row gap-3">
         <form method="GET" action="/admin/products" className="flex-1 relative">
+          {sp.category && <input type="hidden" name="category" value={sp.category} />}
           <input
             type="text"
             name="search"
             defaultValue={sp.search || ''}
-            placeholder="পণ্যের নাম বা SKU দিয়ে খুঁজুন..."
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs outline-none focus:border-brand"
+            placeholder="Search by product name or SKU..."
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 text-xs outline-none focus:border-brand transition"
           />
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         </form>
 
         <form method="GET" action="/admin/products">
+          {sp.search && <input type="hidden" name="search" value={sp.search} />}
           <select
             name="category"
             defaultValue={sp.category || ''}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs outline-none cursor-pointer"
+            onChange={(e) => e.target.form?.submit()}
+            className="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none cursor-pointer"
           >
-            <option value="">সকল ক্যাটাগরি</option>
+            <option value="">All Categories</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -108,12 +135,12 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold">
               <tr>
-                <th className="py-3.5 px-4">ছবি ও নাম</th>
-                <th className="py-3.5 px-4">SKU ও ক্যাটাগরি</th>
-                <th className="py-3.5 px-4">বিক্রয় মূল্য</th>
-                <th className="py-3.5 px-4">বর্তমান স্টক</th>
-                <th className="py-3.5 px-4">স্ট্যাটাস</th>
-                <th className="py-3.5 px-4 text-right">কার্যক্রম</th>
+                <th className="py-3.5 px-4">Product & Image</th>
+                <th className="py-3.5 px-4">SKU & Category</th>
+                <th className="py-3.5 px-4">Selling Price</th>
+                <th className="py-3.5 px-4">Stock</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -132,6 +159,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                                 src={p.images[0].url}
                                 alt={p.name}
                                 fill
+                                sizes="48px"
                                 className="object-cover"
                               />
                             ) : (
@@ -142,7 +170,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                             <span className="font-bold text-slate-800 line-clamp-1">{p.name}</span>
                             {p.isFeatured && (
                               <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">
-                                ফিচার্ড
+                                Featured
                               </span>
                             )}
                           </div>
@@ -155,10 +183,10 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                       </td>
 
                       <td className="py-3 px-4 font-bold text-slate-900">
-                        ৳{Number(p.sellingPrice).toLocaleString('en-BD')}
+                        ৳{Number(p.sellingPrice).toLocaleString()}
                         {p.compareAtPrice && (
                           <span className="block text-[10px] text-slate-400 line-through">
-                            ৳{Number(p.compareAtPrice).toLocaleString('en-BD')}
+                            ৳{Number(p.compareAtPrice).toLocaleString()}
                           </span>
                         )}
                       </td>
@@ -173,11 +201,11 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                               : 'bg-emerald-100 text-emerald-800'
                           }`}
                         >
-                          {p.stock} টি
+                          {p.stock} in stock
                         </span>
                         {isLow && !isOut && (
                           <span className="block text-[10px] text-red-500 font-semibold mt-0.5">
-                            সীমিত স্টক
+                            Low Stock
                           </span>
                         )}
                       </td>
@@ -190,7 +218,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                               : 'bg-slate-100 text-slate-500 border border-slate-200'
                           }`}
                         >
-                          {p.isActive ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                          {p.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
 
@@ -200,7 +228,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                             href={`/products/${p.slug}`}
                             target="_blank"
                             className="text-slate-400 hover:text-brand"
-                            title="ওয়েবসাইটে দেখুন"
+                            title="View in Store"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </Link>
@@ -209,7 +237,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                             href={`/admin/inventory?productId=${p.id}`}
                             className="text-xs font-semibold text-brand hover:underline"
                           >
-                            স্টক পরিবর্তন
+                            Adjust Stock
                           </Link>
                         </div>
                       </td>
@@ -219,13 +247,57 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
               ) : (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-slate-400">
-                    কোনো পণ্য পাওয়া যায়নি।
+                    No products found.
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Bar */}
+        {totalPages > 1 && (
+          <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+            <div>
+              Page {currentPage} of {totalPages} ({totalCount} total)
+            </div>
+            <div className="flex items-center gap-2">
+              {currentPage > 1 ? (
+                <Link
+                  href={`/admin/products?page=${currentPage - 1}${
+                    sp.category ? `&category=${sp.category}` : ''
+                  }${sp.search ? `&search=${sp.search}` : ''}`}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 flex items-center gap-1 transition"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </Link>
+              ) : (
+                <span className="px-3 py-1.5 rounded-lg border border-slate-100 bg-slate-50 text-slate-300 flex items-center gap-1 cursor-not-allowed">
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                  <span>Previous</span>
+                </span>
+              )}
+
+              {currentPage < totalPages ? (
+                <Link
+                  href={`/admin/products?page=${currentPage + 1}${
+                    sp.category ? `&category=${sp.category}` : ''
+                  }${sp.search ? `&search=${sp.search}` : ''}`}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-100 flex items-center gap-1 transition"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              ) : (
+                <span className="px-3 py-1.5 rounded-lg border border-slate-100 bg-slate-50 text-slate-300 flex items-center gap-1 cursor-not-allowed">
+                  <span>Next</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </span>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

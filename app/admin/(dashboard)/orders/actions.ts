@@ -35,7 +35,7 @@ export async function changeOrderStatusAction(formData: FormData) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to change order status:', error);
-    return { error: error.message || 'অর্ডারের স্ট্যাটাস পরিবর্তন ব্যর্থ হয়েছে।' };
+    return { error: error.message || 'Failed to update order status.' };
   }
 }
 
@@ -71,6 +71,6 @@ export async function markPaymentAsPaidAction(orderId: string, transactionId?: s
     revalidatePath('/admin/orders');
     return { success: true };
   } catch (e: any) {
-    return { error: e.message || 'পেমেন্ট স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে।' };
+    return { error: e.message || 'Failed to update payment status.' };
   }
 }

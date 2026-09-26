@@ -12,7 +12,6 @@ import {
   Lock,
   ExternalLink,
   Smartphone,
-  Eye,
   Layers,
 } from 'lucide-react';
 
@@ -36,14 +35,14 @@ export default async function AdminBrandingSettingsPage() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                ব্র্যান্ড আইডেন্টিটি ও লোগো ম্যানেজমেন্ট
+                Brand Identity & Logo Management
               </h1>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#2A3B97] font-mono">
                 Brand Core
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              Trust Computer এর অফিশিয়াল লোগো, মার্ক, ফেভিকন এবং কালার টোকেন যাচাই ও নিয়ন্ত্রণ করুন।
+              Verify and manage Trust Computer official logos, marks, favicons, and brand color tokens.
             </p>
           </div>
         </div>
@@ -55,7 +54,7 @@ export default async function AdminBrandingSettingsPage() {
             className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-[#2A3B97] bg-white border border-slate-200 px-3.5 py-2 rounded-xl shadow-sm transition"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            <span>ব্র্যান্ড গাইডলাইন দেখুন</span>
+            <span>View Brand Guidelines</span>
           </Link>
         </div>
       </div>
@@ -67,20 +66,20 @@ export default async function AdminBrandingSettingsPage() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2 font-bold text-sm text-slate-800">
               <ImageIcon className="w-4 h-4 text-[#2A3B97]" />
-              <span>মূল অফিশিয়াল লোগো (Primary Full Logo)</span>
+              <span>Primary Full Logo</span>
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" /> অনুমোদিত
+              <CheckCircle2 className="w-3 h-3" /> Approved
             </span>
           </div>
 
           <p className="text-xs text-slate-500 leading-relaxed">
-            মৌলভীবাজার শাখার অফিশিয়াল প্রাইমারি লোগো। ডেক্সটপ হেডার, ফুটার, চালান (ইনভয়েস), এবং অথেনটিকেশন পেজে প্রদর্শিত হয়।
+            Official primary brand logo for Trust Computer-Moulvibazar. Displayed in desktop headers, footers, invoices, and sign-in portals.
           </p>
 
           {/* Light Background Preview */}
           <div className="space-y-1.5">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">হালকা সারফেসে প্রদর্শন:</span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Light Background Display:</span>
             <div className="p-6 rounded-2xl bg-white border border-slate-200 flex items-center justify-center">
               <Image
                 src={brand.assets.logo}
@@ -94,7 +93,7 @@ export default async function AdminBrandingSettingsPage() {
 
           {/* Dark Background Preview */}
           <div className="space-y-1.5">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">ডার্ক সারফেসে প্রদর্শন (Dark Header / Footer):</span>
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Dark Background Display:</span>
             <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center">
               <Image
                 src={brand.assets.logo}
@@ -107,7 +106,7 @@ export default async function AdminBrandingSettingsPage() {
           </div>
 
           <div className="text-[11px] text-slate-500 font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex justify-between items-center">
-            <span>ফাইল: {brand.assets.logo}</span>
+            <span>File: {brand.assets.logo}</span>
             <span className="text-slate-400">1024 × 215 px</span>
           </div>
         </div>
@@ -117,15 +116,15 @@ export default async function AdminBrandingSettingsPage() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2 font-bold text-sm text-slate-800">
               <Smartphone className="w-4 h-4 text-[#E91D26]" />
-              <span>লোগো মার্ক, ফেভিকন ও অ্যাপ আইকন</span>
+              <span>Logo Mark, Favicon & App Icons</span>
             </div>
             <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3" /> অফিশিয়াল মার্ক
+              <CheckCircle2 className="w-3 h-3" /> Official Mark
             </span>
           </div>
 
           <p className="text-xs text-slate-500 leading-relaxed">
-            মূল লোগোর বাম পাশের বৃত্তাকার পাওয়ার-সিম্বল মার্ক। এটি ফেভিকন, অ্যাপ আইকন ও মোবাইল কম্প্যাক্ট হেডারে ব্যবহৃত হয়।
+            Circular power-symbol mark from the brand logo. Used for browser favicon, mobile app icons, and compact mobile navigation.
           </p>
 
           <div className="grid grid-cols-3 gap-3 pt-2">
@@ -140,7 +139,7 @@ export default async function AdminBrandingSettingsPage() {
                   className="w-14 h-14 object-contain"
                 />
               </div>
-              <p className="font-bold text-xs text-slate-800">লোগো মার্ক</p>
+              <p className="font-bold text-xs text-slate-800">Logo Mark</p>
               <p className="text-[10px] text-slate-400 font-mono">215 × 215 px</p>
             </div>
 
@@ -155,7 +154,7 @@ export default async function AdminBrandingSettingsPage() {
                   className="w-12 h-12 object-contain"
                 />
               </div>
-              <p className="font-bold text-xs text-slate-800">অ্যাপল টাচ</p>
+              <p className="font-bold text-xs text-slate-800">Apple Touch</p>
               <p className="text-[10px] text-slate-400 font-mono">180 × 180 px</p>
             </div>
 
@@ -170,13 +169,13 @@ export default async function AdminBrandingSettingsPage() {
                   className="w-12 h-12 object-contain"
                 />
               </div>
-              <p className="font-bold text-xs text-slate-800">PWA আইকন</p>
+              <p className="font-bold text-xs text-slate-800">PWA Icon</p>
               <p className="text-[10px] text-slate-400 font-mono">192 × 192 px</p>
             </div>
           </div>
 
           <div className="text-[11px] text-slate-500 font-mono bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex justify-between items-center">
-            <span>ফেভিকন: {brand.assets.favicon}</span>
+            <span>Favicon: {brand.assets.favicon}</span>
             <span className="text-slate-400">32 × 32 px</span>
           </div>
         </div>
@@ -188,11 +187,11 @@ export default async function AdminBrandingSettingsPage() {
           <div className="flex items-center gap-2">
             <Palette className="w-5 h-5 text-[#2A3B97]" />
             <h2 className="font-bold text-base text-slate-900">
-              অফিশিয়াল কালার প্যালেট ও টোকেন (Exact Extracted Colors)
+              Official Color Palette & Tokens
             </h2>
           </div>
           <span className="text-xs text-slate-400">
-            লোগো থেকে সরাসরি স্যাম্পলকৃত সুনির্দিষ্ট আরজিবি এবং হেক্স মান
+            Directly sampled RGB and Hex values from brand assets
           </span>
         </div>
 
@@ -206,7 +205,7 @@ export default async function AdminBrandingSettingsPage() {
               />
               <div>
                 <h3 className="font-extrabold text-sm text-slate-900">
-                  Trust Blue (প্রাইমারি ব্র্যান্ড কালার)
+                  Trust Blue (Primary Brand Color)
                 </h3>
                 <p className="text-xs text-slate-600 font-mono mt-0.5">
                   HEX: {brand.colors.primaryBlue}
@@ -218,8 +217,8 @@ export default async function AdminBrandingSettingsPage() {
             </div>
 
             <div className="text-xs text-slate-600 space-y-1 bg-white p-3 rounded-xl border border-blue-100">
-              <p><strong>ব্যবহারের ক্ষেত্র:</strong> প্রাইমারি বাটন, নেভিগেশন হাইলাইট, লিংক, ক্যাটাগরি মেনু, ফোকাস স্টেট।</p>
-              <p><strong>কনট্রাস্ট অনুপাত:</strong> 7.5:1 (WCAG AAA কমপ্লায়েন্ট)</p>
+              <p><strong>Primary Areas:</strong> Main action buttons, navigation highlights, links, category menus, focus states.</p>
+              <p><strong>Contrast Ratio:</strong> 7.5:1 (WCAG AAA Compliant)</p>
             </div>
           </div>
 
@@ -232,7 +231,7 @@ export default async function AdminBrandingSettingsPage() {
               />
               <div>
                 <h3 className="font-extrabold text-sm text-slate-900">
-                  Trust Red (ব্র্যান্ড অ্যাকসেন্ট কালার)
+                  Trust Red (Brand Accent Color)
                 </h3>
                 <p className="text-xs text-slate-600 font-mono mt-0.5">
                   HEX: {brand.colors.primaryRed}
@@ -244,8 +243,8 @@ export default async function AdminBrandingSettingsPage() {
             </div>
 
             <div className="text-xs text-slate-600 space-y-1 bg-white p-3 rounded-xl border border-red-100">
-              <p><strong>ব্যবহারের ক্ষেত্র:</strong> স্পেশাল অফার, ডিসকাউন্ট ব্যাজ, সেল আইটেম, অ্যাকসেন্ট নোটিফিকেশন।</p>
-              <p><strong>নীতিমালা:</strong> অতিরিক্ত লাল ব্যবহার নিষিদ্ধ; কেবল গুরুত্বপূর্ণ প্রমোশনে ব্যবহার্য।</p>
+              <p><strong>Primary Areas:</strong> Special promotional offers, discount badges, sale items, and alert accents.</p>
+              <p><strong>Policy:</strong> Accent usage only; avoided for standard layout backgrounds.</p>
             </div>
           </div>
         </div>
@@ -255,11 +254,11 @@ export default async function AdminBrandingSettingsPage() {
           <Lock className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="space-y-1 leading-relaxed">
             <p className="font-bold text-amber-900">
-              নিরাপত্তা ও পদমর্যাদা সীমাবদ্ধতা (Security Policy):
+              Security & Role Access Policy:
             </p>
             <p>
-              ব্র্যান্ড কালার ও মূল ভিজ্যুয়াল আইডেন্টিটি পরিবর্তনের ক্ষমতা শুধুমাত্র <strong>OWNER</strong> পদমর্যাদায় সীমাবদ্ধ। সাধারণ স্টাফ অ্যাকাউন্ট থেকে লোগো বা কালার পরিবর্তন করার অনুমতি নেই।
-              বর্তমান লগইন: <strong>{session.name}</strong> ({session.role}) {isOwner ? '— পূর্ণ নিয়ন্ত্রণ অনুমোদিত।' : '— শুধুমাত্র দেখার অনুমতি রয়েছে।'}
+              Modifications to core brand assets and visual identity tokens are restricted to <strong>OWNER</strong> role.
+              Active session: <strong>{session.name}</strong> ({session.role}) {isOwner ? '— full control authorized.' : '— view-only mode active.'}
             </p>
           </div>
         </div>
@@ -270,7 +269,7 @@ export default async function AdminBrandingSettingsPage() {
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 font-bold text-sm text-slate-800">
             <Layers className="w-4 h-4 text-slate-600" />
-            <span>ব্র্যান্ড স্টোরেজ ডিরেক্টরি স্ট্রাকচার (Supabase / Static CDN)</span>
+            <span>Brand Storage Directory Structure (Static CDN & Public Assets)</span>
           </div>
         </div>
 
@@ -278,11 +277,11 @@ export default async function AdminBrandingSettingsPage() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-slate-50 text-slate-500 border-b border-slate-200 font-bold">
-                <th className="py-2.5 px-3">অ্যাসেট নাম</th>
-                <th className="py-2.5 px-3">রোল / ব্যবহার</th>
-                <th className="py-2.5 px-3">ফরম্যাট</th>
-                <th className="py-2.5 px-3">লোকেশন পাথ</th>
-                <th className="py-2.5 px-3 text-right">স্ট্যাটাস</th>
+                <th className="py-2.5 px-3">Asset Name</th>
+                <th className="py-2.5 px-3">Role / Usage</th>
+                <th className="py-2.5 px-3">Format</th>
+                <th className="py-2.5 px-3">Location Path</th>
+                <th className="py-2.5 px-3 text-right">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-mono text-[11px]">

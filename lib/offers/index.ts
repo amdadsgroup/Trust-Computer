@@ -30,81 +30,87 @@ export interface ActiveOffer {
   } | null;
 }
 
+import { unstable_cache, revalidateTag } from 'next/cache';
+
 /**
  * Returns currently active, non-expired promotional offers
  */
-export async function getActiveOffers(): Promise<ActiveOffer[]> {
-  try {
-    const now = new Date();
+export const getActiveOffers = unstable_cache(
+  async (): Promise<ActiveOffer[]> => {
+    try {
+      const now = new Date();
 
-    const offers = await prisma.offer.findMany({
-      where: {
-        isActive: true,
-        AND: [
-          {
-            OR: [{ startAt: null }, { startAt: { lte: now } }],
+      const offers = await prisma.offer.findMany({
+        where: {
+          isActive: true,
+          AND: [
+            {
+              OR: [{ startAt: null }, { startAt: { lte: now } }],
+            },
+            {
+              OR: [{ endAt: null }, { endAt: { gte: now } }],
+            },
+          ],
+        },
+        include: {
+          product: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              sellingPrice: true,
+              compareAtPrice: true,
+              images: {
+                where: { isPrimary: true },
+                take: 1,
+                select: { url: true },
+              },
+            },
           },
-          {
-            OR: [{ endAt: null }, { endAt: { gte: now } }],
-          },
-        ],
-      },
-      include: {
-        product: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            sellingPrice: true,
-            compareAtPrice: true,
-            images: {
-              where: { isPrimary: true },
-              take: 1,
-              select: { url: true },
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
             },
           },
         },
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          },
-        },
-      },
-      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
-    });
+        orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      });
 
-    return offers.map((o) => ({
-      id: o.id,
-      title: o.title,
-      description: o.description,
-      imageUrl: o.imageUrl,
-      badge: o.badge,
-      discountType: o.discountType,
-      discountValue: o.discountValue ? Number(o.discountValue) : null,
-      productId: o.productId,
-      categoryId: o.categoryId,
-      buttonText: o.buttonText,
-      buttonUrl: o.buttonUrl,
-      priority: o.priority,
-      product: o.product
-        ? {
-            id: o.product.id,
-            name: o.product.name,
-            slug: o.product.slug,
-            sellingPrice: Number(o.product.sellingPrice),
-            compareAtPrice: o.product.compareAtPrice ? Number(o.product.compareAtPrice) : null,
-            images: o.product.images,
-          }
-        : null,
-      category: o.category,
-    }));
-  } catch (error) {
-    console.error('Error fetching active offers:', error);
-    return [];
-  }
-}
+      return offers.map((o) => ({
+        id: o.id,
+        title: o.title,
+        description: o.description,
+        imageUrl: o.imageUrl,
+        badge: o.badge,
+        discountType: o.discountType,
+        discountValue: o.discountValue ? Number(o.discountValue) : null,
+        productId: o.productId,
+        categoryId: o.categoryId,
+        buttonText: o.buttonText,
+        buttonUrl: o.buttonUrl,
+        priority: o.priority,
+        product: o.product
+          ? {
+              id: o.product.id,
+              name: o.product.name,
+              slug: o.product.slug,
+              sellingPrice: Number(o.product.sellingPrice),
+              compareAtPrice: o.product.compareAtPrice ? Number(o.product.compareAtPrice) : null,
+              images: o.product.images,
+            }
+          : null,
+        category: o.category,
+      }));
+    } catch (error) {
+      console.error('Error fetching active offers:', error);
+      return [];
+    }
+  },
+  ['active-offers'],
+  { revalidate: 300, tags: ['offers'] }
+);
 
 /**
  * Returns all offers for administrative dashboard

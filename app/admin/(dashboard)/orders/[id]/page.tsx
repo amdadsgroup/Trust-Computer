@@ -80,10 +80,10 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
               </span>
             </div>
             <p className="text-xs text-slate-500 mt-0.5">
-              অর্ডারের তারিখ:{' '}
-              {new Date(order.createdAt).toLocaleString('bn-BD', {
+              Order Date:{' '}
+              {new Date(order.createdAt).toLocaleString('en-US', {
                 year: 'numeric',
-                month: 'long',
+                month: 'short',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
@@ -99,7 +99,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
             className="inline-flex items-center gap-2 bg-[#2A3B97] hover:bg-[#212F7A] text-white px-4 py-2 rounded-xl font-bold text-xs shadow-sm transition"
           >
             <Printer className="w-4 h-4" />
-            <span>প্রিন্ট ইনভয়েস (Print Invoice)</span>
+            <span>Print Invoice</span>
           </Link>
         </div>
       </div>
@@ -110,17 +110,17 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
           {/* Order Items Table */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3">
-              অর্ডারকৃত পণ্য তালিকা
+              Ordered Items
             </h2>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="text-slate-400 border-b border-slate-100 pb-2">
-                    <th className="pb-2">পণ্য ও SKU</th>
-                    <th className="pb-2">একক মূল্য</th>
-                    <th className="pb-2">পরিমাণ</th>
-                    <th className="pb-2 text-right">উপমোট</th>
+                    <th className="pb-2">Product & SKU</th>
+                    <th className="pb-2">Unit Price</th>
+                    <th className="pb-2">Qty</th>
+                    <th className="pb-2 text-right">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -131,16 +131,16 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                         <div className="font-mono text-slate-400 text-[10px]">SKU: {item.productSku}</div>
                         {item.warrantyInfo && (
                           <div className="text-[10px] text-emerald-600">
-                            ওয়ারেন্টি: {item.warrantyInfo}
+                            Warranty: {item.warrantyInfo}
                           </div>
                         )}
                       </td>
                       <td className="py-3 font-semibold text-slate-700">
-                        ৳{Number(item.unitPrice).toLocaleString('en-BD')}
+                        ৳{Number(item.unitPrice).toLocaleString()}
                       </td>
-                      <td className="py-3 font-bold text-slate-900">{item.quantity} টি</td>
+                      <td className="py-3 font-bold text-slate-900">{item.quantity}</td>
                       <td className="py-3 text-right font-black text-slate-900">
-                        ৳{Number(item.subtotal).toLocaleString('en-BD')}
+                        ৳{Number(item.subtotal).toLocaleString()}
                       </td>
                     </tr>
                   ))}
@@ -151,16 +151,16 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
             {/* Financial Totals */}
             <div className="bg-slate-50 p-4 rounded-2xl space-y-2 text-xs text-slate-700 border border-slate-100">
               <div className="flex justify-between">
-                <span>আইটেম উপমোট:</span>
-                <span className="font-bold">৳{Number(order.subtotal).toLocaleString('en-BD')}</span>
+                <span>Items Subtotal:</span>
+                <span className="font-bold">৳{Number(order.subtotal).toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span>ডেলিভারি ফি ({order.cityArea}):</span>
-                <span className="font-bold">৳{Number(order.deliveryFee).toLocaleString('en-BD')}</span>
+                <span>Delivery Fee ({order.cityArea}):</span>
+                <span className="font-bold">৳{Number(order.deliveryFee).toLocaleString()}</span>
               </div>
               <div className="border-t border-slate-200 pt-2 flex justify-between text-sm font-black text-slate-900">
-                <span>সর্বমোট বিল:</span>
-                <span className="text-brand">৳{Number(order.total).toLocaleString('en-BD')}</span>
+                <span>Grand Total:</span>
+                <span className="text-brand">৳{Number(order.total).toLocaleString()}</span>
               </div>
             </div>
           </div>
@@ -169,17 +169,17 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
               <User className="w-4 h-4 text-brand" />
-              <span>গ্রাহক ও ডেলিভারির তথ্য</span>
+              <span>Customer & Delivery Details</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-700">
               <div>
-                <span className="text-slate-400 block mb-0.5">গ্রাহকের নাম:</span>
+                <span className="text-slate-400 block mb-0.5">Customer Name:</span>
                 <span className="font-bold text-slate-900 text-sm">{order.customerName}</span>
               </div>
 
               <div>
-                <span className="text-slate-400 block mb-0.5">মোবাইল নম্বর:</span>
+                <span className="text-slate-400 block mb-0.5">Phone Number:</span>
                 <a
                   href={`tel:${order.customerPhone}`}
                   className="font-bold text-brand hover:underline font-mono text-sm"
@@ -189,17 +189,17 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
               </div>
 
               <div>
-                <span className="text-slate-400 block mb-0.5">ডেলিভারি এলাকা:</span>
+                <span className="text-slate-400 block mb-0.5">Delivery Area:</span>
                 <span className="font-semibold text-slate-800">{order.cityArea}</span>
               </div>
 
               <div>
-                <span className="text-slate-400 block mb-0.5">পেমেন্ট মেথড:</span>
+                <span className="text-slate-400 block mb-0.5">Payment Method:</span>
                 <span className="font-bold uppercase text-slate-900">{order.paymentMethod}</span>
               </div>
 
               <div className="sm:col-span-2">
-                <span className="text-slate-400 block mb-0.5">পূর্ণাঙ্গ ঠিকানা:</span>
+                <span className="text-slate-400 block mb-0.5">Full Delivery Address:</span>
                 <p className="bg-slate-50 p-3 rounded-xl border border-slate-100 font-medium">
                   {order.deliveryAddress}
                 </p>
@@ -207,7 +207,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
 
               {order.notes && (
                 <div className="sm:col-span-2">
-                  <span className="text-slate-400 block mb-0.5">গ্রাহকের নোট:</span>
+                  <span className="text-slate-400 block mb-0.5">Customer Notes:</span>
                   <p className="italic text-slate-600 bg-amber-50 p-3 rounded-xl border border-amber-100">
                     "{order.notes}"
                   </p>
@@ -222,7 +222,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
           {/* Status Change Form */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3">
-              অর্ডার স্ট্যাটাস পরিবর্তন
+              Update Order Status
             </h2>
 
             {allowedNextStatuses.length > 0 ? (
@@ -236,7 +236,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                 <input type="hidden" name="orderId" value={order.id} />
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">নতুন স্ট্যাটাস:</label>
+                  <label className="block font-bold text-slate-700 mb-1">New Status:</label>
                   <select
                     name="newStatus"
                     required
@@ -251,11 +251,11 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                 </div>
 
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">মন্তব্য / নোট (ঐচ্ছিক):</label>
+                  <label className="block font-bold text-slate-700 mb-1">Notes / Tracking # (Optional):</label>
                   <input
                     type="text"
                     name="note"
-                    placeholder="যেমন: কুরিয়ার ট্র্যাকিং #SA12345"
+                    placeholder="e.g. Courier Tracking #SA12345"
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none"
                   />
                 </div>
@@ -264,12 +264,12 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                   type="submit"
                   className="w-full bg-brand hover:bg-brand-700 text-white font-bold py-2.5 px-4 rounded-xl transition shadow text-xs"
                 >
-                  স্ট্যাটাস আপডেট করুন
+                  Update Status
                 </button>
               </form>
             ) : (
               <div className="text-xs text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                এই অর্ডারটি <strong>{order.status}</strong> অবস্থায় আছে (চূড়ান্ত অবস্থা, পরিবর্তনযোগ্য নয়)।
+                This order is in <strong>{order.status}</strong> state (terminal state, cannot be modified).
               </div>
             )}
 
@@ -286,7 +286,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                     type="submit"
                     className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition"
                   >
-                    পেমেন্ট সম্পন্ন হিসেবে চিহ্নিত করুন (Mark as Paid)
+                    Mark Payment as Paid
                   </button>
                 </form>
               </div>
@@ -296,7 +296,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
           {/* Audit History Timeline */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3">
-              স্ট্যাটাস হিস্ট্রি ও অডিট ট্রেইল
+              Status History & Audit Trail
             </h2>
 
             <div className="space-y-3 text-xs">
@@ -307,7 +307,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                       {hist.fromStatus} → {hist.toStatus}
                     </span>
                     <span className="text-[10px] text-slate-400">
-                      {new Date(hist.createdAt).toLocaleTimeString('bn-BD', {
+                      {new Date(hist.createdAt).toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
@@ -315,7 +315,7 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
                   </div>
                   {hist.note && <p className="text-slate-600 text-[11px]">{hist.note}</p>}
                   {hist.user?.name && (
-                    <span className="text-[10px] text-brand">স্টাফ: {hist.user.name}</span>
+                    <span className="text-[10px] text-brand">Staff: {hist.user.name}</span>
                   )}
                 </div>
               ))}

@@ -91,18 +91,21 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
   }, []);
 
+  const contextValue = React.useMemo(
+    () => ({
+      items,
+      addToWishlist,
+      removeFromWishlist,
+      toggleWishlist,
+      isInWishlist,
+      clearWishlist,
+      wishlistCount: items.length,
+    }),
+    [items, addToWishlist, removeFromWishlist, toggleWishlist, isInWishlist, clearWishlist]
+  );
+
   return (
-    <WishlistContext.Provider
-      value={{
-        items,
-        addToWishlist,
-        removeFromWishlist,
-        toggleWishlist,
-        isInWishlist,
-        clearWishlist,
-        wishlistCount: items.length,
-      }}
-    >
+    <WishlistContext.Provider value={contextValue}>
       {children}
     </WishlistContext.Provider>
   );

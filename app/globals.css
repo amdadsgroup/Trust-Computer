@@ -76,12 +76,34 @@ body {
   margin-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Touch-optimized styling */
+/* Touch-optimized styling and hardware acceleration */
 @layer utilities {
   .touch-callout-none {
     -webkit-touch-callout: none;
   }
   .tap-highlight-transparent {
     -webkit-tap-highlight-color: transparent;
+  }
+  .gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  .transition-fast {
+    transition-property: transform, opacity;
+    transition-duration: 180ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Accessible reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

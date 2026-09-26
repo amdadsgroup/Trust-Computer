@@ -15,34 +15,40 @@ export interface ActiveBanner {
   priority: number;
 }
 
+import { unstable_cache, revalidateTag } from 'next/cache';
+
 /**
  * Returns currently active, non-expired banners ordered by priority
  */
-export async function getActiveBanners(): Promise<ActiveBanner[]> {
-  try {
-    const now = new Date();
+export const getActiveBanners = unstable_cache(
+  async (): Promise<ActiveBanner[]> => {
+    try {
+      const now = new Date();
 
-    const banners = await prisma.banner.findMany({
-      where: {
-        isActive: true,
-        AND: [
-          {
-            OR: [{ startAt: null }, { startAt: { lte: now } }],
-          },
-          {
-            OR: [{ endAt: null }, { endAt: { gte: now } }],
-          },
-        ],
-      },
-      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
-    });
+      const banners = await prisma.banner.findMany({
+        where: {
+          isActive: true,
+          AND: [
+            {
+              OR: [{ startAt: null }, { startAt: { lte: now } }],
+            },
+            {
+              OR: [{ endAt: null }, { endAt: { gte: now } }],
+            },
+          ],
+        },
+        orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      });
 
-    return banners;
-  } catch (error) {
-    console.error('Error fetching active banners from database:', error);
-    return [];
-  }
-}
+      return banners;
+    } catch (error) {
+      console.error('Error fetching active banners from database:', error);
+      return [];
+    }
+  },
+  ['active-banners'],
+  { revalidate: 300, tags: ['banners'] }
+);
 
 /**
  * Returns all banners for administrative management

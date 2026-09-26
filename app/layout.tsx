@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from 'next';
+import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import CartDrawer from '@/components/cart/CartDrawer';
 import FloatingDock from '@/components/layout/FloatingDock';
 import BottomNav from '@/components/layout/BottomNav';
 import { CartProvider } from '@/components/cart/CartContext';
 import { CompareProvider } from '@/components/compare/CompareContext';
 import { WishlistProvider } from '@/components/wishlist/WishlistContext';
 import { ToastProvider } from '@/components/ui/toast';
-import CompareBar from '@/components/compare/CompareBar';
+
+const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'), {
+  ssr: false,
+});
+const CompareBar = dynamic(() => import('@/components/compare/CompareBar'), {
+  ssr: false,
+});
 
 const inter = Inter({
   subsets: ['latin'],

@@ -18,7 +18,9 @@ import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 import { getProductReviews, getProductReviewStats } from '@/lib/reviews';
 import ReviewsSection from '@/components/products/ReviewsSection';
 
-export const dynamic = 'force-dynamic';
+import { cache } from 'react';
+
+export const revalidate = 60;
 
 interface ProductDetailPageProps {
   params: {
@@ -26,12 +28,22 @@ interface ProductDetailPageProps {
   };
 }
 
+const getProductBySlug = cache(async (slug: string) => {
+  return await prisma.product.findUnique({
+    where: { slug },
+    include: {
+      images: { orderBy: { sortOrder: 'asc' } },
+      specifications: { orderBy: { sortOrder: 'asc' } },
+      variants: true,
+      category: true,
+      brand: true,
+    },
+  });
+});
+
 export async function generateMetadata({ params }: ProductDetailPageProps) {
   try {
-    const product = await prisma.product.findUnique({
-      where: { slug: params.slug },
-      include: { images: true, category: true },
-    });
+    const product = await getProductBySlug(params.slug);
 
     if (!product) return { title: 'Product Not Found' };
 
@@ -56,16 +68,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   let reviewStats: any = { averageRating: 0, totalReviews: 0, breakdown: [] };
 
   try {
-    product = await prisma.product.findUnique({
-      where: { slug: params.slug },
-      include: {
-        images: { orderBy: { sortOrder: 'asc' } },
-        specifications: { orderBy: { sortOrder: 'asc' } },
-        variants: true,
-        category: true,
-        brand: true,
-      },
-    });
+    product = await getProductBySlug(params.slug);
 
     if (!product || !product.isActive) {
       notFound();
@@ -177,6 +180,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 alt={product.name}
                 fill
                 priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain p-4"
               />
             ) : (
@@ -197,7 +201,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   key={img.id || idx}
                   className="relative w-20 h-20 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden flex-shrink-0 cursor-pointer hover:border-brand transition"
                 >
-                  <Image src={img.url} alt={product.name} fill className="object-cover p-1" />
+                  <Image src={img.url} alt={product.name} fill sizes="80px" className="object-cover p-1" />
                 </div>
               ))}
             </div>

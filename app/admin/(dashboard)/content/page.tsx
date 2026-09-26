@@ -21,11 +21,11 @@ export default async function AdminContentPage({
   const currentPageData = await getContentPage(currentTab);
 
   const policyTabs = [
-    { key: 'delivery', label: 'ডেলিভারি নীতিমালা (Delivery)', url: '/policies/delivery' },
-    { key: 'returns', label: 'রিটার্ন ও রিফান্ড (Returns)', url: '/policies/returns' },
-    { key: 'warranty', label: 'ওয়ারেন্টি নীতিমালা (Warranty)', url: '/policies/warranty' },
-    { key: 'privacy', label: 'প্রাইভেসি পলিসি (Privacy)', url: '/policies/privacy' },
-    { key: 'terms', label: 'শর্তাবলী (Terms & Conditions)', url: '/policies/terms' },
+    { key: 'delivery', label: 'Delivery Policy', url: '/policies/delivery' },
+    { key: 'returns', label: 'Returns & Refund', url: '/policies/returns' },
+    { key: 'warranty', label: 'Warranty Policy', url: '/policies/warranty' },
+    { key: 'privacy', label: 'Privacy Policy', url: '/policies/privacy' },
+    { key: 'terms', label: 'Terms & Conditions', url: '/policies/terms' },
   ];
 
   return (
@@ -33,10 +33,10 @@ export default async function AdminContentPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            পলিসি ও কন্টেন্ট ব্যবস্থাপনা (Legal & Policy Pages Editor)
+            Policy & Content Management
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            গ্রাহক-মুখী সমস্ত নীতিমালা ও শর্তাবলী সরাসরি ডাটাবেজে সম্পাদনা এবং ড্রাফট স্ট্যাটাস পরিচালনা করুন।
+            Edit customer-facing legal, delivery, and warranty policies stored directly in the database.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default async function AdminContentPage({
           className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:text-brand hover:border-brand transition shadow-sm"
         >
           <ExternalLink className="w-3.5 h-3.5" />
-          <span>ওয়েবসাইটে দেখুন (Live Preview)</span>
+          <span>Live Preview</span>
         </Link>
       </div>
 
@@ -73,10 +73,10 @@ export default async function AdminContentPage({
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="space-y-1">
             <h2 className="text-base font-bold text-slate-800">
-              সম্পাদনা: {currentPageData.title}
+              Editing: {currentPageData.title}
             </h2>
             <p className="text-xs text-slate-400 font-mono">
-              স্লাগ: /policies/{currentTab}
+              Slug: /policies/{currentTab}
             </p>
           </div>
 
@@ -84,12 +84,12 @@ export default async function AdminContentPage({
             {currentPageData.isDraft ? (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
                 <AlertTriangle className="w-3.5 h-3.5" />
-                খসড়া / ড্রাফট মোড সক্রিয়
+                Draft Mode Active
               </span>
             ) : (
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                প্রকাশিত (Published)
+                Published
               </span>
             )}
           </div>
@@ -105,7 +105,7 @@ export default async function AdminContentPage({
           <input type="hidden" name="slug" value={currentTab} />
 
           <div>
-            <label className="block font-bold text-slate-700 mb-1.5">পৃষ্ঠার শিরোনাম *</label>
+            <label className="block font-bold text-slate-700 mb-1.5">Page Title *</label>
             <input
               type="text"
               name="title"
@@ -119,7 +119,7 @@ export default async function AdminContentPage({
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
-                <strong>খসড়া স্ট্যাটাস (Draft Status):</strong> যদি নীতিমালাটি ক্লায়েন্ট কর্তৃক এখনো আনুষ্ঠানিকভাবে অনুমোদিত না হয়ে থাকে, তবে ড্রাফট রাখুন। এতে ওয়েবসাইটে স্পষ্ট নোটিশ প্রদর্শিত হবে এবং কোনো কাল্পনিক আইনি প্রতিশ্রুতি গ্রাহককে দেওয়া হবে না।
+                <strong>Draft Status:</strong> If this policy has not yet been formally reviewed and approved by management, keep it in Draft mode. A clear notice will be shown to customers.
               </div>
             </div>
 
@@ -131,14 +131,14 @@ export default async function AdminContentPage({
                 defaultChecked={currentPageData.isDraft}
                 className="w-4 h-4 rounded text-brand focus:ring-brand"
               />
-              <span>ড্রাফট হিসেবে রাখুন</span>
+              <span>Keep as Draft</span>
             </label>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="font-bold text-slate-700">পলিসি কন্টেন্ট (Markdown ফরম্যাট সমর্থিত) *</label>
-              <span className="text-[11px] text-slate-400">## হেডিং, ### সাবহেডিং, - বুলেট পয়েন্ট, **বোল্ড**</span>
+              <label className="font-bold text-slate-700">Policy Content (Markdown supported) *</label>
+              <span className="text-[11px] text-slate-400">## Heading, ### Subheading, - Bullet points, **Bold**</span>
             </div>
             <textarea
               name="content"
@@ -151,7 +151,7 @@ export default async function AdminContentPage({
 
           <div className="pt-2 flex items-center justify-between border-t border-slate-100">
             <p className="text-slate-400 text-[11px]">
-              সংরক্ষণ করলে তাৎক্ষণিকভাবে লাইভ ওয়েবসাইটে হালনাগাদ হবে এবং অডিট ট্রেইলে সংরক্ষিত থাকবে।
+              Changes take effect immediately on the live storefront and are logged to the audit trail.
             </p>
 
             <button
@@ -159,7 +159,7 @@ export default async function AdminContentPage({
               className="bg-brand hover:bg-brand-700 text-white font-bold py-2.5 px-6 rounded-xl transition shadow text-xs flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
-              <span>পলিসি হালনাগাদ সংরক্ষণ করুন</span>
+              <span>Save Policy Content</span>
             </button>
           </div>
         </form>

@@ -3,13 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useCompare } from '@/components/compare/CompareContext';
 import { X, GitCompare, ChevronRight } from 'lucide-react';
 
 export default function CompareBar() {
+  const pathname = usePathname();
   const { compareItems, removeFromCompare, clearCompare, compareCount, maxCompare } = useCompare();
 
-  if (compareCount === 0) return null;
+  if (pathname?.startsWith('/admin') || compareCount === 0) return null;
 
   return (
     <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-2xl">

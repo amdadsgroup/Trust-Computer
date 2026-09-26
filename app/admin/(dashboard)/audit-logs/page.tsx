@@ -60,15 +60,15 @@ export default async function AdminAuditLogsPage({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            অডিট ট্রেইল ও লগ (Audit Trail & Activity Logs)
+            Audit Trail & Activity Logs
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            সিস্টেমে পণ্যের মূল্য, স্টক, অর্ডার ও সেটিংসের সমস্ত প্রশাসনিক পরিবর্তনের অপরিবর্তনীয় রেকর্ড।
+            Immutable record of administrative operations, pricing updates, stock adjustments, and store settings.
           </p>
         </div>
 
         <div className="text-xs font-semibold px-3 py-1.5 bg-blue-50 text-brand rounded-xl border border-blue-200">
-          মোট ইভেন্ট রেকর্ড: {totalLogs} টি
+          Total Event Records: {totalLogs}
         </div>
       </div>
 
@@ -77,25 +77,25 @@ export default async function AdminAuditLogsPage({
         <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
           <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
             <Shield className="w-4 h-4 text-brand" />
-            <span>প্রশাসনিক কার্যক্রম তালিকা</span>
+            <span>Administrative Activity Log</span>
           </h2>
         </div>
 
         {logs.length === 0 ? (
           <div className="p-12 text-center text-slate-400 text-xs">
-            কোনো অডিট লগ রেকর্ড পাওয়া যায়নি।
+            No audit log records found.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-100">
                 <tr>
-                  <th className="p-4">সময় ও তারিখ</th>
-                  <th className="p-4">অ্যাকশন</th>
-                  <th className="p-4">এনটিটি</th>
-                  <th className="p-4">অ্যাডমিন / ইউজার</th>
-                  <th className="p-4">বিস্তারিত তথ্য</th>
-                  <th className="p-4">IP অ্যাড্রেস</th>
+                  <th className="p-4">Timestamp</th>
+                  <th className="p-4">Action</th>
+                  <th className="p-4">Entity</th>
+                  <th className="p-4">Admin / User</th>
+                  <th className="p-4">Details</th>
+                  <th className="p-4">IP Address</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -112,7 +112,7 @@ export default async function AdminAuditLogsPage({
                   return (
                     <tr key={log.id} className="hover:bg-slate-50 transition">
                       <td className="p-4 whitespace-nowrap text-slate-500 font-mono text-[11px]">
-                        {new Date(log.createdAt).toLocaleString('en-GB')}
+                        {new Date(log.createdAt).toLocaleString('en-US')}
                       </td>
                       <td className="p-4 whitespace-nowrap">
                         <span className={`inline-block px-2.5 py-0.5 rounded-full font-bold text-[10px] border ${getActionBadgeColor(log.action)}`}>
@@ -169,7 +169,7 @@ export default async function AdminAuditLogsPage({
         {totalPages > 1 && (
           <div className="p-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
             <div>
-              পৃষ্ঠা {currentPage} এর {totalPages}
+              Page {currentPage} of {totalPages}
             </div>
             <div className="flex gap-2">
               {currentPage > 1 && (
@@ -177,7 +177,7 @@ export default async function AdminAuditLogsPage({
                   href={`/admin/audit-logs?page=${currentPage - 1}`}
                   className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition"
                 >
-                  আগের পৃষ্ঠা
+                  Previous
                 </a>
               )}
               {currentPage < totalPages && (
@@ -185,7 +185,7 @@ export default async function AdminAuditLogsPage({
                   href={`/admin/audit-logs?page=${currentPage + 1}`}
                   className="px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition"
                 >
-                  পরের পৃষ্ঠা
+                  Next
                 </a>
               )}
             </div>

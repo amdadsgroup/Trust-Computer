@@ -9,7 +9,6 @@ import {
   ArrowRight,
   Package,
   CheckCircle2,
-  ExternalLink,
 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -19,41 +18,61 @@ async function getDashboardMetrics() {
     const [
       totalOrders,
       pendingOrders,
+      lowStockCount,
       lowStockProducts,
       recentOrders,
-      allPayments,
+      paidPaymentsAggregate,
       totalProductsCount,
     ] = await Promise.all([
       prisma.order.count(),
       prisma.order.count({
         where: { status: { in: ['PENDING', 'CONFIRMED'] } },
       }),
+      prisma.product.count({
+        where: {
+          isActive: true,
+          stock: { lte: 3 },
+        },
+      }),
       prisma.product.findMany({
         where: {
           isActive: true,
-          stock: { lte: 3 }, // low stock threshold
+          stock: { lte: 3 },
         },
-        include: { category: true },
+        select: {
+          id: true,
+          name: true,
+          sku: true,
+          stock: true,
+        },
         take: 5,
       }),
       prisma.order.findMany({
         orderBy: { createdAt: 'desc' },
         take: 6,
-        include: { items: true },
+        select: {
+          id: true,
+          orderNumber: true,
+          customerName: true,
+          customerPhone: true,
+          total: true,
+          status: true,
+          createdAt: true,
+        },
       }),
-      prisma.payment.findMany({
+      prisma.payment.aggregate({
         where: { status: 'PAID' },
-        select: { amount: true },
+        _sum: { amount: true },
       }),
       prisma.product.count({ where: { isActive: true } }),
     ]);
 
-    const totalRevenue = allPayments.reduce((acc, p) => acc + Number(p.amount), 0);
+    const totalRevenue = Number(paidPaymentsAggregate._sum.amount || 0);
 
     return {
       totalOrders,
       pendingOrders,
-      lowStockCount: lowStockProducts.length,
+      lowStockCount,
       lowStockProducts,
       recentOrders,
       totalRevenue,
@@ -82,10 +101,10 @@ export default async function AdminDashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            এডমিন ড্যাশবোর্ড ওভারভিউ
+            Dashboard Overview
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Trust Computer-Moulvibazar রিয়েল-টাইম বিক্রয় ও ইনভেন্টরি পরিস্থিতি
+            Real-time sales, order volume, and inventory health for Trust Computer.
           </p>
         </div>
 
@@ -95,7 +114,7 @@ export default async function AdminDashboardPage() {
             className="bg-brand hover:bg-brand-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition shadow-sm flex items-center gap-2"
           >
             <Package className="w-4 h-4" />
-            <span>নতুন পণ্য যোগ করুন</span>
+            <span>Add New Product</span>
           </Link>
         </div>
       </div>
@@ -105,57 +124,57 @@ export default async function AdminDashboardPage() {
         {/* Total Orders */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
-            <span>মোট অর্ডার সংখ্যা</span>
+            <span>Total Orders</span>
             <div className="p-2 rounded-xl bg-blue-50 text-brand">
               <ShoppingBag className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-black text-slate-900">
-            {metrics.totalOrders}
+            {metrics.totalOrders.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-400">সর্বমোট নিবন্ধিত অর্ডার</p>
+          <p className="text-[11px] text-slate-400">All registered customer orders</p>
         </div>
 
         {/* Pending Orders */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
-            <span>অপেক্ষমান অর্ডার (Pending)</span>
+            <span>Pending Orders</span>
             <div className="p-2 rounded-xl bg-amber-50 text-amber-600">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-black text-amber-600">
-            {metrics.pendingOrders}
+            {metrics.pendingOrders.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-400">কনফার্ম বা প্রসেসিং আবশ্যক</p>
+          <p className="text-[11px] text-slate-400">Requires confirmation or processing</p>
         </div>
 
         {/* Paid Revenue */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
-            <span>পরিশোধিত রাজস্ব (Paid)</span>
+            <span>Paid Revenue</span>
             <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-black text-emerald-700">
-            ৳{metrics.totalRevenue.toLocaleString('en-BD')}
+            ৳{metrics.totalRevenue.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-400">অনলাইন ও ক্যাশ আদায়কৃত অর্থ</p>
+          <p className="text-[11px] text-slate-400">Settled payments to date</p>
         </div>
 
         {/* Low Stock Alerts */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold">
-            <span>স্বল্প স্টক সতর্কতা (Low Stock)</span>
+            <span>Low Stock Alerts</span>
             <div className="p-2 rounded-xl bg-red-50 text-accent-600">
               <AlertTriangle className="w-4 h-4" />
             </div>
           </div>
           <div className="text-2xl font-black text-accent-600">
-            {metrics.lowStockCount}
+            {metrics.lowStockCount.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-400">পুনরায় স্টক অর্ডার করা প্রয়োজন</p>
+          <p className="text-[11px] text-slate-400">Items at or below reorder threshold</p>
         </div>
       </div>
 
@@ -164,13 +183,13 @@ export default async function AdminDashboardPage() {
         <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="font-bold text-sm sm:text-base text-slate-900">
-              সাম্প্রতিক অর্ডারসমূহ (Recent Orders)
+              Recent Orders
             </h2>
             <Link
               href="/admin/orders"
               className="text-xs font-semibold text-brand hover:underline flex items-center gap-1"
             >
-              <span>সবগুলো দেখুন</span>
+              <span>View All</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -180,11 +199,11 @@ export default async function AdminDashboardPage() {
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="text-slate-400 border-b border-slate-100 font-semibold">
-                    <th className="pb-2.5">অর্ডার নং</th>
-                    <th className="pb-2.5">গ্রাহকের নাম ও ফোন</th>
-                    <th className="pb-2.5">মূল্য</th>
-                    <th className="pb-2.5">স্ট্যাটাস</th>
-                    <th className="pb-2.5 text-right">কার্যক্রম</th>
+                    <th className="pb-2.5">Order #</th>
+                    <th className="pb-2.5">Customer & Phone</th>
+                    <th className="pb-2.5">Total</th>
+                    <th className="pb-2.5">Status</th>
+                    <th className="pb-2.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -198,7 +217,7 @@ export default async function AdminDashboardPage() {
                         <div className="text-[11px] text-slate-400">{order.customerPhone}</div>
                       </td>
                       <td className="py-3 font-bold text-slate-900">
-                        ৳{Number(order.total).toLocaleString('en-BD')}
+                        ৳{Number(order.total).toLocaleString()}
                       </td>
                       <td className="py-3">
                         <span
@@ -218,7 +237,7 @@ export default async function AdminDashboardPage() {
                           href={`/admin/orders/${order.id}`}
                           className="text-brand font-semibold hover:underline"
                         >
-                          বিস্তারিত
+                          View Details
                         </Link>
                       </td>
                     </tr>
@@ -228,7 +247,7 @@ export default async function AdminDashboardPage() {
             </div>
           ) : (
             <div className="text-center py-8 text-slate-400 text-xs">
-              এখনো কোনো গ্রাহক অর্ডার সম্পন্ন করেননি।
+              No customer orders received yet.
             </div>
           )}
         </div>
@@ -238,13 +257,13 @@ export default async function AdminDashboardPage() {
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="font-bold text-sm sm:text-base text-slate-900 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-accent-500" />
-              <span>স্টক অ্যালার্ট</span>
+              <span>Stock Alerts</span>
             </h2>
             <Link
               href="/admin/inventory"
               className="text-xs font-semibold text-brand hover:underline"
             >
-              ইনভেন্টরি
+              Inventory
             </Link>
           </div>
 
@@ -261,13 +280,13 @@ export default async function AdminDashboardPage() {
                   </div>
                   <div className="text-right flex-shrink-0">
                     <span className="font-extrabold text-accent-600 block">
-                      {p.stock} টি বাকি
+                      {p.stock} remaining
                     </span>
                     <Link
                       href={`/admin/inventory?productId=${p.id}`}
                       className="text-[10px] text-brand font-semibold hover:underline"
                     >
-                      স্টক বাড়ান
+                      Restock
                     </Link>
                   </div>
                 </div>
@@ -276,7 +295,7 @@ export default async function AdminDashboardPage() {
           ) : (
             <div className="text-center py-8 text-slate-400 text-xs flex flex-col items-center gap-2">
               <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-              <span>সকল পণ্যের পর্যাপ্ত স্টক মজুত রয়েছে।</span>
+              <span>All products have adequate stock levels.</span>
             </div>
           )}
         </div>

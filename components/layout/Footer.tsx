@@ -3,14 +3,20 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Phone, Mail, MapPin, Facebook, MessageCircle, ShieldCheck, Clock } from 'lucide-react';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import LanguageToggle from '../ui/LanguageToggle';
 
 export default function Footer() {
+  const pathname = usePathname();
   const whatsappUrl = getGeneralWhatsAppLink();
   const { t, isBangla } = useLanguage();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <footer className="bg-slate-950 text-slate-300 border-t border-slate-800 mt-auto">

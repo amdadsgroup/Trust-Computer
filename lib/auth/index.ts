@@ -103,9 +103,13 @@ export async function recordAuditLog(params: {
   ipAddress?: string;
 }) {
   try {
+    const isValidUuid =
+      params.userId &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.userId);
+
     await prisma.adminAuditLog.create({
       data: {
-        userId: params.userId,
+        userId: isValidUuid ? params.userId : undefined,
         action: params.action,
         entityType: params.entityType,
         entityId: params.entityId,

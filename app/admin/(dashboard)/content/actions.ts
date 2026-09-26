@@ -13,7 +13,7 @@ export async function savePolicyContentAction(formData: FormData) {
   const isDraft = formData.get('isDraft') === 'true' || formData.get('isDraft') === 'on';
 
   if (!slug || !title || !content) {
-    return { error: 'পলিসি স্লাগ, শিরোনাম ও কন্টেন্ট পূরণ করা আবশ্যক।' };
+    return { error: 'Policy slug, title, and content are required.' };
   }
 
   try {
@@ -31,6 +31,6 @@ export async function savePolicyContentAction(formData: FormData) {
     revalidatePath('/admin/content');
     return { success: true };
   } catch (err: any) {
-    return { error: err.message || 'পলিসি সংরক্ষণে সমস্যা হয়েছে।' };
+    return { error: err.message || 'Failed to save policy content.' };
   }
 }

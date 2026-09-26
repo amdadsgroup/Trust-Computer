@@ -42,10 +42,10 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
     <div className="space-y-8 max-w-7xl mx-auto">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          ইনভেন্টরি ও স্টক লেজার (Stock Ledger)
+          Inventory & Stock Ledger
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          পণ্য গ্রহণ (Receive), সমন্বয় (Adjustment) ও স্টক ওঠানামার সম্পূর্ণ অডিট লগ।
+          Complete audit trail of stock receipts, adjustments, order sales, and returns.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
             <PlusCircle className="w-4 h-4 text-brand" />
-            <span>স্টক সমন্বয় ও গ্রহণ ফর্ম</span>
+            <span>Stock Adjustment & Receiving</span>
           </h2>
 
           <form
@@ -65,67 +65,67 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
             className="space-y-4 text-xs sm:text-sm"
           >
             <div>
-              <label className="block font-bold text-slate-700 mb-1">পণ্য নির্বাচন করুন *</label>
+              <label className="block font-bold text-slate-700 mb-1">Select Product *</label>
               <select
                 name="productId"
                 required
                 defaultValue={searchParams.productId || ''}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-brand cursor-pointer text-xs"
               >
-                <option value="">পণ্য বেছে নিন...</option>
+                <option value="">Choose a product...</option>
                 {products.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.name} (মজুত: {p.stock} টি) - SKU: {p.sku}
+                    {p.name} (Stock: {p.stock}) - SKU: {p.sku}
                   </option>
                 ))}
               </select>
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">সমন্বয়ের ধরন (Type) *</label>
+              <label className="block font-bold text-slate-700 mb-1">Adjustment Type *</label>
               <select
                 name="type"
                 required
                 defaultValue="RECEIVE"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-brand cursor-pointer text-xs"
               >
-                <option value="RECEIVE">RECEIVE (নতুন স্টক গ্রহণ / ক্রয়)</option>
-                <option value="ADJUSTMENT">ADJUSTMENT (স্টক গণনা বা সংশোধন)</option>
-                <option value="RETURN">RETURN (গ্রাহক কর্তৃক ফেরত / রিস্টক)</option>
-                <option value="INITIAL">INITIAL (প্রাথমিক এন্ট্রি)</option>
+                <option value="RECEIVE">RECEIVE (New stock arrival / purchase)</option>
+                <option value="ADJUSTMENT">ADJUSTMENT (Audit count correction)</option>
+                <option value="RETURN">RETURN (Customer return / restock)</option>
+                <option value="INITIAL">INITIAL (Initial inventory setup)</option>
               </select>
             </div>
 
             <div>
               <label className="block font-bold text-slate-700 mb-1">
-                পরিমাণ (Quantity Change) *
+                Quantity Change *
               </label>
               <input
                 type="number"
                 name="quantity"
                 required
-                placeholder="যেমন: 10 (বাড়াতে) অথবা -2 (কমাতে)"
+                placeholder="e.g. 10 (to add) or -2 (to reduce)"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand text-xs font-bold"
               />
               <span className="text-[10px] text-slate-400 mt-1 block">
-                স্টক যোগ করতে পজিটিভ সংখ্যা দিন, বাদ দিতে মাইনাস (-) দিয়ে লিখুন।
+                Enter a positive number to add stock, or a negative number (-) to reduce stock.
               </span>
             </div>
 
             <div>
-              <label className="block font-bold text-slate-700 mb-1">কারণ বা ভাউচার নোট *</label>
+              <label className="block font-bold text-slate-700 mb-1">Reason / Voucher Note *</label>
               <input
                 type="text"
                 name="reason"
                 required
-                placeholder="যেমন: চালান #HIK-5012 গ্রহণ অথবা ইনস্পেকশন ঘাটতি"
+                placeholder="e.g. Invoice #HIK-5012 received or damaged in transit"
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand text-xs"
               />
             </div>
 
             <div>
               <label className="block font-bold text-slate-700 mb-1">
-                রেফারেন্স আইডি / ইনভয়েস নং (ঐচ্ছিক)
+                Reference ID / Invoice # (Optional)
               </label>
               <input
                 type="text"
@@ -139,7 +139,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
               type="submit"
               className="w-full bg-brand hover:bg-brand-700 text-white font-bold py-3 px-4 rounded-xl transition shadow text-xs"
             >
-              স্টক লেজারে রেকর্ড করুন
+              Record in Stock Ledger
             </button>
           </form>
         </div>
@@ -149,7 +149,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h2 className="text-sm font-bold text-slate-800 flex items-center gap-2">
               <History className="w-4 h-4 text-brand" />
-              <span>সাম্প্রতিক স্টক মুভমেন্ট লেজার (Movement History)</span>
+              <span>Recent Stock Movement History</span>
             </h2>
           </div>
 
@@ -157,12 +157,12 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="text-slate-400 border-b border-slate-100 font-semibold">
-                  <th className="pb-2.5">তারিখ ও সময়</th>
-                  <th className="pb-2.5">পণ্য</th>
-                  <th className="pb-2.5">টাইপ</th>
-                  <th className="pb-2.5">পরিবর্তন</th>
-                  <th className="pb-2.5">নতুন ব্যালেন্স</th>
-                  <th className="pb-2.5">কারণ / রেফারেন্স</th>
+                  <th className="pb-2.5">Date & Time</th>
+                  <th className="pb-2.5">Product</th>
+                  <th className="pb-2.5">Type</th>
+                  <th className="pb-2.5">Change</th>
+                  <th className="pb-2.5">New Balance</th>
+                  <th className="pb-2.5">Reason / Reference</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -172,7 +172,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
                     return (
                       <tr key={m.id} className="hover:bg-slate-50">
                         <td className="py-3 text-[10px] text-slate-400 font-mono">
-                          {new Date(m.createdAt).toLocaleString('bn-BD', {
+                          {new Date(m.createdAt).toLocaleString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             hour: '2-digit',
@@ -206,7 +206,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
                             <span>{isPositive ? `+${m.quantity}` : m.quantity}</span>
                           </span>
                         </td>
-                        <td className="py-3 font-bold text-slate-900">{m.newStock} টি</td>
+                        <td className="py-3 font-bold text-slate-900">{m.newStock}</td>
                         <td className="py-3 text-[11px] text-slate-600">
                           <div>{m.reason}</div>
                           {m.referenceId && (
@@ -221,7 +221,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
                 ) : (
                   <tr>
                     <td colSpan={6} className="py-12 text-center text-slate-400">
-                      কোনো মুভমেন্ট হিস্ট্রি নেই।
+                      No stock movement history recorded yet.
                     </td>
                   </tr>
                 )}

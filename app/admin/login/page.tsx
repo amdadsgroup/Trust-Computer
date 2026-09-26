@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
           className="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-white transition"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>ওয়েবসাইটে ফিরে যান (Back to Store)</span>
+          <span>Back to Store</span>
         </Link>
 
         {/* Card */}
@@ -52,10 +52,10 @@ export default function AdminLoginPage() {
 
             <div>
               <h1 className="text-xl font-bold text-white tracking-tight">
-                এডমিন ও স্টাফ পোর্টাল
+                Admin & Staff Portal
               </h1>
               <p className="text-xs text-slate-400 mt-1">
-                Trust Computer-Moulvibazar ম্যানেজমেন্ট কনসোল
+                Trust Computer Management Console
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                অফিসিয়াল ইমেইল
+                Official Email
               </label>
               <div className="relative">
                 <input
@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                গোপন পাসওয়ার্ড
+                Password
               </label>
               <div className="relative">
                 <input
@@ -108,16 +108,16 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>যাচাই করা হচ্ছে...</span>
+                  <span>Signing in...</span>
                 </>
               ) : (
-                <span>লগইন করুন (Access Dashboard)</span>
+                <span>Sign In (Access Dashboard)</span>
               )}
             </button>
           </form>
 
           <div className="pt-2 text-center border-t border-slate-800 text-[11px] text-slate-500">
-            নিরাপত্তা নির্দেশিকা: শুধুমাত্র অনুমোদিত স্বত্বাধিকারী ও স্টাফদের জন্য সংরক্ষিত।
+            Security Notice: Authorized personnel and staff only.
           </div>
         </div>
       </div>

@@ -5,15 +5,20 @@ import { BarChart3, TrendingUp, ShoppingBag, Boxes, Award, CheckCircle } from 'l
 export const dynamic = 'force-dynamic';
 
 export default async function AdminReportsPage() {
-  let ordersByStatus: any[] = [];
+  let ordersByStatus: { status: string; count: number }[] = [];
   let topSellingItems: any[] = [];
   let totalSales = 0;
   let totalOrdersCount = 0;
 
   try {
-    const [orders, orderItems] = await Promise.all([
-      prisma.order.findMany({
-        select: { status: true, total: true },
+    const [ordersAggregate, statusGroups, orderItems] = await Promise.all([
+      prisma.order.aggregate({
+        _sum: { total: true },
+        _count: { id: true },
+      }),
+      prisma.order.groupBy({
+        by: ['status'],
+        _count: { id: true },
       }),
       prisma.orderItem.groupBy({
         by: ['productName', 'productSku'],
@@ -23,15 +28,13 @@ export default async function AdminReportsPage() {
       }),
     ]);
 
-    totalOrdersCount = orders.length;
-    totalSales = orders.reduce((acc, o) => acc + Number(o.total), 0);
+    totalOrdersCount = ordersAggregate._count.id || 0;
+    totalSales = Number(ordersAggregate._sum.total || 0);
 
-    // Group orders by status
-    const statusCounts: Record<string, number> = {};
-    for (const o of orders) {
-      statusCounts[o.status] = (statusCounts[o.status] || 0) + 1;
-    }
-    ordersByStatus = Object.entries(statusCounts).map(([status, count]) => ({ status, count }));
+    ordersByStatus = statusGroups.map((g) => ({
+      status: g.status,
+      count: g._count.id,
+    }));
     topSellingItems = orderItems;
   } catch (e) {
     console.error('Error fetching reports data:', e);
@@ -41,37 +44,37 @@ export default async function AdminReportsPage() {
     <div className="space-y-8 max-w-7xl mx-auto">
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          সেলস ও ইনভেন্টরি রিপোর্টস (Sales & Analytics)
+          Sales & Analytics Reports
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          Trust Computer-Moulvibazar এর প্রকৃত বিক্রয় এবং স্টক বিশ্লেষণ।
+          Real-time sales volume, revenue metrics, and top product performance.
         </p>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-          <span className="text-xs font-bold text-slate-400">মোট বিক্রয় মূল্য (Total Volume)</span>
+          <span className="text-xs font-bold text-slate-400">Total Sales Volume</span>
           <div className="text-3xl font-black text-slate-900">
-            ৳{totalSales.toLocaleString('en-BD')}
+            ৳{totalSales.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400">সকল কার্যকর অর্ডার মিলিয়ে</span>
+          <span className="text-[11px] text-slate-400">Cumulative order revenue</span>
         </div>
 
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-          <span className="text-xs font-bold text-slate-400">মোট গ্রাহক অর্ডার</span>
+          <span className="text-xs font-bold text-slate-400">Total Customer Orders</span>
           <div className="text-3xl font-black text-brand">
-            {totalOrdersCount}
+            {totalOrdersCount.toLocaleString()}
           </div>
-          <span className="text-[11px] text-slate-400">সম্পূর্ণ অর্ডার ভলিউম</span>
+          <span className="text-[11px] text-slate-400">All registered store orders</span>
         </div>
 
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
-          <span className="text-xs font-bold text-slate-400">গড় অর্ডার মূল্য (AOV)</span>
+          <span className="text-xs font-bold text-slate-400">Average Order Value (AOV)</span>
           <div className="text-3xl font-black text-emerald-600">
-            ৳{totalOrdersCount > 0 ? Math.round(totalSales / totalOrdersCount).toLocaleString('en-BD') : 0}
+            ৳{totalOrdersCount > 0 ? Math.round(totalSales / totalOrdersCount).toLocaleString() : 0}
           </div>
-          <span className="text-[11px] text-slate-400">প্রতি অর্ডারে গড় লেনদেন</span>
+          <span className="text-[11px] text-slate-400">Average transaction size</span>
         </div>
       </div>
 
@@ -80,7 +83,7 @@ export default async function AdminReportsPage() {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
             <ShoppingBag className="w-4 h-4 text-brand" />
-            <span>অর্ডার স্ট্যাটাস বিভাজন (Status Breakdown)</span>
+            <span>Order Status Breakdown</span>
           </h2>
 
           <div className="space-y-3">
@@ -92,7 +95,7 @@ export default async function AdminReportsPage() {
                     <div className="flex justify-between text-xs font-semibold">
                       <span className="text-slate-800">{status}</span>
                       <span className="text-slate-500 font-mono">
-                        {count} টি ({percent}%)
+                        {count.toLocaleString()} ({percent}%)
                       </span>
                     </div>
                     <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
@@ -111,7 +114,7 @@ export default async function AdminReportsPage() {
                 );
               })
             ) : (
-              <div className="text-center py-8 text-xs text-slate-400">কোনো অর্ডার নেই</div>
+              <div className="text-center py-8 text-xs text-slate-400">No orders recorded yet.</div>
             )}
           </div>
         </div>
@@ -120,7 +123,7 @@ export default async function AdminReportsPage() {
         <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
             <Award className="w-4 h-4 text-amber-500" />
-            <span>শীর্ষ বিক্রিত পণ্যসমূহ (Best Sellers)</span>
+            <span>Top Selling Products</span>
           </h2>
 
           <div className="space-y-3">
@@ -138,17 +141,17 @@ export default async function AdminReportsPage() {
                   </div>
                   <div className="text-right">
                     <span className="font-extrabold text-slate-900 block">
-                      {item._sum.quantity} টি বিক্রি
+                      {item._sum.quantity} sold
                     </span>
                     <span className="text-[10px] text-brand font-semibold">
-                      ৳{Number(item._sum.subtotal).toLocaleString('en-BD')}
+                      ৳{Number(item._sum.subtotal).toLocaleString()}
                     </span>
                   </div>
                 </div>
               ))
             ) : (
               <div className="text-center py-8 text-xs text-slate-400">
-                এখনো কোনো পণ্য বিক্রয় হয়নি।
+                No product sales recorded yet.
               </div>
             )}
           </div>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCart } from '../cart/CartContext';
 import { useCompare } from '../compare/CompareContext';
 import { useWishlist } from '../wishlist/WishlistContext';
@@ -9,10 +10,15 @@ import { ShoppingBag, GitCompare, Heart, GraduationCap } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function FloatingDock() {
+  const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
   const { compareCount } = useCompare();
   const { wishlistCount } = useWishlist();
   const { t, isBangla } = useLanguage();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <div className="hidden md:flex fixed right-0 top-1/2 -translate-y-1/2 z-40 flex-col items-end gap-3 pointer-events-none">

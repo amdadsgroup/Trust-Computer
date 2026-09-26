@@ -141,10 +141,14 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
       {/* Slides */}
       {activeSlides.map((slide, index) => {
         const isCurrent = index === current;
+        // Mount active slide and pre-mount next slide for seamless swiping without downloading all slides at once
+        const isNext = index === (current + 1) % activeSlides.length;
+        if (!isCurrent && !isNext) return null;
+
         return (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-400 ease-in-out ${
+            className={`absolute inset-0 transition-opacity duration-300 ease-in-out ${
               isCurrent ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
             }`}
           >
@@ -158,6 +162,7 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
                 alt={slide.title}
                 fill
                 priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
                 className="object-cover object-center hidden sm:block"
                 sizes="(max-width: 1024px) 100vw, 66vw"
               />
@@ -167,8 +172,9 @@ export default function HeroCarousel({ banners }: HeroCarouselProps) {
                 alt={slide.title}
                 fill
                 priority={index === 0}
+                loading={index === 0 ? 'eager' : 'lazy'}
                 className="object-cover object-center sm:hidden"
-                sizes="100vw"
+                sizes="(max-width: 640px) 100vw, 100vw"
               />
             </Link>
           </div>

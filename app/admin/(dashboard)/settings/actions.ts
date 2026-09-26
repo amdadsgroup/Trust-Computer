@@ -60,6 +60,6 @@ export async function updateStoreSettingsAction(formData: FormData) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to update settings:', error);
-    return { error: error.message || 'সেটিংস আপডেট ব্যর্থ হয়েছে।' };
+    return { error: error.message || 'Failed to update settings.' };
   }
 }

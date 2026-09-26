@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCart } from '../cart/CartContext';
 import { useWishlist } from '../wishlist/WishlistContext';
 import { useCompare } from '../compare/CompareContext';
@@ -18,9 +18,11 @@ import {
   GitCompare,
   Heart,
   PackageSearch,
+  Gift,
 } from 'lucide-react';
 
 export default function Header() {
+  const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
   const { wishlistCount } = useWishlist();
   const { compareCount } = useCompare();
@@ -28,6 +30,10 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
 Final Technology Stack
 Trust Computer-Moulvibazar E-commerce Web Application
 
-Client: Shiblu Ahmed · Developed by Amdads Group
+Client: Trust Computer-Moulvibazar · Developed by Amdads Group
 
 Frontend
 

@@ -58,6 +58,6 @@ export async function submitStockAdjustmentAction(formData: FormData) {
     return { success: true };
   } catch (error: any) {
     console.error('Failed to adjust stock:', error);
-    return { error: error.message || 'স্টক সমন্বয়ে সমস্যা দেখা দিয়েছে।' };
+    return { error: error.message || 'Failed to record stock adjustment.' };
   }
 }

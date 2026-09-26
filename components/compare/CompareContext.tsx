@@ -56,18 +56,21 @@ export function CompareProvider({ children }: { children: React.ReactNode }) {
 
   const clearCompare = useCallback(() => setCompareItems([]), []);
 
+  const contextValue = React.useMemo(
+    () => ({
+      compareItems,
+      addToCompare,
+      removeFromCompare,
+      isInCompare,
+      clearCompare,
+      compareCount: compareItems.length,
+      maxCompare: MAX_COMPARE_ITEMS,
+    }),
+    [compareItems, addToCompare, removeFromCompare, isInCompare, clearCompare]
+  );
+
   return (
-    <CompareContext.Provider
-      value={{
-        compareItems,
-        addToCompare,
-        removeFromCompare,
-        isInCompare,
-        clearCompare,
-        compareCount: compareItems.length,
-        maxCompare: MAX_COMPARE_ITEMS,
-      }}
-    >
+    <CompareContext.Provider value={contextValue}>
       {children}
     </CompareContext.Provider>
   );

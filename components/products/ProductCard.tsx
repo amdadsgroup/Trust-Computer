@@ -29,7 +29,7 @@ export interface ProductCardProps {
   };
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+const ProductCard = React.memo(function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
   const { addToCompare, removeFromCompare, isInCompare } = useCompare();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -185,6 +185,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             src={primaryImage}
             alt={product.name}
             fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            loading="lazy"
             className="object-contain p-4 group-hover:scale-108 transition-transform duration-300"
           />
         ) : (
@@ -320,4 +322,6 @@ export default function ProductCard({ product }: ProductCardProps) {
       </div>
     </div>
   );
-}
+});
+
+export default ProductCard;

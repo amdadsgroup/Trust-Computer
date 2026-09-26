@@ -64,17 +64,34 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
           mode: 'insensitive',
         },
       },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
         products: {
           where: {
             isActive: true,
             ...(sp.brand ? { brand: { slug: sp.brand } } : {}),
             ...(sp.inStockOnly === 'true' ? { stock: { gt: 0 } } : {}),
           },
-          include: {
-            images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-            category: true,
-            brand: true,
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            sku: true,
+            sellingPrice: true,
+            compareAtPrice: true,
+            stock: true,
+            lowStockThreshold: true,
+            warrantyInfo: true,
+            images: {
+              select: { url: true, altText: true },
+              orderBy: { sortOrder: 'asc' },
+              take: 1,
+            },
+            category: { select: { name: true, slug: true } },
+            brand: { select: { name: true, slug: true } },
           },
           orderBy:
             sp.sort === 'price_asc'
@@ -84,7 +101,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               : sp.sort === 'name_asc'
               ? { name: 'asc' }
               : { createdAt: 'desc' },
-          take: 60,
+          take: 24,
         },
       },
     });

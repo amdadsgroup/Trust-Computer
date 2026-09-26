@@ -19,7 +19,30 @@ import {
 import ShowroomInfoSection from '@/components/home/ShowroomInfoSection';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
+
+const homeProductSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  sku: true,
+  sellingPrice: true,
+  compareAtPrice: true,
+  stock: true,
+  lowStockThreshold: true,
+  warrantyInfo: true,
+  images: {
+    select: { url: true, altText: true },
+    orderBy: { sortOrder: 'asc' as const },
+    take: 1,
+  },
+  category: {
+    select: { name: true, slug: true },
+  },
+  brand: {
+    select: { name: true, slug: true },
+  },
+};
 
 async function getHomePageData() {
   try {
@@ -27,25 +50,18 @@ async function getHomePageData() {
       await Promise.all([
         prisma.product.findMany({
           where: { isActive: true, isFeatured: true },
-          include: {
-            images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-            category: true,
-            brand: true,
-          },
+          select: homeProductSelect,
           take: 8,
         }),
         prisma.product.findMany({
           where: { isActive: true },
           orderBy: { createdAt: 'desc' },
-          include: {
-            images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-            category: true,
-            brand: true,
-          },
+          select: homeProductSelect,
           take: 8,
         }),
         prisma.category.findMany({
           where: { isActive: true },
+          select: { id: true, name: true, slug: true },
           orderBy: { sortOrder: 'asc' },
           take: 12,
         }),
@@ -184,6 +200,7 @@ export default async function HomePage() {
                       alt={sideBanner1.title}
                       fill
                       priority
+                      sizes="(max-width: 1024px) 100vw, 380px"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </Link>
@@ -197,7 +214,8 @@ export default async function HomePage() {
                       src={sideBanner2.desktopImageUrl}
                       alt={sideBanner2.title}
                       fill
-                      priority
+                      loading="lazy"
+                      sizes="(max-width: 1024px) 100vw, 380px"
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </Link>
@@ -253,6 +271,8 @@ export default async function HomePage() {
                           src={offer.imageUrl}
                           alt={offer.title}
                           fill
+                          sizes="80px"
+                          loading="lazy"
                           className="object-cover group-hover:scale-105 transition"
                         />
                       </div>

@@ -18,7 +18,7 @@ export default async function AdminSettingsPage() {
 
   const current = settings || {
     storeName: 'Trust Computer-Moulvibazar',
-    ownerName: 'Shiblu Ahmed',
+    ownerName: 'Trust Computer Management',
     phone: '01753-765372',
     email: 'trustcomputermb@gmail.com',
     address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
@@ -33,10 +33,10 @@ export default async function AdminSettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            শোরুম ও ব্যবসা সেটিংস (Store Settings)
+            Store & Showroom Settings
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Trust Computer এর যোগাযোগের ঠিকানা, ফোন নম্বর ও ডেলিভারি চার্জ নির্ধারণ করুন।
+            Configure showroom contact information, location, and regional delivery charges.
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export default async function AdminSettingsPage() {
           className="inline-flex items-center gap-2 bg-[#2A3B97] hover:bg-[#212F7A] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-sm transition self-start sm:self-auto"
         >
           <Palette className="w-4 h-4" />
-          <span>ব্র্যান্ড ও লোগো সেটিংস</span>
+          <span>Branding & Logo Settings</span>
         </Link>
       </div>
 
@@ -61,12 +61,12 @@ export default async function AdminSettingsPage() {
           <div>
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
               <Store className="w-4 h-4 text-brand" />
-              <span>প্রতিষ্ঠান ও স্বত্বাধিকারীর তথ্য</span>
+              <span>Business Information</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">প্রতিষ্ঠানের নাম</label>
+                <label className="block font-bold text-slate-700 mb-1">Store Name</label>
                 <input
                   type="text"
                   name="storeName"
@@ -77,7 +77,7 @@ export default async function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">স্বত্বাধিকারীর নাম</label>
+                <label className="block font-bold text-slate-700 mb-1">Proprietor / Representative Name</label>
                 <input
                   type="text"
                   name="ownerName"
@@ -93,12 +93,12 @@ export default async function AdminSettingsPage() {
           <div>
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
               <Phone className="w-4 h-4 text-emerald-600" />
-              <span>যোগাযোগ ও সোশ্যাল মিডিয়া</span>
+              <span>Contact Details & Social Media</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-bold text-slate-700 mb-1">হটলাইন / ফোন নম্বর</label>
+                <label className="block font-bold text-slate-700 mb-1">Hotline / Phone Number</label>
                 <input
                   type="text"
                   name="phone"
@@ -109,7 +109,7 @@ export default async function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">অফিসিয়াল ইমেইল</label>
+                <label className="block font-bold text-slate-700 mb-1">Official Email</label>
                 <input
                   type="email"
                   name="email"
@@ -120,7 +120,7 @@ export default async function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">WhatsApp নম্বর</label>
+                <label className="block font-bold text-slate-700 mb-1">WhatsApp Number</label>
                 <input
                   type="text"
                   name="whatsappNumber"
@@ -131,7 +131,7 @@ export default async function AdminSettingsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">ফেসবুক পেজ লিংক</label>
+                <label className="block font-bold text-slate-700 mb-1">Facebook Page URL</label>
                 <input
                   type="url"
                   name="facebookUrl"
@@ -142,7 +142,7 @@ export default async function AdminSettingsPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block font-bold text-slate-700 mb-1">শোরুমের সম্পূর্ণ ঠিকানা</label>
+                <label className="block font-bold text-slate-700 mb-1">Full Showroom Address</label>
                 <input
                   type="text"
                   name="address"
@@ -158,13 +158,13 @@ export default async function AdminSettingsPage() {
           <div>
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
               <Truck className="w-4 h-4 text-accent-600" />
-              <span>ডেলিভারি ফি কনফিগারেশন</span>
+              <span>Delivery Fee Configuration</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  মৌলভীবাজার সদর ডেলিভারি ফি (BDT) *
+                  Inside Moulvibazar Sadar Fee (BDT) *
                 </label>
                 <input
                   type="number"
@@ -178,7 +178,7 @@ export default async function AdminSettingsPage() {
 
               <div>
                 <label className="block font-bold text-slate-700 mb-1">
-                  মৌলভীবাজার উপজেলা ও জেলার বাহিরে ফি (BDT) *
+                  Outside Moulvibazar / Upazilas Fee (BDT) *
                 </label>
                 <input
                   type="number"
@@ -198,7 +198,7 @@ export default async function AdminSettingsPage() {
               className="w-full bg-brand hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl transition shadow flex items-center justify-center gap-2"
             >
               <Save className="w-4 h-4" />
-              <span>সেটিংস পরিবর্তন সংরক্ষণ করুন</span>
+              <span>Save Store Settings</span>
             </button>
           </div>
         </form>

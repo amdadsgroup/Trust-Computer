@@ -3,16 +3,18 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useCart } from './CartContext';
 import { X, Trash2, ShoppingBag, Plus, Minus, ArrowRight, MessageCircle } from 'lucide-react';
 import { getCartInquiryWhatsAppLink } from '@/lib/whatsapp';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function CartDrawer() {
+  const pathname = usePathname();
   const { items, isOpen, setIsOpen, updateQuantity, removeItem, subtotal, totalItems } = useCart();
   const { t, isBangla } = useLanguage();
 
-  if (!isOpen) return null;
+  if (pathname?.startsWith('/admin') || !isOpen) return null;
 
   const whatsappInquiryUrl = getCartInquiryWhatsAppLink(
     items.map((i) => ({ name: i.name, quantity: i.quantity })),

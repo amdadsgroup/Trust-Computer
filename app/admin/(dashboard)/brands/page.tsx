@@ -28,19 +28,19 @@ export default async function AdminBrandsPage() {
         <div>
           <div className="flex items-center gap-2 mb-1 text-xs text-slate-500">
             <Link href="/admin/categories" className="hover:text-brand flex items-center gap-1">
-              <ArrowLeft className="w-3 h-3" /> ক্যাটাগরি ব্যবস্থাপনা
+              <ArrowLeft className="w-3 h-3" /> Categories & Brands
             </Link>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            ব্র্যান্ড ব্যবস্থাপনা (Brand Management)
+            Brand Management
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            পণ্য প্রস্তুতকারক ও ভেন্ডর ব্র্যান্ড তালিকা তৈরি এবং নিয়ন্ত্রণ করুন।
+            Create, manage, and audit manufacturer and vendor brands for Trust Computer.
           </p>
         </div>
 
         <div className="text-xs font-semibold px-3 py-1.5 bg-blue-50 text-brand rounded-xl border border-blue-200">
-          মোট ব্র্যান্ড: {brands.length} টি
+          Total Brands: {brands.length}
         </div>
       </div>
 
@@ -50,7 +50,7 @@ export default async function AdminBrandsPage() {
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 sticky top-6">
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-3 flex items-center gap-2">
               <Tag className="w-4 h-4 text-brand" />
-              <span>নতুন ব্র্যান্ড যোগ করুন</span>
+              <span>Add New Brand</span>
             </h2>
 
             <form
@@ -61,18 +61,18 @@ export default async function AdminBrandsPage() {
               className="space-y-3 text-xs"
             >
               <div>
-                <label className="block font-bold text-slate-700 mb-1">ব্র্যান্ডের নাম *</label>
+                <label className="block font-bold text-slate-700 mb-1">Brand Name *</label>
                 <input
                   type="text"
                   name="name"
                   required
-                  placeholder="যেমন: Hikvision, Dahua, Asus"
+                  placeholder="e.g. Hikvision, Dahua, Asus"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
                 />
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">URL স্লাগ *</label>
+                <label className="block font-bold text-slate-700 mb-1">URL Slug *</label>
                 <input
                   type="text"
                   name="slug"
@@ -83,7 +83,7 @@ export default async function AdminBrandsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">লোগো ইমেজ URL (ঐচ্ছিক)</label>
+                <label className="block font-bold text-slate-700 mb-1">Logo Image URL (Optional)</label>
                 <input
                   type="url"
                   name="logo"
@@ -93,11 +93,11 @@ export default async function AdminBrandsPage() {
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">বিবরণ (ঐচ্ছিক)</label>
+                <label className="block font-bold text-slate-700 mb-1">Description (Optional)</label>
                 <textarea
                   name="description"
                   rows={2}
-                  placeholder="ব্র্যান্ডের সংক্ষিপ্ত পরিচিতি"
+                  placeholder="Brief brand overview"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand resize-none"
                 />
               </div>
@@ -107,7 +107,7 @@ export default async function AdminBrandsPage() {
                 className="w-full bg-brand hover:bg-brand-700 text-white font-bold py-2.5 px-4 rounded-xl transition shadow text-xs flex items-center justify-center gap-1.5"
               >
                 <Plus className="w-4 h-4" />
-                ব্র্যান্ড সংরক্ষণ করুন
+                Save Brand
               </button>
             </form>
           </div>
@@ -118,13 +118,13 @@ export default async function AdminBrandsPage() {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="p-4 sm:p-6 border-b border-slate-100 flex items-center justify-between">
               <h2 className="text-sm font-bold text-slate-800">
-                বিদ্যমান ব্র্যান্ডসমূহ ({brands.length})
+                Existing Brands ({brands.length})
               </h2>
             </div>
 
             {brands.length === 0 ? (
               <div className="p-12 text-center text-slate-400 text-xs">
-                কোনো ব্র্যান্ড পাওয়া যায়নি। বামপাশের ফর্ম থেকে নতুন ব্র্যান্ড যুক্ত করুন।
+                No brands found. Create a new brand using the form on the left.
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
@@ -141,14 +141,14 @@ export default async function AdminBrandsPage() {
                         <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
                           b.isActive ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
                         }`}>
-                          {b.isActive ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                          {b.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
                       {b.description && (
                         <p className="text-xs text-slate-500 line-clamp-1">{b.description}</p>
                       )}
                       <p className="text-[11px] text-slate-400">
-                        সংযুক্ত পণ্য সংখ্যা: <strong className="text-slate-700">{b._count.products}</strong> টি
+                        Assigned Products: <strong className="text-slate-700">{b._count.products}</strong>
                       </p>
                     </div>
 
@@ -163,7 +163,7 @@ export default async function AdminBrandsPage() {
                           type="submit"
                           className="px-2.5 py-1 text-[11px] font-semibold rounded-lg border border-slate-200 hover:bg-slate-100 transition"
                         >
-                          {b.isActive ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন'}
+                          {b.isActive ? 'Deactivate' : 'Activate'}
                         </button>
                       </form>
 
@@ -176,7 +176,7 @@ export default async function AdminBrandsPage() {
                         >
                           <button
                             type="submit"
-                            title="মুছে ফেলুন"
+                            title="Delete Brand"
                             className="p-1.5 text-slate-400 hover:text-rose-600 transition rounded-lg hover:bg-rose-50"
                           >
                             <Trash2 className="w-4 h-4" />

@@ -32,10 +32,10 @@ export default async function NewProductPage() {
         </Link>
         <div>
           <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-            নতুন পণ্য সংযোজন (Add New Product)
+            Add New Product
           </h1>
           <p className="text-xs text-slate-500">
-            Trust Computer ক্যাটালগে নতুন আইটেম ও প্রাথমিক স্টক এন্ট্রি করুন।
+            Add a new product with specifications, pricing, and initial stock to the catalog.
           </p>
         </div>
       </div>
