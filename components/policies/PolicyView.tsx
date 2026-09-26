@@ -1,11 +1,15 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { AlertTriangle, Clock, ShieldCheck, Phone, MessageCircle } from 'lucide-react';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 import type { ContentPageData } from '@/lib/content';
 
 export default function PolicyView({ page }: { page: ContentPageData }) {
   const whatsappUrl = getGeneralWhatsAppLink();
+  const { isBangla } = useLanguage();
 
   // Simple clean markdown parser for headings, lists, blockquotes, and paragraphs
   const renderMarkdown = (text: string) => {
@@ -84,7 +88,7 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
           {page.isDraft && (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-300">
               <AlertTriangle className="w-3.5 h-3.5" />
-              খসড়া নীতিমালা (Draft Content)
+              {isBangla ? 'খসড়া নীতিমালা (Draft Content)' : 'Draft Policy'}
             </span>
           )}
         </div>
@@ -103,7 +107,10 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
         {page.isDraft && (
           <div className="p-4 rounded-2xl bg-blue-50 border border-blue-200 text-blue-950 text-xs leading-relaxed">
-            <strong>বিজ্ঞপ্তি:</strong> এই নীতিমালাটি খসড়া আকারে প্রস্তুত করা হয়েছে। ক্লায়েন্টের আইনি অথবা অপারেশনাল নির্দেশনার ভিত্তিতে যে কোনো সময় এটি সংশোধনযোগ্য। কোনো অযাচাইকৃত দাবি বা শর্তাবলী অন্তর্ভুক্ত করা হয়নি।
+            <strong>{isBangla ? 'বিজ্ঞপ্তি:' : 'Notice:'}</strong>{' '}
+            {isBangla
+              ? 'এই নীতিমালাটি খসড়া আকারে প্রস্তুত করা হয়েছে। ক্লায়েন্টের আইনি অথবা অপারেশনাল নির্দেশনার ভিত্তিতে যে কোনো সময় এটি সংশোধনযোগ্য।'
+              : 'This policy is provided as draft guidance. It is subject to updates and revisions in accordance with store operational and legal standards.'}
           </div>
         )}
 
@@ -115,7 +122,11 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
         <div className="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-brand" />
-            <span>অফিসিয়াল শোরুম: টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার</span>
+            <span>
+              {isBangla
+                ? 'অফিসিয়াল শোরুম: টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার'
+                : 'Official Showroom: T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar'}
+            </span>
           </div>
 
           <div className="flex items-center gap-4">
@@ -125,7 +136,7 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
             </a>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-emerald-600 font-bold hover:underline">
               <MessageCircle className="w-3.5 h-3.5" />
-              হোয়াটসঅ্যাপ
+              {isBangla ? 'হোয়াটসঅ্যাপ' : 'WhatsApp'}
             </a>
           </div>
         </div>
@@ -133,22 +144,24 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
 
       {/* Quick Policy Switcher */}
       <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200 text-xs">
-        <h3 className="font-bold text-slate-800 mb-3 uppercase tracking-wider">অন্যান্য পলিসি ও শর্তাবলী:</h3>
+        <h3 className="font-bold text-slate-800 mb-3 uppercase tracking-wider">
+          {isBangla ? 'অন্যান্য পলিসি ও শর্তাবলী:' : 'Other Policies & Terms:'}
+        </h3>
         <div className="flex flex-wrap gap-2">
           <Link href="/policies/delivery" className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-brand transition">
-            ডেলিভারি নীতিমালা (Delivery)
+            {isBangla ? 'ডেলিভারি নীতিমালা (Delivery)' : 'Delivery Policy'}
           </Link>
           <Link href="/policies/returns" className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-brand transition">
-            রিটার্ন ও রিফান্ড (Returns & Refund)
+            {isBangla ? 'রিটার্ন ও রিফান্ড (Returns & Refund)' : 'Returns & Refund'}
           </Link>
           <Link href="/policies/warranty" className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-brand transition">
-            ওয়ারেন্টি নীতিমালা (Warranty)
+            {isBangla ? 'ওয়ারেন্টি নীতিমালা (Warranty)' : 'Warranty Policy'}
           </Link>
           <Link href="/policies/privacy" className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-brand transition">
-            প্রাইভেসি পলিসি (Privacy)
+            {isBangla ? 'প্রাইভেসি পলিসি (Privacy)' : 'Privacy Policy'}
           </Link>
           <Link href="/policies/terms" className="px-3 py-1.5 bg-white border border-slate-200 rounded-lg hover:border-brand transition">
-            শর্তাবলী (Terms & Conditions)
+            {isBangla ? 'শর্তাবলী (Terms & Conditions)' : 'Terms & Conditions'}
           </Link>
         </div>
       </div>

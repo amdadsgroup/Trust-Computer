@@ -16,7 +16,8 @@ export default function CartDrawer() {
 
   const whatsappInquiryUrl = getCartInquiryWhatsAppLink(
     items.map((i) => ({ name: i.name, quantity: i.quantity })),
-    subtotal
+    subtotal,
+    isBangla
   );
 
   return (

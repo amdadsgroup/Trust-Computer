@@ -5,8 +5,8 @@ import PolicyView from '@/components/policies/PolicyView';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'রিটার্ন ও রিফান্ড নীতিমালা (Return & Refund Policy) | Trust Computer-Moulvibazar',
-  description: 'Trust Computer-Moulvibazar এর রিটার্ন ও মূল্য ফেরত সংক্রান্ত নীতিমালা।',
+  title: 'Return & Refund Policy | Trust Computer-Moulvibazar',
+  description: 'Official return, replacement, and refund policy of Trust Computer-Moulvibazar.',
 };
 
 export default async function ReturnPolicyPage() {

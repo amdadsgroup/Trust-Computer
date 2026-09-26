@@ -5,8 +5,8 @@ import PolicyView from '@/components/policies/PolicyView';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'ওয়ারেন্টি নীতিমালা (Warranty Policy) | Trust Computer-Moulvibazar',
-  description: 'Trust Computer-Moulvibazar এর পণ্য ওয়ারেন্টি ও বিক্রয়োত্তর সেবার নীতিমালা।',
+  title: 'Warranty Policy | Trust Computer-Moulvibazar',
+  description: 'Official warranty and after-sales service policy of Trust Computer-Moulvibazar.',
 };
 
 export default async function WarrantyPolicyPage() {

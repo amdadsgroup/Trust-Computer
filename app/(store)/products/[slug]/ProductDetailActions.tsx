@@ -7,6 +7,8 @@ import { useCompare } from '@/components/compare/CompareContext';
 import { useWishlist } from '@/components/wishlist/WishlistContext';
 import { useToast } from '@/components/ui/toast';
 import { ShoppingBag, MessageCircle, Plus, Minus, Check, Zap, Heart, GitCompare } from 'lucide-react';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
 interface ProductDetailActionsProps {
   product: {
@@ -22,7 +24,7 @@ interface ProductDetailActionsProps {
     brand?: { name: string } | null;
     warranty?: string | null;
   };
-  whatsappUrl: string;
+  whatsappUrl?: string;
 }
 
 export default function ProductDetailActions({ product, whatsappUrl }: ProductDetailActionsProps) {
@@ -32,7 +34,16 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
   const { isInCompare, addToCompare, removeFromCompare } = useCompare();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { success, info } = useToast();
+  const { isBangla, t } = useLanguage();
   const router = useRouter();
+
+  const dynamicWhatsAppUrl = getProductInquiryWhatsAppLink({
+    name: product.name,
+    sku: product.sku,
+    price: product.price,
+    slug: product.slug,
+    isBangla,
+  });
 
   const isOutOfStock = product.stock <= 0;
   const inCompare = isInCompare(product.id);
@@ -56,7 +67,11 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
     );
 
     setAdded(true);
-    success(`"${product.name}" (${quantity} টি) কার্টে যোগ করা হয়েছে!`);
+    success(
+      isBangla
+        ? `"${product.name}" (${quantity} টি) কার্টে যোগ করা হয়েছে!`
+        : `Added "${product.name}" (${quantity} ${quantity === 1 ? 'item' : 'items'}) to your cart!`
+    );
     setTimeout(() => setAdded(false), 2000);
   };
 
@@ -94,16 +109,16 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
     });
 
     if (isAdded) {
-      success('উইশলিস্টে যোগ করা হয়েছে!');
+      success(isBangla ? 'উইশলিস্টে যোগ করা হয়েছে!' : 'Added to your wishlist!');
     } else {
-      info('উইশলিস্ট থেকে সরানো হয়েছে');
+      info(isBangla ? 'উইশলিস্ট থেকে সরানো হয়েছে' : 'Removed from wishlist');
     }
   };
 
   const handleToggleCompare = () => {
     if (inCompare) {
       removeFromCompare(product.id);
-      info('তুলনা তালিকা থেকে সরানো হয়েছে');
+      info(isBangla ? 'তুলনা তালিকা থেকে সরানো হয়েছে' : 'Removed from comparison');
     } else {
       const ok = addToCompare({
         id: product.id,
@@ -120,9 +135,13 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
       });
 
       if (ok) {
-        success('তুলনা তালিকায় যোগ করা হয়েছে!');
+        success(isBangla ? 'তুলনা তালিকায় যোগ করা হয়েছে!' : 'Added to product comparison!');
       } else {
-        info('সর্বোচ্চ ৪টি পণ্য একসাথে তুলনা করা যাবে');
+        info(
+          isBangla
+            ? 'সর্বোচ্চ ৪টি পণ্য একসাথে তুলনা করা যাবে'
+            : 'You can compare up to 4 products at once'
+        );
       }
     }
   };
@@ -131,7 +150,9 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
     <div className="space-y-4 pt-4 border-t border-slate-100">
       {/* Quantity Selector */}
       <div className="flex items-center gap-4">
-        <label className="text-xs font-bold text-slate-700">পরিমাণ (Quantity):</label>
+        <label className="text-xs font-bold text-slate-700">
+          {isBangla ? 'পরিমাণ (Quantity):' : 'Quantity:'}
+        </label>
         <div className="flex items-center border border-slate-200 rounded-xl bg-white shadow-sm">
           <button
             onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -152,7 +173,9 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
           </button>
         </div>
         <span className="text-xs text-slate-400">
-          সর্বোচ্চ: {product.stock > 0 ? product.stock : 0} টি
+          {isBangla
+            ? `সর্বোচ্চ: ${product.stock > 0 ? product.stock : 0} টি`
+            : `Max: ${product.stock > 0 ? product.stock : 0} units`}
         </span>
       </div>
 
@@ -172,12 +195,12 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
           {added ? (
             <>
               <Check className="w-5 h-5 stroke-[3]" />
-              <span>কার্টে যোগ হয়েছে!</span>
+              <span>{isBangla ? 'কার্টে যোগ হয়েছে!' : 'Added to Cart!'}</span>
             </>
           ) : (
             <>
               <ShoppingBag className="w-5 h-5" />
-              <span>কার্টে যোগ করুন</span>
+              <span>{isBangla ? 'কার্টে যোগ করুন' : 'Add to Cart'}</span>
             </>
           )}
         </button>
@@ -192,7 +215,7 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
           }`}
         >
           <Zap className="w-5 h-5" />
-          <span>এখনই অর্ডার করুন</span>
+          <span>{isBangla ? 'এখনই অর্ডার করুন' : 'Buy Now'}</span>
         </button>
       </div>
 
@@ -207,7 +230,11 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
           }`}
         >
           <Heart className={`w-4 h-4 ${inWishlist ? 'fill-accent-500 text-accent-500' : 'text-slate-400'}`} />
-          <span>{inWishlist ? 'উইশলিস্টে সংরক্ষিত' : 'উইশলিস্টে রাখুন'}</span>
+          <span>
+            {inWishlist
+              ? (isBangla ? 'উইশলিস্টে সংরক্ষিত' : 'In Wishlist')
+              : (isBangla ? 'উইশলিস্টে রাখুন' : 'Add to Wishlist')}
+          </span>
         </button>
 
         <button
@@ -219,25 +246,31 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
           }`}
         >
           <GitCompare className={`w-4 h-4 ${inCompare ? 'text-brand-600' : 'text-slate-400'}`} />
-          <span>{inCompare ? 'তুলনা তালিকায় আছে' : 'অন্য পণ্যের সাথে তুলনা'}</span>
+          <span>
+            {inCompare
+              ? (isBangla ? 'তুলনা তালিকায় আছে' : 'In Compare')
+              : (isBangla ? 'অন্য পণ্যের সাথে তুলনা' : 'Compare Product')}
+          </span>
         </button>
       </div>
 
       {/* WhatsApp Direct Inquiry */}
       <a
-        href={whatsappUrl}
+        href={dynamicWhatsAppUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold transition shadow-sm"
       >
         <MessageCircle className="w-4 h-4" />
-        <span>হোয়াটসঅ্যাপে সরাসরি কথা বলুন (WhatsApp Inquiry)</span>
+        <span>{isBangla ? 'হোয়াটসঅ্যাপে সরাসরি কথা বলুন' : 'Inquire via WhatsApp'}</span>
       </a>
 
       {/* Sticky Mobile Purchase Bar (App-like UX) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200/90 p-3 px-4 shadow-[0_-4px_25px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">
         <div className="flex flex-col min-w-0">
-          <span className="text-[10px] text-slate-500 font-medium">সর্বমোট:</span>
+          <span className="text-[10px] text-slate-500 font-medium">
+            {isBangla ? 'সর্বমোট:' : 'Total:'}
+          </span>
           <span className="text-base font-black text-slate-900 truncate">
             ৳{(product.price * quantity).toLocaleString('en-BD')}
           </span>
@@ -257,7 +290,11 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
             aria-label="Add to cart"
           >
             {added ? <Check className="w-4 h-4 stroke-[3]" /> : <ShoppingBag className="w-4 h-4" />}
-            <span>{added ? 'যোগ হয়েছে' : 'কার্টে নিন'}</span>
+            <span>
+              {added
+                ? (isBangla ? 'যোগ হয়েছে' : 'Added')
+                : (isBangla ? 'কার্টে নিন' : 'Add to Cart')}
+            </span>
           </button>
 
           <button
@@ -271,7 +308,7 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
             aria-label="Buy Now"
           >
             <Zap className="w-4 h-4" />
-            <span>এখনই কিনুন (Buy Now)</span>
+            <span>{isBangla ? 'এখনই কিনুন' : 'Buy Now'}</span>
           </button>
         </div>
       </div>

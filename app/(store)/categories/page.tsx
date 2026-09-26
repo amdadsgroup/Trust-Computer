@@ -282,14 +282,14 @@ export default async function CategoriesPage() {
       <div className="flex items-center gap-2">
         <span className="px-4 py-2 rounded-xl bg-brand text-white font-bold text-xs shadow-xs flex items-center gap-1.5">
           <Layers className="w-3.5 h-3.5" />
-          <span>ক্যাটাগরি সমূহ (Categories)</span>
+          <span>Categories</span>
         </span>
         <Link
           href="/products"
           className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-brand hover:border-brand-300 font-bold text-xs transition flex items-center gap-1.5 shadow-2xs"
         >
           <Boxes className="w-3.5 h-3.5" />
-          <span>সকল পণ্য ব্রাউজ করুন (Browse All Products)</span>
+          <span>Browse All Products</span>
         </Link>
       </div>
 

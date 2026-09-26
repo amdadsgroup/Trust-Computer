@@ -5,8 +5,10 @@
 
 export const TC_WHATSAPP_NUMBER = '8801753765372';
 
-export function getGeneralWhatsAppLink(customMessage?: string): string {
-  const defaultText = `আসসালামু আলাইকুম, Trust Computer Moulvibazar-এ যোগাযোগ করতে চাচ্ছি।`;
+export function getGeneralWhatsAppLink(customMessage?: string, isBangla = false): string {
+  const defaultText = isBangla
+    ? `আসসালামু আলাইকুম, Trust Computer Moulvibazar-এ যোগাযোগ করতে চাচ্ছি।`
+    : `Hello Trust Computer Moulvibazar, I would like to get more information about your products and services.`;
   const text = customMessage || defaultText;
   return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
@@ -17,23 +19,37 @@ export function getProductInquiryWhatsAppLink(product: {
   price: number;
   slug: string;
   baseUrl?: string;
+  isBangla?: boolean;
 }): string {
   const host = product.baseUrl || 'https://trustcomputermb.com';
   const url = `${host}/products/${product.slug}`;
-  const text = `আসসালামু আলাইকুম Trust Computer,\nআমি এই পণ্যটি সম্পর্কে জানতে আগ্রহী:\n- পণ্য: ${product.name}\n- SKU: ${product.sku}\n- মূল্য: ৳${product.price.toLocaleString('en-BD')}\n- লিংক: ${url}`;
+  const text = product.isBangla
+    ? `আসসালামু আলাইকুম Trust Computer,\nআমি এই পণ্যটি সম্পর্কে জানতে আগ্রহী:\n- পণ্য: ${product.name}\n- SKU: ${product.sku}\n- মূল্য: ৳${product.price.toLocaleString('en-BD')}\n- লিংক: ${url}`
+    : `Hello Trust Computer Moulvibazar,\nI am inquiring about this product:\n- Product: ${product.name}\n- SKU: ${product.sku}\n- Price: ৳${product.price.toLocaleString('en-BD')}\n- Link: ${url}`;
   return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
-export function getOrderInquiryWhatsAppLink(order: {
-  orderNumber: string;
-  total: number;
-}): string {
-  const text = `আসসালামু আলাইকুম Trust Computer,\nআমার অর্ডার সম্পর্কিত তথ্য জানতে চাচ্ছি:\n- অর্ডার নং: ${order.orderNumber}\n- মোট মূল্য: ৳${order.total.toLocaleString('en-BD')}`;
+export function getOrderInquiryWhatsAppLink(
+  order: {
+    orderNumber: string;
+    total: number;
+  },
+  isBangla = false
+): string {
+  const text = isBangla
+    ? `আসসালামু আলাইকুম Trust Computer,\nআমার অর্ডার সম্পর্কিত তথ্য জানতে চাচ্ছি:\n- অর্ডার নং: ${order.orderNumber}\n- মোট মূল্য: ৳${order.total.toLocaleString('en-BD')}`
+    : `Hello Trust Computer Moulvibazar,\nI would like to track/inquire about my order:\n- Order #: ${order.orderNumber}\n- Total: ৳${order.total.toLocaleString('en-BD')}`;
   return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }
 
-export function getCartInquiryWhatsAppLink(items: Array<{ name: string; quantity: number }>, total: number): string {
+export function getCartInquiryWhatsAppLink(
+  items: Array<{ name: string; quantity: number }>,
+  total: number,
+  isBangla = false
+): string {
   const itemsText = items.map((i) => `• ${i.name} (x${i.quantity})`).join('\n');
-  const text = `আসসালামু আলাইকুম Trust Computer,\nআমি নিম্নলিখিত পণ্যগুলো অর্ডার করার বিষয়ে পরামর্শ চাচ্ছি:\n${itemsText}\nআনুমানিক সর্বমোট: ৳${total.toLocaleString('en-BD')}`;
+  const text = isBangla
+    ? `আসসালামু আলাইকুম Trust Computer,\nআমি নিম্নলিখিত পণ্যগুলো অর্ডার করার বিষয়ে পরামর্শ চাচ্ছি:\n${itemsText}\nআনুমানিক সর্বমোট: ৳${total.toLocaleString('en-BD')}`
+    : `Hello Trust Computer Moulvibazar,\nI would like to inquire about ordering these items:\n${itemsText}\nEstimated Subtotal: ৳${total.toLocaleString('en-BD')}`;
   return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
 }

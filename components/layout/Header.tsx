@@ -187,15 +187,40 @@ export default function Header() {
               <span>{t('nav.desktop_pcs', 'Desktop PCs')}</span>
             </Link>
 
-            {/* Mobile Language Toggle */}
-            <div className="sm:hidden">
-              <LanguageToggle variant="compact" />
-            </div>
+            {/* Mobile Compare Button with live counter */}
+            <Link
+              href="/compare"
+              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
+              aria-label="Compare Products"
+              title={t('nav.compare', 'Compare')}
+            >
+              <GitCompare className="w-5 h-5 text-sky-400" />
+              {compareCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-brand-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                  {compareCount > 9 ? '9+' : compareCount}
+                </span>
+              )}
+            </Link>
+
+            {/* Mobile Wishlist Button with live counter */}
+            <Link
+              href="/wishlist"
+              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
+              aria-label="Wishlist"
+              title={t('nav.wishlist', 'Wishlist')}
+            >
+              <Heart className="w-5 h-5 text-accent-400" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                  {wishlistCount > 9 ? '9+' : wishlistCount}
+                </span>
+              )}
+            </Link>
 
             {/* Mobile Cart Trigger with Live Counter */}
             <button
               onClick={() => setIsOpen(true)}
-              className="md:hidden relative p-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
+              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-5 h-5" />
@@ -206,10 +231,15 @@ export default function Header() {
               )}
             </button>
 
+            {/* Mobile Language Toggle */}
+            <div className="sm:hidden">
+              <LanguageToggle variant="compact" />
+            </div>
+
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
+              className="md:hidden p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
               aria-label="Toggle menu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -236,19 +266,69 @@ export default function Header() {
         </form>
       </div>
 
-      {/* Mobile Horizontal Swipeable Category Bar */}
+      {/* Mobile Horizontal Swipeable Category & Utility Bar */}
       <div className="md:hidden bg-[#0d2030] border-b border-slate-800 overflow-x-auto py-2 px-3 flex items-center gap-2 scrollbar-none whitespace-nowrap text-xs">
+        {/* 1. Desktop PCs - Prominent Brand Button matching desktop screenshot */}
+        <Link
+          href="/categories/desktop-components"
+          className="bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 shadow-sm flex items-center gap-1.5 border border-sky-400/30 active:scale-95 transition"
+        >
+          <span>🖥️ {t('nav.desktop_pcs', 'Desktop PCs')}</span>
+        </Link>
+
+        {/* 2. Offers - Special Deals Button matching desktop screenshot */}
         <Link
           href="/products?offer=true"
-          className="bg-[#E91D26] hover:bg-[#C5141C] text-white font-bold px-2.5 py-1 rounded-full text-[11px] flex-shrink-0"
+          className="bg-[#E91D26] hover:bg-[#C5141C] text-white font-bold px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 shadow-sm flex items-center gap-1.5 border border-red-400/30 active:scale-95 transition"
         >
-          🔥 {t('nav.offers', 'Offers')}
+          <span>🔥 {t('nav.offers', 'Offers')}</span>
         </Link>
+
+        {/* 3. Compare with Live Count */}
+        <Link
+          href="/compare"
+          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-brand-600 transition"
+        >
+          <GitCompare className="w-3.5 h-3.5 text-sky-400" />
+          <span>{t('nav.compare', 'Compare')}</span>
+          {compareCount > 0 && (
+            <span className="bg-brand-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">
+              {compareCount}
+            </span>
+          )}
+        </Link>
+
+        {/* 4. Wishlist with Live Count */}
+        <Link
+          href="/wishlist"
+          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-rose-600 transition"
+        >
+          <Heart className="w-3.5 h-3.5 text-accent-400" />
+          <span>{t('nav.wishlist', 'Wishlist')}</span>
+          {wishlistCount > 0 && (
+            <span className="bg-accent-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">
+              {wishlistCount}
+            </span>
+          )}
+        </Link>
+
+        {/* 5. Account */}
+        <Link
+          href="/account"
+          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-slate-600 transition"
+        >
+          <User className="w-3.5 h-3.5 text-slate-300" />
+          <span>{t('nav.account', 'Account')}</span>
+        </Link>
+
+        {/* Divider */}
+        <div className="h-4 w-px bg-slate-700 mx-0.5 flex-shrink-0" />
+
         {navCategories.map((cat, idx) => (
           <Link
             key={idx}
             href={cat.href}
-            className="bg-slate-800/80 text-slate-300 hover:text-white font-medium px-3 py-1 rounded-full text-[11px] flex-shrink-0 transition active:bg-[#2A3B97] active:text-white"
+            className="bg-slate-800/80 text-slate-300 hover:text-white font-medium px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 transition active:bg-[#2A3B97] active:text-white"
           >
             {cat.name}
           </Link>
@@ -275,39 +355,138 @@ export default function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-slate-200 p-4 space-y-3 shadow-xl max-h-[80vh] overflow-y-auto">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="md:hidden bg-white border-b border-slate-200 p-4 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <span className="text-xs font-bold text-slate-700">{t('nav.language', 'Language')}</span>
             <LanguageToggle variant="pill" />
           </div>
 
-          <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
-            {navCategories.map((cat, idx) => (
+          {/* Quick Access Utility Cards (Desktop PCs, Offers, Compare, Wishlist) */}
+          <div className="space-y-2">
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block">
+              Quick Shortcuts
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {/* Desktop PCs Button */}
               <Link
-                key={idx}
-                href={cat.href}
+                href="/categories/desktop-components"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-lg bg-slate-50 hover:bg-slate-100 transition"
+                className="p-3 rounded-xl bg-gradient-to-br from-[#2A3B97] to-[#1E2B6C] text-white shadow-sm flex flex-col justify-between gap-1 group active:scale-[0.98] transition"
               >
-                {cat.name}
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-black uppercase tracking-wider bg-white/20 px-1.5 py-0.5 rounded">
+                    Popular
+                  </span>
+                  <span className="text-base">🖥️</span>
+                </div>
+                <div>
+                  <span className="font-black text-xs block leading-tight">
+                    {t('nav.desktop_pcs', 'Desktop PCs')}
+                  </span>
+                  <span className="text-[10px] text-white/80 block mt-0.5">Pre-built & Parts</span>
+                </div>
               </Link>
-            ))}
+
+              {/* Special Offers Button */}
+              <Link
+                href="/products?offer=true"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-xl bg-gradient-to-br from-[#E91D26] to-[#C5141C] text-white shadow-sm flex flex-col justify-between gap-1 group active:scale-[0.98] transition"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[9px] font-black uppercase tracking-wider bg-white/20 px-1.5 py-0.5 rounded">
+                    Deals
+                  </span>
+                  <Gift className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <span className="font-black text-xs block leading-tight">
+                    {t('nav.offers', 'Offers')}
+                  </span>
+                  <span className="text-[10px] text-white/80 block mt-0.5">{t('nav.special_deals', 'Special Deals')}</span>
+                </div>
+              </Link>
+
+              {/* Compare Products */}
+              <Link
+                href="/compare"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200/80 flex items-center justify-between gap-2 active:scale-[0.98] transition"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-sky-100 text-[#2A3B97]">
+                    <GitCompare className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs block">{t('nav.compare', 'Compare')}</span>
+                    <span className="text-[10px] text-slate-500">Side-by-side</span>
+                  </div>
+                </div>
+                {compareCount > 0 && (
+                  <span className="bg-[#2A3B97] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {compareCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Wishlist */}
+              <Link
+                href="/wishlist"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200/80 flex items-center justify-between gap-2 active:scale-[0.98] transition"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="p-1.5 rounded-lg bg-rose-100 text-[#E91D26]">
+                    <Heart className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-xs block">{t('nav.wishlist', 'Wishlist')}</span>
+                    <span className="text-[10px] text-slate-500">Saved items</span>
+                  </div>
+                </div>
+                {wishlistCount > 0 && (
+                  <span className="bg-[#E91D26] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+
+          <div className="space-y-1.5 pt-2 border-t border-slate-100">
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block">
+              Categories
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
+              {navCategories.map((cat, idx) => (
+                <Link
+                  key={idx}
+                  href={cat.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 transition truncate"
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <div className="pt-3 border-t border-slate-200 flex flex-col gap-2 text-xs font-semibold">
             <Link
               href="/track-order"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-lg bg-slate-100 text-slate-700"
+              className="p-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-2"
             >
-              {t('nav.track_order', 'Track Order')}
+              <span>🚚</span>
+              <span>{t('nav.track_order', 'Track Order')}</span>
             </Link>
             <Link
               href="/account"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 rounded-lg bg-[#2A3B97] hover:bg-[#212F7A] text-white transition text-center font-bold"
+              className="p-2.5 rounded-lg bg-[#2A3B97] hover:bg-[#212F7A] text-white transition text-center font-bold flex items-center justify-center gap-2 shadow-sm"
             >
-              {t('nav.account', 'My Account')} ({t('nav.register_login', 'Register / Login')})
+              <User className="w-4 h-4" />
+              <span>{t('nav.account', 'My Account')} ({t('nav.register_login', 'Register / Login')})</span>
             </Link>
           </div>
         </div>

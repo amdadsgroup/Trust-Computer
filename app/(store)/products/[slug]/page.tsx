@@ -148,11 +148,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <nav className="flex items-center gap-2 text-xs text-slate-500">
         <Link href="/" className="hover:text-brand flex items-center gap-1">
           <Home className="w-3.5 h-3.5" />
-          <span>হোম</span>
+          <span>Home</span>
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <Link href="/products" className="hover:text-brand">
-          পণ্যসমূহ
+          Products
         </Link>
         {product.category && (
           <>
@@ -184,7 +184,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             )}
             {hasDiscount && (
               <span className="absolute top-4 left-4 bg-accent-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow">
-                {discountPercent}% ছাড়
+                -{discountPercent}% OFF
               </span>
             )}
           </div>
@@ -220,7 +220,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               {product.brand && (
                 <>
                   <span className="text-slate-300">•</span>
-                  <span className="text-slate-600 font-medium">ব্র্যান্ড: {product.brand.name}</span>
+                  <span className="text-slate-600 font-medium">Brand: {product.brand.name}</span>
                 </>
               )}
             </div>
@@ -239,11 +239,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               {product.stock > 0 ? (
                 <span className="flex items-center gap-1.5 text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
                   <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>স্টকে আছে ({product.stock} টি উপলব্ধ)</span>
+                  <span>In Stock ({product.stock} available)</span>
                 </span>
               ) : (
                 <span className="text-accent-600 font-bold bg-accent-50 px-2.5 py-1 rounded-md border border-accent-200">
-                  স্টক শেষ (Out of Stock)
+                  Out of Stock
                 </span>
               )}
 
@@ -290,11 +290,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-100 text-xs text-slate-600">
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-brand flex-shrink-0" />
-              <span>মৌলভীবাজার সদর এবং সারা দেশে কুরিয়ার ডেলিভারি</span>
+              <span>Courier Delivery in Moulvibazar Sadar & Nationwide</span>
             </div>
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>১০০% অফিসিয়াল এবং অথেনটিক পণ্য নিশ্চয়তা</span>
+              <span>100% Authentic & Genuine Products Guaranteed</span>
             </div>
           </div>
         </div>
@@ -304,7 +304,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-8">
         <div>
           <h2 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4">
-            পণ্য বিবরণী (Product Description)
+            Product Description
           </h2>
           <div className="text-slate-700 text-sm leading-relaxed whitespace-pre-line">
             {product.description}
@@ -315,7 +315,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         {product.specifications.length > 0 && (
           <div>
             <h2 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4">
-              কারিগরি বৈশিষ্ট্য (Technical Specifications)
+              Technical Specifications
             </h2>
             <div className="border border-slate-200 rounded-2xl overflow-hidden">
               <table className="w-full text-left text-xs sm:text-sm">
@@ -361,14 +361,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-              সম্পর্কিত অন্যান্য পণ্য (Related Products)
+              Related Products
             </h2>
             {product.category && (
               <Link
                 href={`/categories/${product.category.slug}`}
                 className="text-xs font-semibold text-brand hover:underline"
               >
-                ক্যাটাগরির সব পণ্য
+                View All in Category
               </Link>
             )}
           </div>

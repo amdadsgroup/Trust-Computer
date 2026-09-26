@@ -9,11 +9,13 @@ import { useCart } from '@/components/cart/CartContext';
 import { useToast } from '@/components/ui/toast';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function WishlistPage() {
   const { items, removeFromWishlist, clearWishlist } = useWishlist();
   const { addItem, setIsOpen } = useCart();
   const { success } = useToast();
+  const { isBangla, t } = useLanguage();
 
   const handleMoveToCart = (item: any) => {
     addItem({
@@ -26,7 +28,11 @@ export default function WishlistPage() {
       stock: item.stock,
     });
     removeFromWishlist(item.id);
-    success(`"${item.name}" কার্টে যোগ করা হয়েছে!`);
+    success(
+      isBangla
+        ? `"${item.name}" কার্টে যোগ করা হয়েছে!`
+        : `Added "${item.name}" to your cart!`
+    );
     setIsOpen(true);
   };
 
@@ -35,9 +41,13 @@ export default function WishlistPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 text-xs text-slate-500 mb-6">
-          <Link href="/" className="hover:text-brand-600 transition-colors">হোম</Link>
+          <Link href="/" className="hover:text-brand-600 transition-colors">
+            {isBangla ? 'হোম' : 'Home'}
+          </Link>
           <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="font-semibold text-slate-800">পছন্দের তালিকা (Wishlist)</span>
+          <span className="font-semibold text-slate-800">
+            {isBangla ? 'পছন্দের তালিকা (Wishlist)' : 'Wishlist'}
+          </span>
         </nav>
 
         {/* Page Header */}
@@ -48,11 +58,13 @@ export default function WishlistPage() {
                 <Heart className="w-6 h-6 fill-accent-500" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-                আমার উইশলিস্ট
+                {isBangla ? 'আমার উইশলিস্ট' : 'My Wishlist'}
               </h1>
             </div>
             <p className="text-sm text-slate-500 mt-1">
-              আপনার সংরক্ষিত পছন্দের পণ্যসমূহ ({items.length} টি আইটেম)
+              {isBangla
+                ? `আপনার সংরক্ষিত পছন্দের পণ্যসমূহ (${items.length} টি আইটেম)`
+                : `Your saved favorite items (${items.length} ${items.length === 1 ? 'item' : 'items'})`}
             </p>
           </div>
 
@@ -62,7 +74,7 @@ export default function WishlistPage() {
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-accent-600 transition-colors self-start sm:self-auto py-2 px-3 rounded-lg hover:bg-white border border-transparent hover:border-slate-200"
             >
               <Trash2 className="w-4 h-4" />
-              সব মুছুন
+              {isBangla ? 'সব মুছুন' : 'Clear All'}
             </button>
           )}
         </div>
@@ -74,14 +86,17 @@ export default function WishlistPage() {
               <Heart className="w-10 h-10 stroke-[1.5]" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 mb-2">
-              আপনার উইশলিস্ট খালি
+              {isBangla ? 'আপনার উইশলিস্ট খালি' : 'Your Wishlist is Empty'}
             </h2>
             <p className="text-sm text-slate-500 mb-6 leading-relaxed">
-              পছন্দের কোনো পণ্য এখনো সেভ করা হয়নি। ব্রাউজ করার সময় হার্ট আইকনে ক্লিক করে যে কোনো আইটেম সেভ করে রাখতে পারেন।
+              {isBangla
+                ? 'পছন্দের কোনো পণ্য এখনো সেভ করা হয়নি। ব্রাউজ করার সময় হার্ট আইকনে ক্লিক করে যে কোনো আইটেম সেভ করে রাখতে পারেন।'
+                : 'You have not saved any items yet. Browse products and tap the heart icon to save items to your wishlist.'}
             </p>
             <Link href="/products">
               <Button size="lg" className="gap-2">
-                পণ্য দেখুন <ArrowRight className="w-4 h-4" />
+                {isBangla ? 'পণ্য দেখুন' : 'Explore Products'}{' '}
+                <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -119,7 +134,7 @@ export default function WishlistPage() {
                       <button
                         onClick={() => removeFromWishlist(item.id)}
                         className="absolute top-2 right-2 p-2 rounded-full bg-white/90 backdrop-blur-sm text-slate-400 hover:text-accent-500 hover:bg-white shadow-sm border border-slate-200/50 transition-all"
-                        title="তালিকা থেকে সরান"
+                        title={isBangla ? 'তালিকা থেকে সরান' : 'Remove from wishlist'}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -162,11 +177,11 @@ export default function WishlistPage() {
                       <div>
                         {isOutOfStock ? (
                           <Badge variant="outline" className="text-slate-400 border-slate-200">
-                            স্টক আউট
+                            {isBangla ? 'স্টক আউট' : 'Out of Stock'}
                           </Badge>
                         ) : (
                           <Badge variant="success">
-                            স্টকে আছে
+                            {isBangla ? 'স্টকে আছে' : 'In Stock'}
                           </Badge>
                         )}
                       </div>
@@ -181,11 +196,11 @@ export default function WishlistPage() {
                         size="sm"
                       >
                         <ShoppingBag className="w-4 h-4" />
-                        কার্টে নিন
+                        {isBangla ? 'কার্টে নিন' : 'Add to Cart'}
                       </Button>
                       <Link href={`/products/${item.slug}`}>
                         <Button variant="outline" size="sm">
-                          বিস্তারিত
+                          {isBangla ? 'বিস্তারিত' : 'Details'}
                         </Button>
                       </Link>
                     </div>
@@ -204,16 +219,20 @@ export default function WishlistPage() {
             </div>
             <div>
               <p className="text-sm font-semibold text-slate-900">
-                ১০০% জেনুইন প্রোডাক্ট গ্যারান্টি — Trust Computer মৌলভীবাজার
+                {isBangla
+                  ? '১০০% জেনুইন প্রোডাক্ট গ্যারান্টি — Trust Computer মৌলভীবাজার'
+                  : '100% Genuine Product Guarantee — Trust Computer Moulvibazar'}
               </p>
               <p className="text-xs text-slate-500">
-                টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার শোরুম থেকে সরাসরি কালেকশন অথবা ক্যাশ অন ডেলিভারি
+                {isBangla
+                  ? 'টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার শোরুম থেকে সরাসরি কালেকশন অথবা ক্যাশ অন ডেলিভারি'
+                  : 'Direct collection from showroom at T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar or Cash on Delivery nationwide'}
               </p>
             </div>
           </div>
           <Link href="/products">
             <Button variant="outline" size="sm" className="whitespace-nowrap">
-              আরও পণ্য দেখুন
+              {isBangla ? 'আরও পণ্য দেখুন' : 'Browse More Products'}
             </Button>
           </Link>
         </div>

@@ -135,6 +135,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     sku: product.sku,
     price,
     slug: product.slug,
+    isBangla,
   });
 
   return (

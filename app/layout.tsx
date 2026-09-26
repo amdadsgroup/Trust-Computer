@@ -30,11 +30,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Trust Computer-Moulvibazar | কম্পিউটার ও সিসি ক্যামেরা শোরুম',
+    default: 'Trust Computer-Moulvibazar | Computer, Laptop & CCTV Surveillance Showroom',
     template: '%s | Trust Computer-Moulvibazar',
   },
   description:
-    'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার। ফোন: 01753-765372।',
+    'Your trusted destination for quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01753-765372.',
   keywords: [
     'Trust Computer Moulvibazar',
     'Computer shop in Moulvibazar',
@@ -63,9 +63,9 @@ export const metadata: Metadata = {
     apple: '/brand/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'Trust Computer-Moulvibazar | বিশ্বস্ত কম্পিউটার ও সিসি ক্যামেরা প্রতিষ্ঠান',
+    title: 'Trust Computer-Moulvibazar | Computer, Laptop & CCTV Surveillance Store',
     description:
-      'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার।',
+      'Your trusted destination for quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar.',
     url: 'https://trustcomputermb.com',
     siteName: 'Trust Computer-Moulvibazar',
     images: [

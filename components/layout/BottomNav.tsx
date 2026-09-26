@@ -3,14 +3,18 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Search, ShoppingBag, User } from 'lucide-react';
+import { Home, Package, Search, ShoppingBag, User, Heart, GitCompare } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
+import { useWishlist } from '../wishlist/WishlistContext';
+import { useCompare } from '../compare/CompareContext';
 import MobileSearchModal from '../search/MobileSearchModal';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function BottomNav() {
   const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
+  const { wishlistCount } = useWishlist();
+  const { compareCount } = useCompare();
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const { t } = useLanguage();
 
@@ -21,6 +25,9 @@ export default function BottomNav() {
 
   // On individual product detail pages, the Sticky Purchase Bar is shown
   const isProductDetailPage = pathname.startsWith('/products/') && pathname !== '/products';
+
+  // Support Search action modal if needed by quick triggers
+  const _searchLabel = t('nav.search_placeholder', 'Search');
 
   const navItems = [
     {
@@ -36,11 +43,18 @@ export default function BottomNav() {
       isActive: pathname.startsWith('/products') || pathname.startsWith('/categories'),
     },
     {
-      label: t('nav.search_placeholder', 'Search'),
-      isAction: true,
-      onClick: () => setSearchModalOpen(true),
-      icon: Search,
-      isActive: false,
+      label: t('nav.wishlist', 'Wishlist'),
+      href: '/wishlist',
+      icon: Heart,
+      badge: wishlistCount,
+      isActive: pathname.startsWith('/wishlist'),
+    },
+    {
+      label: t('nav.compare', 'Compare'),
+      href: '/compare',
+      icon: GitCompare,
+      badge: compareCount,
+      isActive: pathname.startsWith('/compare'),
     },
     {
       label: t('nav.cart', 'Cart'),
@@ -66,7 +80,7 @@ export default function BottomNav() {
           isProductDetailPage ? 'translate-y-full pointer-events-none' : 'translate-y-0'
         }`}
       >
-        <div className="grid grid-cols-5 h-14 items-center">
+        <div className="grid grid-cols-6 h-14 items-center">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const content = (
@@ -78,18 +92,18 @@ export default function BottomNav() {
                 }`}
               >
                 <div className="relative">
-                  <Icon className={`w-5 h-5 ${item.isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
+                  <Icon className={`w-4.5 h-4.5 sm:w-5 sm:h-5 ${item.isActive ? 'stroke-[2.5]' : 'stroke-[1.8]'}`} />
                   {item.badge !== undefined && item.badge > 0 && (
-                    <span className="absolute -top-1.5 -right-2.5 bg-accent-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                    <span className="absolute -top-1.5 -right-2.5 bg-accent-500 text-white text-[9px] font-bold min-w-4 h-4 px-1 rounded-full flex items-center justify-center animate-pulse">
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   )}
                 </div>
-                <span className="text-[10px] mt-0.5 tracking-tight leading-tight">
+                <span className="text-[9px] mt-0.5 tracking-tight leading-tight truncate max-w-full px-0.5 text-center">
                   {item.label}
                 </span>
                 {item.isActive && (
-                  <span className="absolute bottom-0 w-8 h-0.5 bg-brand-600 rounded-full" />
+                  <span className="absolute bottom-0 w-6 h-0.5 bg-brand-600 rounded-full" />
                 )}
               </div>
             );

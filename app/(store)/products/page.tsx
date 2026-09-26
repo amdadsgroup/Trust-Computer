@@ -158,9 +158,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-xs text-slate-500 mb-1 flex items-center gap-1.5">
-            <Link href="/" className="hover:text-brand transition">হোম</Link>
+            <Link href="/" className="hover:text-brand transition">Home</Link>
             <span>/</span>
-            <span className="text-slate-800 font-medium">পণ্য ক্যাটালগ</span>
+            <span className="text-slate-800 font-medium">Product Catalog</span>
             {sp.category && (
               <>
                 <span>/</span>
@@ -171,10 +171,10 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            কম্পিউটার ও সিসিটিভি পণ্যসমূহ
+            Computer & CCTV Products
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            মোট {totalCount} টি পণ্য পাওয়া গেছে
+            Total {totalCount} {totalCount === 1 ? 'product' : 'products'} available
           </p>
         </div>
 
@@ -213,7 +213,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="w-4 h-4 text-brand" />
-                <h2 className="font-bold text-sm text-slate-800">ফিল্টার (Filters)</h2>
+                <h2 className="font-bold text-sm text-slate-800">Filters</h2>
               </div>
               {hasActiveFilters && (
                 <Link
@@ -221,7 +221,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   className="text-xs text-accent-600 hover:text-accent-800 font-semibold flex items-center gap-1"
                 >
                   <X className="w-3.5 h-3.5" />
-                  <span>মুছে ফেলুন</span>
+                  <span>Clear</span>
                 </Link>
               )}
             </div>
@@ -229,7 +229,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {/* Categories Filter */}
             <div>
               <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">
-                ক্যাটাগরি
+                Categories
               </h3>
               <div className="space-y-1.5 text-xs">
                 <Link
@@ -240,7 +240,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  সকল ক্যাটাগরি
+                  All Categories
                 </Link>
                 {categories.map((cat) => (
                   <Link
@@ -262,7 +262,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {brands.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">
-                  ব্র্যান্ড
+                  Brands
                 </h3>
                 <div className="space-y-1.5 text-xs max-h-48 overflow-y-auto">
                   <Link
@@ -273,7 +273,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         : 'text-slate-600 hover:bg-slate-50'
                     }`}
                   >
-                    সকল ব্র্যান্ড
+                    All Brands
                   </Link>
                   {brands.map((b) => (
                     <Link
@@ -295,7 +295,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {/* Availability Filter */}
             <div>
               <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">
-                স্টক উপস্থিতি
+                Stock Availability
               </h3>
               <div className="space-y-1.5 text-xs">
                 <Link
@@ -309,7 +309,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                   }`}
                 >
-                  ✓ শুধুমাত্র স্টকে থাকা পণ্য
+                  ✓ In Stock Only
                 </Link>
               </div>
             </div>
@@ -359,7 +359,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   )}
 
                   <span className="text-xs font-bold text-slate-600 px-4 py-2 border border-slate-200 rounded-xl bg-white">
-                    পৃষ্ঠা {page} / {totalPages}
+                    Page {page} of {totalPages}
                   </span>
 
                   {page < totalPages && (
@@ -380,16 +380,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           ) : (
             <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center space-y-4">
               <PackageOpen className="w-16 h-16 text-slate-300 mx-auto" />
-              <h3 className="text-lg font-bold text-slate-800">কোনো পণ্য পাওয়া যায়নি</h3>
+              <h3 className="text-lg font-bold text-slate-800">No Products Found</h3>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                আপনার অনুসন্ধানের সাথে মিলে এমন কোনো পণ্য এই মুহূর্তে নেই। ফিল্টার পরিবর্তন করে পুনরায় চেষ্টা করুন।
+                No products found matching your current filter criteria. Try adjusting or clearing your filters.
               </p>
               {hasActiveFilters && (
                 <Link
                   href="/products"
                   className="inline-block bg-brand hover:bg-brand-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition"
                 >
-                  ফিল্টার রিসেট করুন
+                  Reset All Filters
                 </Link>
               )}
             </div>

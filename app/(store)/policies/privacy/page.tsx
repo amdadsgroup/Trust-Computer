@@ -5,8 +5,8 @@ import PolicyView from '@/components/policies/PolicyView';
 export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'প্রাইভেসি পলিসি (Privacy Policy) | Trust Computer-Moulvibazar',
-  description: 'Trust Computer-Moulvibazar এর গ্রাহক তথ্যের গোপনীয়তা রক্ষা সংক্রান্ত নীতিমালা।',
+  title: 'Privacy Policy | Trust Computer-Moulvibazar',
+  description: 'Official customer privacy and data protection policy of Trust Computer-Moulvibazar.',
 };
 
 export default async function PrivacyPolicyPage() {

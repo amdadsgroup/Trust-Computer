@@ -15,13 +15,16 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { getCartInquiryWhatsAppLink } from '@/lib/whatsapp';
+import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function CartPage() {
   const { items, updateQuantity, removeItem, clearCart, subtotal, totalItems } = useCart();
+  const { isBangla } = useLanguage();
 
   const whatsappInquiryUrl = getCartInquiryWhatsAppLink(
     items.map((i) => ({ name: i.name, quantity: i.quantity })),
-    subtotal
+    subtotal,
+    isBangla
   );
 
   return (

@@ -92,7 +92,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       id: params.slug,
       name: fallbackName,
       slug: params.slug,
-      description: `মৌলভীবাজারে সেরা মূল্যে ${fallbackName} কিনুন Trust Computer থেকে। টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার।`,
+      description: `Shop authentic ${fallbackName} at best prices from Trust Computer in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar.`,
     };
   }
 
@@ -119,11 +119,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
       <nav className="flex items-center gap-1.5 text-xs text-slate-500">
         <Link href="/" className="hover:text-brand-600 flex items-center gap-1">
           <Home className="w-3.5 h-3.5" />
-          <span>হোম</span>
+          <span>Home</span>
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         <Link href="/products" className="hover:text-brand-600">
-          পণ্যসমূহ
+          Products
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
         <span className="font-semibold text-slate-900">{category.name}</span>
@@ -145,12 +145,12 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             </p>
           ) : (
             <p className="text-slate-200 text-xs sm:text-sm leading-relaxed max-w-xl">
-              মৌলভীবাজারের কুসুমবাগ শোরুমে অফিসিয়াল ওয়ারেন্টি ও সেরা প্রাইসে {category.name} সংগ্রহ করুন।
+              Shop authentic {category.name} in Moulvibazar at Trust Computer Kusumbagh Showroom with official warranty and best prices.
             </p>
           )}
         </div>
         <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/20 text-xs font-bold text-white self-start md:self-auto relative z-10 shrink-0">
-          মোট {totalCount} টি পণ্য তালিকাভুক্ত
+          Total {totalCount} {totalCount === 1 ? 'product' : 'products'} listed
         </div>
       </div>
 
@@ -166,7 +166,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            সব পণ্য
+            All Products
           </Link>
 
           <Link
@@ -181,7 +181,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             }`}
           >
             {sp.inStockOnly === 'true' && <Check className="w-3.5 h-3.5" />}
-            <span>শুধুমাত্র স্টকে আছে</span>
+            <span>In Stock Only</span>
           </Link>
 
           {/* Brand Pills */}
@@ -206,7 +206,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         {/* Sort Controls */}
         <div className="flex items-center gap-2 self-end md:self-auto shrink-0 text-xs">
           <SlidersHorizontal className="w-4 h-4 text-slate-400" />
-          <span className="text-slate-500 font-medium">সর্ট:</span>
+          <span className="text-slate-500 font-medium">Sort:</span>
           <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
             <Link
               href={buildFilterUrl('sort', null)}
@@ -214,7 +214,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 !sp.sort ? 'bg-white font-bold text-slate-900 shadow-sm' : 'text-slate-600'
               }`}
             >
-              নতুন
+              Newest
             </Link>
             <Link
               href={buildFilterUrl('sort', 'price_asc')}
@@ -222,7 +222,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 sp.sort === 'price_asc' ? 'bg-white font-bold text-slate-900 shadow-sm' : 'text-slate-600'
               }`}
             >
-              দাম: কম ➔ বেশি
+              Price: Low to High
             </Link>
             <Link
               href={buildFilterUrl('sort', 'price_desc')}
@@ -230,7 +230,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 sp.sort === 'price_desc' ? 'bg-white font-bold text-slate-900 shadow-sm' : 'text-slate-600'
               }`}
             >
-              দাম: বেশি ➔ কম
+              Price: High to Low
             </Link>
           </div>
         </div>
@@ -263,17 +263,17 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-4 max-w-lg mx-auto shadow-sm">
           <PackageOpen className="w-16 h-16 text-slate-300 mx-auto" />
           <h3 className="text-lg font-bold text-slate-800">
-            এই ফিল্টারে কোনো পণ্য পাওয়া যায়নি
+            No Products Found
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed">
-            ফিল্টার পরিবর্তন করুন অথবা সরাসরি আমাদের শোরুমে যোগাযোগ করুন।
+            No products found matching these filters. Try adjusting your filters or browse the complete category.
           </p>
           <div className="pt-2">
             <Link
               href={`/categories/${params.slug}`}
               className="inline-block bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition shadow-sm"
             >
-              সব {category.name} দেখুন
+              View All {category.name}
             </Link>
           </div>
         </div>
@@ -284,14 +284,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
           <span>
-            ট্রাস্ট কম্পিউটার — টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার। হটলাইন: 01753-765372
+            Trust Computer — T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01753-765372
           </span>
         </div>
         <Link
           href="/contact"
           className="text-brand-600 font-semibold hover:underline shrink-0"
         >
-          শোরুম লোকেশন ও যোগাযোগ ➔
+          Showroom Location & Contact ➔
         </Link>
       </div>
     </div>
