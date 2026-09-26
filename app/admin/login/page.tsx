@@ -108,27 +108,16 @@ export default function AdminLoginPage() {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-<<<<<<< HEAD
                   <span>Signing in...</span>
                 </>
               ) : (
                 <span>Sign In (Access Dashboard)</span>
-=======
-                  <span>Authenticating...</span>
-                </>
-              ) : (
-                <span>Sign In to Dashboard</span>
->>>>>>> d21abb3 (chore: sync scripts and login page)
               )}
             </button>
           </form>
 
           <div className="pt-2 text-center border-t border-slate-800 text-[11px] text-slate-500">
-<<<<<<< HEAD
-            Security Notice: Authorized personnel and staff only.
-=======
-            Authorized personnel only. All access attempts are monitored and logged.
->>>>>>> d21abb3 (chore: sync scripts and login page)
+            Security Notice: Authorized personnel and staff only. All access attempts are monitored.
           </div>
         </div>
       </div>
