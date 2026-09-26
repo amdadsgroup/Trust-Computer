@@ -55,20 +55,20 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 1: Basic Information */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">পণ্যের নাম *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Product Name *</label>
           <input
             type="text"
             name="name"
             required
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
-            placeholder="যেমন: Hikvision 2MP ColorVu Bullet Camera"
+            placeholder="e.g. Hikvision 2MP ColorVu Bullet Camera"
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
           />
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">URL স্লাগ *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">URL Slug *</label>
           <input
             type="text"
             name="slug"
@@ -84,7 +84,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 2: SKU & Barcode */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">SKU কোড (অনন্য) *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">SKU Code (Unique) *</label>
           <input
             type="text"
             name="sku"
@@ -95,7 +95,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">বারকোড (ঐচ্ছিক)</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Barcode (Optional)</label>
           <input
             type="text"
             name="barcode"
@@ -108,13 +108,13 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 3: Category & Brand */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">ক্যাটাগরি *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Category *</label>
           <select
             name="categoryId"
             required
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand cursor-pointer"
           >
-            <option value="">ক্যাটাগরি নির্বাচন করুন</option>
+            <option value="">Select Category</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -124,12 +124,12 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">ব্র্যান্ড (ঐচ্ছিক)</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Brand (Optional)</label>
           <select
             name="brandId"
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand cursor-pointer"
           >
-            <option value="">ব্র্যান্ড নির্বাচন করুন</option>
+            <option value="">Select Brand</option>
             {brands.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name}
@@ -142,7 +142,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 4: Pricing */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">বিক্রয় মূল্য (BDT) *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Selling Price (BDT) *</label>
           <input
             type="number"
             step="0.01"
@@ -154,7 +154,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">আগের মূল্য / ছাড় মূল্য</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Regular / Compare Price</label>
           <input
             type="number"
             step="0.01"
@@ -165,7 +165,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">ক্রয়মূল্য / খরচ (গোপন)</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Cost Price (Confidential)</label>
           <input
             type="number"
             step="0.01"
@@ -179,7 +179,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 5: Stock & Threshold */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">প্রাথমিক স্টক পরিমাণ *</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Initial Stock Quantity *</label>
           <input
             type="number"
             name="stock"
@@ -191,7 +191,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">স্বল্প স্টক সতর্কতা মাত্রা</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Low Stock Warning Threshold</label>
           <input
             type="number"
             name="lowStockThreshold"
@@ -205,7 +205,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       {/* Row 6: Image URL & Warranty */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">পণ্যের ছবির URL</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Product Image URL</label>
           <input
             type="url"
             name="imageUrl"
@@ -215,11 +215,11 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         </div>
 
         <div>
-          <label className="block font-bold text-slate-700 mb-1.5">ওয়ারেন্টির তথ্য</label>
+          <label className="block font-bold text-slate-700 mb-1.5">Warranty Information</label>
           <input
             type="text"
             name="warrantyInfo"
-            placeholder="যেমন: ১ বছরের অফিসিয়াল ব্র্যান্ড ওয়ারেন্টি"
+            placeholder="e.g. 1 Year Official Brand Warranty"
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
           />
         </div>
@@ -227,12 +227,12 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
 
       {/* Row 7: Description */}
       <div>
-        <label className="block font-bold text-slate-700 mb-1.5">পণ্যের বিস্তারিত বিবরণী *</label>
+        <label className="block font-bold text-slate-700 mb-1.5">Product Detailed Description *</label>
         <textarea
           name="description"
           required
           rows={5}
-          placeholder="পণ্যটির বিশেষ বৈশিষ্ট্য, সাইজ, কার্যকারিতা ও বিস্তারিত বিবরণ লিখুন..."
+          placeholder="Write key features, technical specifications, and description here..."
           className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 outline-none focus:border-brand leading-relaxed"
         />
       </div>
@@ -241,12 +241,12 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       <div className="flex flex-wrap items-center gap-6 p-4 bg-slate-50 rounded-2xl border border-slate-200">
         <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-800">
           <input type="checkbox" name="isActive" defaultChecked className="w-4 h-4 text-brand rounded" />
-          <span>পণ্যটি ওয়েবসাইটে সক্রিয় (Active) থাকবে</span>
+          <span>Active in Store Catalog</span>
         </label>
 
         <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-800">
           <input type="checkbox" name="isFeatured" className="w-4 h-4 text-brand rounded" />
-          <span>হোমপেজে ফিচার্ড পণ্য হিসেবে দেখান</span>
+          <span>Show as Featured on Homepage</span>
         </label>
       </div>
 
@@ -258,10 +258,10 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         {loading ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>সংরক্ষণ করা হচ্ছে...</span>
+            <span>Saving Product...</span>
           </>
         ) : (
-          <span>পণ্যটি ডাটাবেজে সংরক্ষণ করুন</span>
+          <span>Save Product to Catalog</span>
         )}
       </button>
     </form>
