@@ -15,7 +15,7 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 - **Official Website:** `https://trustcomputermb.com`
 - **Facebook:** [Trust Computer Facebook Page](https://www.facebook.com/TrustComputerr/)
 - **Business Tagline:**  
-  *“মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️”*
+  *“Your Trust, Our Technology”*
 
 ---
 
@@ -113,4 +113,4 @@ npm run prisma:seed
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open https://trustcomputer.vercel.app/ in your browser.
