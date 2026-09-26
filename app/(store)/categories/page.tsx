@@ -21,9 +21,6 @@ import {
   Sparkles,
   ShieldCheck,
   Server,
-  Smartphone,
-  Tablet,
-  Tv,
   Gamepad2,
 } from 'lucide-react';
 
@@ -119,30 +116,6 @@ function getCategoryIconAndStyle(slug: string, name: string) {
       bg: 'bg-slate-100 border-slate-200 group-hover:border-slate-400',
       badge: 'bg-slate-200 text-slate-800',
       accent: 'from-slate-500/10 to-transparent',
-    };
-  }
-  if (s.includes('phone') || s.includes('mobile')) {
-    return {
-      icon: <Smartphone className="w-7 h-7 text-teal-600" />,
-      bg: 'bg-teal-50 border-teal-100 group-hover:border-teal-300',
-      badge: 'bg-teal-100 text-teal-700',
-      accent: 'from-teal-500/10 to-transparent',
-    };
-  }
-  if (s.includes('tablet')) {
-    return {
-      icon: <Tablet className="w-7 h-7 text-blue-600" />,
-      bg: 'bg-blue-50 border-blue-100 group-hover:border-blue-300',
-      badge: 'bg-blue-100 text-blue-700',
-      accent: 'from-blue-500/10 to-transparent',
-    };
-  }
-  if (s.includes('tv') || s.includes('television')) {
-    return {
-      icon: <Tv className="w-7 h-7 text-violet-600" />,
-      bg: 'bg-violet-50 border-violet-100 group-hover:border-violet-300',
-      badge: 'bg-violet-100 text-violet-700',
-      accent: 'from-violet-500/10 to-transparent',
     };
   }
 

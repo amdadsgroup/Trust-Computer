@@ -98,19 +98,13 @@ export const translations: Translations = {
   'cat.component': { en: 'Component', bn: 'কম্পোনেন্ট' },
   'cat.monitor': { en: 'Monitor', bn: 'মনিটর' },
   'cat.power_ups': { en: 'Power / UPS', bn: 'পাওয়ার ও ইউপিএস' },
-  'cat.phone': { en: 'Phone', bn: 'ফোন' },
-  'cat.tablet': { en: 'Tablet', bn: 'ট্যাবলেট' },
-  'cat.office_equipment': { en: 'Office Equipment', bn: 'অফিস সরঞ্জাম' },
-  'cat.camera': { en: 'Camera', bn: 'ক্যামেরা' },
-  'cat.security': { en: 'Security / CCTV', bn: 'সিসিটিভি ও সিকিউরিটি' },
+  'cat.office_equipment': { en: 'Printers & Scanners', bn: 'প্রিন্টার ও স্ক্যানার' },
+  'cat.security': { en: 'CCTV & Security', bn: 'সিসিটিভি ও সিকিউরিটি' },
   'cat.networking': { en: 'Networking', bn: 'নেটওয়ার্কিং' },
   'cat.software': { en: 'Software', bn: 'সফটওয়্যার' },
   'cat.server_storage': { en: 'Server & Storage', bn: 'স্টোরেজ ও এসএসডি' },
   'cat.accessories': { en: 'Accessories', bn: 'এক্সেসরিজ' },
-  'cat.gadget': { en: 'Gadget', bn: 'গ্যাজেট' },
   'cat.gaming': { en: 'Gaming', bn: 'গেমিং' },
-  'cat.tv': { en: 'TV', bn: 'টিভি' },
-  'cat.appliance': { en: 'Appliance', bn: 'অ্যাপ্লায়েন্স' },
 
   // Product Card & Catalog
   'product.add_to_cart': {
