@@ -21,35 +21,37 @@ export async function loginAdminAction(formData: FormData) {
   const isMasterOwner = email === INITIAL_OWNER_EMAIL && password === INITIAL_OWNER_PASSWORD;
 
   try {
-    let user = null;
+    // Run DB lookup with a short timeout — don't let a slow DB block the master-owner fast path
+    let user: any = null;
     try {
-      user = await prisma.user.findUnique({
-        where: { email },
-      });
+      user = await Promise.race([
+        prisma.user.findUnique({ where: { email } }),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
     } catch (dbErr) {
-      console.warn('Database query during admin login warning:', dbErr);
+      console.warn('DB lookup during login warning:', dbErr);
     }
 
     if (isMasterOwner) {
-      // If DB is connected and user doesn't exist yet, attempt to persist
+      // Non-blocking: persist master owner to DB in background if not found
       if (!user) {
-        try {
-          const passwordHash = await hashPassword(INITIAL_OWNER_PASSWORD);
-          user = await prisma.user.create({
-            data: {
-              email: INITIAL_OWNER_EMAIL,
-              passwordHash,
-              name: INITIAL_OWNER_NAME,
-              phone: '01753-765372',
-              role: 'OWNER',
-              isActive: true,
-            },
-          });
-        } catch (createErr) {
-          console.warn('Auto-create master owner in DB bypassed:', createErr);
-        }
+        hashPassword(INITIAL_OWNER_PASSWORD)
+          .then((passwordHash) =>
+            prisma.user.create({
+              data: {
+                email: INITIAL_OWNER_EMAIL,
+                passwordHash,
+                name: INITIAL_OWNER_NAME,
+                phone: '01753-765372',
+                role: 'OWNER',
+                isActive: true,
+              },
+            })
+          )
+          .catch(() => {}); // fire-and-forget
       }
 
+      // Set session immediately — no bcrypt needed for master owner (env var comparison)
       await setSessionCookie({
         userId: user?.id || 'master-owner-root',
         email: INITIAL_OWNER_EMAIL,
@@ -57,15 +59,15 @@ export async function loginAdminAction(formData: FormData) {
         role: 'OWNER',
       });
 
-      try {
-        await recordAuditLog({
-          userId: user?.id || 'master-owner-root',
-          action: 'OWNER_LOGIN',
-          entityType: 'User',
-          entityId: user?.id || 'master-owner-root',
-          details: { email: INITIAL_OWNER_EMAIL, role: 'OWNER' },
-        });
-      } catch (_) {}
+      // Audit log is non-blocking — don't await it
+      recordAuditLog({
+        userId: user?.id || 'master-owner-root',
+        action: 'OWNER_LOGIN',
+        entityType: 'User',
+        entityId: user?.id || 'master-owner-root',
+        details: { email: INITIAL_OWNER_EMAIL, role: 'OWNER' },
+      }).catch(() => {});
+
     } else {
       if (!user || !user.isActive) {
         return { error: 'Invalid email or account is inactive.' };
@@ -76,7 +78,6 @@ export async function loginAdminAction(formData: FormData) {
         return { error: 'Incorrect password. Please try again.' };
       }
 
-      // Set secure HTTP-only session cookie
       await setSessionCookie({
         userId: user.id,
         email: user.email,
@@ -84,16 +85,14 @@ export async function loginAdminAction(formData: FormData) {
         role: user.role,
       });
 
-      // Record audit log
-      try {
-        await recordAuditLog({
-          userId: user.id,
-          action: 'USER_LOGIN',
-          entityType: 'User',
-          entityId: user.id,
-          details: { email: user.email, role: user.role },
-        });
-      } catch (_) {}
+      // Audit log is non-blocking
+      recordAuditLog({
+        userId: user.id,
+        action: 'USER_LOGIN',
+        entityType: 'User',
+        entityId: user.id,
+        details: { email: user.email, role: user.role },
+      }).catch(() => {});
     }
   } catch (error: any) {
     if (error?.digest?.startsWith('NEXT_REDIRECT') || error?.message?.includes('NEXT_REDIRECT')) {
