@@ -188,8 +188,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/policies/returns" className="hover:text-white transition">
+                  Return & Refund Policy
+                </Link>
+              </li>
+              <li>
                 <Link href="/policies/warranty" className="hover:text-white transition">
-                  Warranty & Return Policy
+                  Warranty Policy
                 </Link>
               </li>
               <li>
@@ -258,7 +263,7 @@ export default function Footer() {
             © {new Date().getFullYear()} <strong>Trust Computer-Moulvibazar</strong>. {t('footer.all_rights', 'All rights reserved.')}
           </p>
           <p className="text-slate-400">
-            {t('footer.dev_partner', 'Development Partner: Amdads Group')}
+            {t('footer.dev_partner', 'Software Developed BY Amdads Group')}
           </p>
         </div>
       </div>

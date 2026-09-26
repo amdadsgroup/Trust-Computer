@@ -53,6 +53,7 @@ async function main() {
   const ownerUser = await prisma.user.upsert({
     where: { email: ownerEmail },
     update: {
+      name: 'Shiblu Ahmed',
       role: 'OWNER',
       phone: '01753-765372',
       isActive: true,
@@ -60,7 +61,7 @@ async function main() {
     create: {
       email: ownerEmail,
       passwordHash,
-      name: 'Store Owner',
+      name: 'Shiblu Ahmed',
       phone: '01753-765372',
       role: 'OWNER',
       isActive: true,

@@ -429,5 +429,5 @@ export const translations: Translations = {
   'footer.support_title': { en: 'Customer Support & Policies', bn: 'কাস্টমার সাপোর্ট ও পলিসি' },
   'footer.contact_title': { en: 'Showroom Contact', bn: 'শোরুমের যোগাযোগ' },
   'footer.all_rights': { en: 'All rights reserved.', bn: 'সর্বস্বত্ব সংরক্ষিত।' },
-  'footer.dev_partner': { en: 'Development Partner: Amdads Group', bn: 'ডেভেলপমেন্ট পার্টনার: Amdads Group' },
+  'footer.dev_partner': { en: 'Software Developed BY Amdads Group', bn: 'সফটওয়্যার ডেভেলপমেন্ট: Amdads Group' },
 };

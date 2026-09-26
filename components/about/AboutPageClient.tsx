@@ -89,11 +89,13 @@ export default function AboutPageClient() {
             {t('about.credentials_heading', 'Verified Business Credentials')}
           </h3>
           <p><strong className="text-white">{t('about.cred_name', 'Enterprise Name:')}</strong> Trust Computer-Moulvibazar</p>
+          <p><strong className="text-white">{t('about.cred_owner', 'Proprietor / Owner:')}</strong> Shiblu Ahmed</p>
           <p><strong className="text-white">{t('about.cred_type', 'Business Type:')}</strong> Computer, Laptop, CCTV & Networking Showroom</p>
           <p><strong className="text-white">{t('about.cred_address', 'Showroom Address:')}</strong> {t('brand.address', 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh')}</p>
           <p><strong className="text-white">{t('about.cred_phone', 'Hotline / Phone:')}</strong> 01753-765372</p>
           <p><strong className="text-white">{t('about.cred_email', 'Official Email:')}</strong> trustcomputermb@gmail.com</p>
           <p><strong className="text-white">{t('about.cred_web', 'Official Website:')}</strong> https://trustcomputermb.com</p>
+          <p><strong className="text-white">{t('about.cred_developer', 'Software Developed BY:')}</strong> Amdads Group</p>
         </div>
 
         {/* CTA */}

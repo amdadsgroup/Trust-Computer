@@ -78,4 +78,14 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     expect(content).toContain('INVOICE');
     expect(content).toContain('brand.phone');
   });
+
+  it('should verify client owner Shiblu Ahmed and developer Amdads Group attribution', () => {
+    expect(brand.owner).toBe('Shiblu Ahmed');
+    expect(brand.developer).toBe('Amdads Group');
+    expect(brand.developerStatement).toBe('Software Developed BY Amdads Group');
+    expect(brand.officialFullName).toBe('Trust Computer-Moulvibazar');
+    expect(brand.address).toContain('T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar');
+    expect(brand.phone).toBe('01753-765372');
+    expect(brand.email).toBe('trustcomputermb@gmail.com');
+  });
 });

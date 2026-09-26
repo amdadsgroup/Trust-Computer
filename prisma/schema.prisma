@@ -484,6 +484,20 @@ model AdminAuditLog {
   @@map("admin_audit_logs")
 }
 
+model ContentPage {
+  id          String   @id @default(uuid())
+  slug        String   @unique // "privacy", "terms", "delivery", "returns", "warranty"
+  title       String
+  content     String   @db.Text
+  isDraft     Boolean  @default(false)
+  updatedBy   String?
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+
+  @@index([slug])
+  @@map("content_pages")
+}
+
 // ============================================================
 // WISHLIST
 // ============================================================

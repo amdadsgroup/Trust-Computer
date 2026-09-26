@@ -95,11 +95,11 @@ export default async function HomePage() {
     brand: p.brand,
     warrantyInfo: p.warrantyInfo,
     specs: [
-      p.warrantyInfo ? `Warranty: ${p.warrantyInfo}` : 'Official Brand Warranty',
+      ...(p.warrantyInfo ? [`Warranty: ${p.warrantyInfo}`] : []),
       `Model / SKU: ${p.sku}`,
-      'Direct dispatch from Moulvibazar showroom',
-      'Professional setup & technical support',
-    ],
+      p.category ? `Category: ${p.category.name}` : '',
+      p.brand ? `Brand: ${p.brand.name}` : '',
+    ].filter(Boolean),
   }));
 
   const displayNewArrivals =
@@ -118,9 +118,10 @@ export default async function HomePage() {
           brand: p.brand,
           warrantyInfo: p.warrantyInfo,
           specs: [
-            p.warrantyInfo ? `Warranty: ${p.warrantyInfo}` : 'Official Warranty',
+            ...(p.warrantyInfo ? [`Warranty: ${p.warrantyInfo}`] : []),
             `SKU: ${p.sku}`,
-          ],
+            p.category ? `Category: ${p.category.name}` : '',
+          ].filter(Boolean),
         }))
       : [];
 

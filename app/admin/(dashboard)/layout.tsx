@@ -21,6 +21,8 @@ import {
   Tag,
   Star,
   Users,
+  Shield,
+  FileText,
 } from 'lucide-react';
 
 export default async function AdminDashboardLayout({
@@ -37,7 +39,8 @@ export default async function AdminDashboardLayout({
   const navItems = [
     { label: 'Overview Dashboard', href: '/admin', icon: <LayoutDashboard className="w-4 h-4" /> },
     { label: 'Products & Stock', href: '/admin/products', icon: <Package className="w-4 h-4" /> },
-    { label: 'Categories & Brands', href: '/admin/categories', icon: <Layers className="w-4 h-4" /> },
+    { label: 'Categories', href: '/admin/categories', icon: <Layers className="w-4 h-4" /> },
+    { label: 'Brands', href: '/admin/brands', icon: <Tag className="w-4 h-4" /> },
     { label: 'Order Management', href: '/admin/orders', icon: <ShoppingBag className="w-4 h-4" /> },
     { label: 'Customers', href: '/admin/customers', icon: <Users className="w-4 h-4" /> },
     { label: 'Homepage Banners', href: '/admin/banners', icon: <ImageIcon className="w-4 h-4" /> },
@@ -48,6 +51,9 @@ export default async function AdminDashboardLayout({
     { label: 'Inventory Ledger', href: '/admin/inventory', icon: <Boxes className="w-4 h-4" /> },
     { label: 'Payments & Gateway', href: '/admin/payments', icon: <CreditCard className="w-4 h-4" /> },
     { label: 'Sales & Reports', href: '/admin/reports', icon: <BarChart3 className="w-4 h-4" /> },
+    { label: 'Policy & Content', href: '/admin/content', icon: <FileText className="w-4 h-4" /> },
+    { label: 'Staff & Roles', href: '/admin/users', icon: <Users className="w-4 h-4" /> },
+    { label: 'Audit Logs', href: '/admin/audit-logs', icon: <Shield className="w-4 h-4" /> },
     { label: 'Store Settings', href: '/admin/settings', icon: <Settings className="w-4 h-4" /> },
   ];
 
