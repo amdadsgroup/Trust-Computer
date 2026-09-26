@@ -100,11 +100,6 @@ export default function Header() {
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
-            {/* Language Switcher */}
-            <div className="hidden sm:block">
-              <LanguageToggle />
-            </div>
-
             {/* Compare */}
             <Link
               href="/compare"
@@ -231,11 +226,6 @@ export default function Header() {
               )}
             </button>
 
-            {/* Mobile Language Toggle */}
-            <div className="sm:hidden">
-              <LanguageToggle variant="compact" />
-            </div>
-
             {/* Mobile Menu Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -266,64 +256,8 @@ export default function Header() {
         </form>
       </div>
 
-      {/* Mobile Horizontal Swipeable Category & Utility Bar */}
+      {/* Mobile Horizontal Swipeable Category Bar */}
       <div className="md:hidden bg-[#0d2030] border-b border-slate-800 overflow-x-auto py-2 px-3 flex items-center gap-2 scrollbar-none whitespace-nowrap text-xs">
-        {/* 1. Desktop PCs - Prominent Brand Button matching desktop screenshot */}
-        <Link
-          href="/categories/desktop-components"
-          className="bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 shadow-sm flex items-center gap-1.5 border border-sky-400/30 active:scale-95 transition"
-        >
-          <span>🖥️ {t('nav.desktop_pcs', 'Desktop PCs')}</span>
-        </Link>
-
-        {/* 2. Offers - Special Deals Button matching desktop screenshot */}
-        <Link
-          href="/products?offer=true"
-          className="bg-[#E91D26] hover:bg-[#C5141C] text-white font-bold px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 shadow-sm flex items-center gap-1.5 border border-red-400/30 active:scale-95 transition"
-        >
-          <span>🔥 {t('nav.offers', 'Offers')}</span>
-        </Link>
-
-        {/* 3. Compare with Live Count */}
-        <Link
-          href="/compare"
-          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-brand-600 transition"
-        >
-          <GitCompare className="w-3.5 h-3.5 text-sky-400" />
-          <span>{t('nav.compare', 'Compare')}</span>
-          {compareCount > 0 && (
-            <span className="bg-brand-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">
-              {compareCount}
-            </span>
-          )}
-        </Link>
-
-        {/* 4. Wishlist with Live Count */}
-        <Link
-          href="/wishlist"
-          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-rose-600 transition"
-        >
-          <Heart className="w-3.5 h-3.5 text-accent-400" />
-          <span>{t('nav.wishlist', 'Wishlist')}</span>
-          {wishlistCount > 0 && (
-            <span className="bg-accent-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full">
-              {wishlistCount}
-            </span>
-          )}
-        </Link>
-
-        {/* 5. Account */}
-        <Link
-          href="/account"
-          className="bg-slate-800/90 hover:bg-slate-700 text-slate-200 hover:text-white font-semibold px-2.5 py-1.5 rounded-full text-[11px] flex-shrink-0 flex items-center gap-1.5 border border-slate-700 active:bg-slate-600 transition"
-        >
-          <User className="w-3.5 h-3.5 text-slate-300" />
-          <span>{t('nav.account', 'Account')}</span>
-        </Link>
-
-        {/* Divider */}
-        <div className="h-4 w-px bg-slate-700 mx-0.5 flex-shrink-0" />
-
         {navCategories.map((cat, idx) => (
           <Link
             key={idx}
