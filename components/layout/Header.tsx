@@ -14,7 +14,6 @@ import {
   ShoppingBag,
   Menu,
   X,
-  Gift,
   User,
   GitCompare,
   Heart,
@@ -132,21 +131,7 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Offers */}
-            <Link
-              href="/products?offer=true"
-              className="hidden xl:flex items-center gap-2.5 group text-left"
-            >
-              <div className="text-orange-400 group-hover:text-orange-300 transition">
-                <Gift className="w-5 h-5" />
-              </div>
-              <div>
-                <span className="text-xs font-bold block text-white group-hover:text-orange-300 transition">
-                  {t('nav.offers', 'Offers')}
-                </span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">{t('nav.special_deals', 'Special Deals')}</span>
-              </div>
-            </Link>
+
 
             {/* Customer Account */}
             <Link
