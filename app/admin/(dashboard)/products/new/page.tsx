@@ -12,8 +12,16 @@ export default async function NewProductPage() {
 
   try {
     const [fetchedCategories, fetchedBrands] = await Promise.all([
-      prisma.category.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
-      prisma.brand.findMany({ where: { isActive: true }, orderBy: { name: 'asc' } }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { name: 'asc' },
+        select: { id: true, name: true },
+      }),
+      prisma.brand.findMany({
+        where: { isActive: true },
+        orderBy: { name: 'asc' },
+        select: { id: true, name: true },
+      }),
     ]);
     categories = fetchedCategories;
     brands = fetchedBrands;

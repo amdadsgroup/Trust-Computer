@@ -15,6 +15,7 @@ export default async function AdminOffersPage() {
       where: { isActive: true },
       select: { id: true, name: true, sku: true, sellingPrice: true },
       orderBy: { name: 'asc' },
+      take: 100,
     }),
     prisma.category.findMany({
       where: { isActive: true },

@@ -150,6 +150,8 @@ model Product {
   @@index([isActive, sellingPrice])
   @@index([isActive, categoryId])
   @@index([isActive, brandId])
+  @@index([isActive, stock])          // For low-stock dashboard queries
+  @@index([isActive, categoryId, createdAt]) // For filtered + sorted admin table
   @@map("products")
 }
 
@@ -229,10 +231,13 @@ model Order {
   @@index([customerId])
   @@index([orderNumber])
   @@index([customerPhone])
+  @@index([customerName])
   @@index([status])
   @@index([createdAt])
   @@index([customerId, createdAt])
   @@index([status, createdAt])
+  @@index([paymentStatus])
+  @@index([paymentStatus, createdAt])
   @@map("orders")
 }
 
@@ -272,6 +277,8 @@ model Payment {
 
   @@index([orderId])
   @@index([transactionId])
+  @@index([status])
+  @@index([status, createdAt])
   @@map("payments")
 }
 
@@ -304,6 +311,7 @@ model InventoryMovement {
   @@index([productId])
   @@index([type])
   @@index([createdAt])
+  @@index([type, createdAt])
   @@map("inventory_movements")
 }
 
@@ -351,6 +359,10 @@ model CustomerProfile {
   reviews     Review[]
   couponUsages CouponUsage[]
 
+  @@index([email])
+  @@index([phone])
+  @@index([fullName])
+  @@index([createdAt])
   @@map("customer_profiles")
 }
 
