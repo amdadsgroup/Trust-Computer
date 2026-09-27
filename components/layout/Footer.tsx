@@ -279,7 +279,18 @@ export default function Footer() {
             © {new Date().getFullYear()} <strong>Trust Computer-Moulvibazar</strong>. {t('footer.all_rights', 'All rights reserved.')}
           </p>
           <p className="text-slate-400">
-            {t('footer.dev_partner', 'Software Developed BY Amdads Group')}
+            {/* Software Developed BY Amdads Group */}
+            <span className="font-semibold text-slate-300">
+              {isBangla ? 'সফটওয়্যার ডেভেলপমেন্ট: ' : 'Software Developed BY '}
+            </span>
+            <a
+              href="https://amdadsgroup.netlify.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-white hover:text-blue-400 hover:underline transition ml-1"
+            >
+              Amdads Group
+            </a>
           </p>
         </div>
       </div>

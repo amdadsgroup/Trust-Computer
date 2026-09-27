@@ -104,6 +104,7 @@ export const checkoutSchema = z.object({
   customerId: z.string().optional(),
   createAccount: z.boolean().optional(),
   accountPassword: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
+  couponCode: z.string().optional().or(z.literal('')),
 });
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;

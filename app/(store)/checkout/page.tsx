@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
-import { submitCheckoutAction, getCheckoutCustomerDataAction } from './actions';
+import { submitCheckoutAction, getCheckoutCustomerDataAction, validateCouponAction } from './actions';
 import {
   ShieldCheck,
   Truck,
@@ -15,6 +15,10 @@ import {
   User,
   MapPin,
   CheckCircle2,
+  Tag,
+  X,
+  Check,
+  Loader2,
 } from 'lucide-react';
 
 interface SavedAddress {
@@ -60,9 +64,27 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Delivery fee calculation
-  const deliveryFee = cityArea.toLowerCase().includes('sadar') || cityArea.toLowerCase().includes('kusumbagh') ? 60 : 120;
-  const grandTotal = subtotal + deliveryFee;
+  // Coupon state
+  const [couponCodeInput, setCouponCodeInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    type: string;
+    discountAmount: number;
+    message: string;
+  } | null>(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponSuccess, setCouponSuccess] = useState<string | null>(null);
+
+  // Delivery fee & discount calculations
+  const baseDeliveryFee =
+    cityArea.toLowerCase().includes('sadar') || cityArea.toLowerCase().includes('kusumbagh')
+      ? 60
+      : 120;
+  const isFreeDelivery = appliedCoupon?.type === 'FREE_DELIVERY';
+  const effectiveDeliveryFee = isFreeDelivery ? 0 : baseDeliveryFee;
+  const discountAmount = isFreeDelivery ? baseDeliveryFee : (appliedCoupon?.discountAmount || 0);
+  const grandTotal = Math.max(0, subtotal + effectiveDeliveryFee - (isFreeDelivery ? 0 : discountAmount));
 
   // Load customer session and saved addresses on mount
   useEffect(() => {
@@ -110,6 +132,49 @@ export default function CheckoutPage() {
     }
   };
 
+  // Handle coupon validation & application
+  const handleApplyCoupon = async () => {
+    const code = couponCodeInput.trim().toUpperCase();
+    if (!code) {
+      setCouponError('Please enter a coupon code.');
+      return;
+    }
+
+    setIsApplyingCoupon(true);
+    setCouponError(null);
+    setCouponSuccess(null);
+
+    try {
+      const res = await validateCouponAction({
+        code,
+        orderSubtotal: subtotal,
+      });
+
+      if (res.valid && res.code) {
+        setAppliedCoupon({
+          code: res.code,
+          type: res.type || 'PERCENTAGE',
+          discountAmount: res.discountAmount || 0,
+          message: res.message,
+        });
+        setCouponSuccess(res.message);
+        setCouponCodeInput('');
+      } else {
+        setCouponError(res.message || 'Invalid coupon code.');
+      }
+    } catch (err: any) {
+      setCouponError(err.message || 'Failed to apply coupon. Please try again.');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponSuccess(null);
+    setCouponError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -154,6 +219,7 @@ export default function CheckoutPage() {
         customerId: customer?.id,
         createAccount: !customer && createAccount,
         accountPassword: !customer && createAccount ? accountPassword : undefined,
+        couponCode: appliedCoupon?.code || undefined,
       };
 
       const result = await submitCheckoutAction(payload);
@@ -542,6 +608,85 @@ export default function CheckoutPage() {
               ))}
             </div>
 
+            {/* Coupon Code Section */}
+            <div className="border-t border-slate-100 pt-3">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 mb-2">
+                <Tag className="w-3.5 h-3.5 text-[#0084d6]" />
+                <span>Apply Coupon Code</span>
+              </div>
+
+              {appliedCoupon ? (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between transition-all">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white flex-shrink-0">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-extrabold text-xs text-emerald-900 tracking-wider">
+                          {appliedCoupon.code}
+                        </span>
+                        <span className="text-[10px] font-bold bg-emerald-200 text-emerald-900 px-1.5 py-0.5 rounded">
+                          {isFreeDelivery ? 'Free Delivery' : `-৳${discountAmount.toLocaleString('en-BD')}`}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-emerald-700 mt-0.5 font-medium">
+                        {appliedCoupon.message}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="text-slate-400 hover:text-red-500 p-1.5 hover:bg-white rounded-lg transition"
+                    title="Remove coupon"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="e.g. WELCOME100"
+                      value={couponCodeInput}
+                      onChange={(e) => {
+                        setCouponCodeInput(e.target.value.toUpperCase());
+                        if (couponError) setCouponError(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleApplyCoupon();
+                        }
+                      }}
+                      className="flex-1 text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-[#0084d6] focus:bg-white font-mono uppercase tracking-wider transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={isApplyingCoupon || !couponCodeInput.trim()}
+                      className="bg-[#0084d6] hover:bg-[#0074be] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition disabled:opacity-50 flex items-center justify-center min-w-[70px]"
+                    >
+                      {isApplyingCoupon ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        'Apply'
+                      )}
+                    </button>
+                  </div>
+
+                  {couponError && (
+                    <p className="text-[11px] text-rose-600 flex items-center gap-1 font-medium">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                      <span>{couponError}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
             <div className="border-t border-slate-100 pt-3 space-y-2 text-xs">
               <div className="flex justify-between text-slate-600">
                 <span>Subtotal:</span>
@@ -552,13 +697,22 @@ export default function CheckoutPage() {
               <div className="flex justify-between text-slate-600">
                 <span>Delivery Charge:</span>
                 <span className="font-semibold text-slate-800">
-                  ৳{deliveryFee.toLocaleString('en-BD')}
+                  {isFreeDelivery ? (
+                    <span className="flex items-center gap-1.5">
+                      <span className="line-through text-slate-400">৳{baseDeliveryFee}</span>
+                      <span className="text-emerald-600 font-bold">৳0 (Free)</span>
+                    </span>
+                  ) : (
+                    `৳${baseDeliveryFee.toLocaleString('en-BD')}`
+                  )}
                 </span>
               </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Discount:</span>
-                <span className="font-semibold text-emerald-600">৳0</span>
-              </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-emerald-600 font-semibold">
+                  <span>Coupon Discount ({appliedCoupon?.code}):</span>
+                  <span>-৳{discountAmount.toLocaleString('en-BD')}</span>
+                </div>
+              )}
             </div>
 
             <div className="border-t border-slate-100 pt-3 flex justify-between items-baseline">

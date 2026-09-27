@@ -3,6 +3,7 @@
 import { checkoutSchema } from '@/lib/validations';
 import { createOrderTransactionally } from '@/lib/orders';
 import { getCurrentCustomer, registerCustomer } from '@/lib/customer';
+import { validateCoupon, CouponValidationResult } from '@/lib/coupons';
 
 export interface CheckoutActionResult {
   success: boolean;
@@ -10,6 +11,26 @@ export interface CheckoutActionResult {
   trackingToken?: string;
   customerId?: string;
   error?: string;
+}
+
+export async function validateCouponAction(params: {
+  code: string;
+  orderSubtotal: number;
+}): Promise<CouponValidationResult> {
+  try {
+    const currentCustomer = await getCurrentCustomer();
+    return await validateCoupon({
+      code: params.code,
+      orderSubtotal: params.orderSubtotal,
+      customerId: currentCustomer?.id,
+    });
+  } catch (err: any) {
+    console.error('Coupon validation action error:', err);
+    return {
+      valid: false,
+      message: err.message || 'Could not validate coupon at this time. Please try again.',
+    };
+  }
 }
 
 export async function submitCheckoutAction(data: unknown): Promise<CheckoutActionResult> {
@@ -51,9 +72,13 @@ export async function submitCheckoutAction(data: unknown): Promise<CheckoutActio
     };
   } catch (err: any) {
     console.error('Checkout processing error:', err);
+    let errorMessage = err.message || 'An unexpected error occurred while processing your order. Please try again.';
+    if (errorMessage.includes('Transaction API error') || errorMessage.includes('Transaction not found')) {
+      errorMessage = 'Database transaction timed out. Your order has not been placed. Please try submitting again.';
+    }
     return {
       success: false,
-      error: err.message || 'An unexpected error occurred while processing your order. Please try again.',
+      error: errorMessage,
     };
   }
 }

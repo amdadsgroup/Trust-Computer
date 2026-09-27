@@ -14,6 +14,7 @@ export const brand = {
   owner: 'Shiblu Ahmed',
   developer: 'Amdads Group',
   developerStatement: 'Software Developed BY Amdads Group',
+  developerUrl: 'https://amdadsgroup.netlify.app/',
   phone: '01753-765372',
   email: 'trustcomputermb@gmail.com',
   address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
