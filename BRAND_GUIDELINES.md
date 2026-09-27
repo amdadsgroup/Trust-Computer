@@ -23,6 +23,20 @@ The official Trust Computer logo is the authoritative, immutable brand asset for
 
 ---
 
+## 1.1. Official Brand Tagline & Motto
+
+- **Authoritative Tagline (English)**: **“Your Trust, Our Technology”**
+- **Authoritative Tagline (Bengali)**: **“আপনার আস্থা, আমাদের প্রযুক্তি”**
+- **Core Brand Mission**: Establishing trusted computer hardware, laptop sales, and precision CCTV security surveillance across Moulvibazar and Bangladesh.
+- **Application Touchpoints**:
+  - Customer Header (beside logo on desktop, mobile menu drawer footer)
+  - Customer Footer (directly beneath company brand mark)
+  - Customer Checkout, Shopping Bag, and Order Confirmation experiences
+  - Admin & Staff Dashboard Sidebar and Authentication screens
+  - Web Application Manifest (`manifest.webmanifest`) and SEO meta descriptions
+
+---
+
 ## 2. Exact Brand Color Palette
 
 The brand palette is sampled directly from the dominant solid pixels of the official uploaded asset (`media_1790234960095.jpg`).
@@ -135,9 +149,7 @@ Do **not** flood every interface surface with red and blue. The visual presentat
 5. **Admin Portal**:
    - Admin sidebar and header feature `/brand/trust-computer-logo.png`.
    - Admin settings page at `/admin/settings/branding` for asset verification.
-6. **Invoices & Receipts**:
-   - Printable order invoice at `/admin/orders/[id]/invoice` featuring official logo header, barcodes, and company details.
-7. **PWA (Progressive Web App)**:
+6. **PWA (Progressive Web App)**:
    - Configured via `app/manifest.ts` with `#2A3B97` theme color and official `/brand/icon-192.png` and `/brand/icon-512.png`.
 
 ---

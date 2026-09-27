@@ -6,7 +6,6 @@ import { ALLOWED_STATUS_TRANSITIONS } from '@/lib/orders';
 import { changeOrderStatusAction, markPaymentAsPaidAction } from '../actions';
 import {
   ArrowLeft,
-  Printer,
   ShoppingBag,
   User,
   MapPin,
@@ -90,17 +89,6 @@ export default async function AdminOrderDetailPage({ params }: AdminOrderDetailP
               })}
             </p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/admin/orders/${order.id}/invoice`}
-            target="_blank"
-            className="inline-flex items-center gap-2 bg-[#2A3B97] hover:bg-[#212F7A] text-white px-4 py-2 rounded-xl font-bold text-xs shadow-sm transition"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Print Invoice</span>
-          </Link>
         </div>
       </div>
 

@@ -39,11 +39,16 @@ export default function NotFound() {
         </Link>
       </div>
 
-      <div className="pt-6 border-t border-slate-100 text-xs text-slate-400">
-        <span>Need assistance? Hotline: </span>
-        <a href="tel:01753765372" className="font-bold text-brand hover:underline">
-          01753-765372
-        </a>
+      <div className="pt-6 border-t border-slate-100 text-xs text-slate-400 space-y-1">
+        <p>
+          <span>Need assistance? Hotline: </span>
+          <a href="tel:01753765372" className="font-bold text-brand hover:underline">
+            01753-765372
+          </a>
+        </p>
+        <p className="text-[11px] font-medium text-slate-500 italic">
+          Trust Computer — “Your Trust, Our Technology”
+        </p>
       </div>
     </div>
   );

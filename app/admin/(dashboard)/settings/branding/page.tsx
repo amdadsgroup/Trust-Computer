@@ -59,6 +59,25 @@ export default async function AdminBrandingSettingsPage() {
         </div>
       </div>
 
+      {/* Brand Tagline Banner */}
+      <div className="bg-gradient-to-r from-[#2A3B97] to-[#1E2B70] text-white rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <span className="text-[11px] font-bold text-blue-200 uppercase tracking-widest block">
+            Official Brand Tagline & Motto
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+            “{brand.tagline}”
+          </h2>
+          <p className="text-xs text-blue-200 italic">
+            বাংলা: {brand.taglineBn}
+          </p>
+        </div>
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-xs font-semibold self-start sm:self-auto">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <span>Active Across Website</span>
+        </div>
+      </div>
+
       {/* Grid: Official Brand Asset Showcase */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Card 1: Official Primary Logo */}

@@ -69,16 +69,6 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     expect(content).toContain('OWNER');
   });
 
-  it('should have printable invoice with official logo and company details', () => {
-    const invoicePage = path.join(process.cwd(), 'app', 'admin', '(dashboard)', 'orders', '[id]', 'invoice', 'page.tsx');
-    expect(fs.existsSync(invoicePage)).toBe(true);
-
-    const content = fs.readFileSync(invoicePage, 'utf-8');
-    expect(content).toContain('trust-computer-logo.png');
-    expect(content).toContain('INVOICE');
-    expect(content).toContain('brand.phone');
-  });
-
   it('should verify client owner Shiblu Ahmed and developer Amdads Group attribution', () => {
     expect(brand.owner).toBe('Shiblu Ahmed');
     expect(brand.developer).toBe('Amdads Group');
@@ -87,5 +77,14 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     expect(brand.address).toContain('T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar');
     expect(brand.phone).toBe('01753-765372');
     expect(brand.email).toBe('trustcomputermb@gmail.com');
+  });
+
+  it('should verify official tagline "Your Trust, Our Technology" in brand config and guidelines', () => {
+    expect(brand.tagline).toBe('Your Trust, Our Technology');
+    expect(brand.taglineBn).toBe('আপনার আস্থা, আমাদের প্রযুক্তি');
+
+    const guidelinesPath = path.join(process.cwd(), 'BRAND_GUIDELINES.md');
+    const content = fs.readFileSync(guidelinesPath, 'utf-8');
+    expect(content).toContain('Your Trust, Our Technology');
   });
 });

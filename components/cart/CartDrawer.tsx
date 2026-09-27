@@ -171,6 +171,12 @@ export default function CartDrawer() {
                   <span>{t('cart.order_whatsapp', 'Order / Inquire via WhatsApp')}</span>
                 </a>
               </div>
+
+              <div className="text-center pt-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  “{t('brand.tagline', 'Your Trust, Our Technology')}”
+                </span>
+              </div>
             </div>
           )}
         </div>

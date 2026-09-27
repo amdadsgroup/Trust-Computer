@@ -90,9 +90,14 @@ export default function Footer() {
               </div>
             </div>
 
-            <p className="text-sm text-slate-300 italic leading-relaxed">
-              {t('brand.tagline', 'Your Trusted Destination for Quality Computers & CCTV Surveillance Systems in Moulvibazar.')}
-            </p>
+            <div>
+              <p className="text-sm font-bold text-white tracking-wide">
+                “{t('brand.tagline', 'Your Trust, Our Technology')}”
+              </p>
+              <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                {t('brand.description', 'Your Trusted Destination for Quality Computers & CCTV Surveillance Systems in Moulvibazar.')}
+              </p>
+            </div>
 
             <div className="pt-2 text-xs text-slate-400 space-y-1">
               <p><strong className="text-slate-300">Showroom Hours:</strong> {t('brand.hours', 'Sat - Thu: 10:00 AM - 9:00 PM')}</p>

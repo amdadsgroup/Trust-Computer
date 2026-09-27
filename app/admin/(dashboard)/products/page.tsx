@@ -12,6 +12,7 @@ import {
   Trash2,
   Filter,
   Star,
+  Pencil,
 } from 'lucide-react';
 import {
   toggleProductActiveAction,
@@ -19,6 +20,7 @@ import {
   deleteProductAction,
 } from './actions';
 import { getAdminCategories } from '@/lib/categories';
+import ProductDeleteButton from '@/components/admin/ProductDeleteButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -275,7 +277,12 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                             )}
                           </div>
                           <div>
-                            <span className="font-bold text-slate-800 line-clamp-1">{p.name}</span>
+                            <Link
+                              href={`/admin/products/${p.id}/edit`}
+                              className="font-bold text-slate-800 hover:text-brand line-clamp-1 transition"
+                            >
+                              {p.name}
+                            </Link>
                             <div className="flex items-center gap-1 mt-0.5">
                               {p.isFeatured && (
                                 <span className="text-[10px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold">
@@ -371,37 +378,37 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                       </td>
 
                       <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-3">
+                        <div className="flex items-center justify-end gap-2 sm:gap-3">
+                          <Link
+                            href={`/admin/products/${p.id}/edit`}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-blue-50 text-[#2A3B97] hover:bg-[#2A3B97] hover:text-white font-bold text-xs transition border border-blue-200 shadow-2xs"
+                            title="Edit Product"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                            <span>Edit</span>
+                          </Link>
+
+                          <Link
+                            href={`/admin/inventory?productId=${p.id}`}
+                            className="text-xs font-semibold text-slate-600 hover:text-brand hover:underline hidden md:inline-block"
+                            title="Adjust Inventory Stock"
+                          >
+                            Adjust Stock
+                          </Link>
+
                           <Link
                             href={`/products/${p.slug}`}
                             target="_blank"
-                            className="text-slate-400 hover:text-brand"
+                            className="text-slate-400 hover:text-brand p-1"
                             title="View in Store"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </Link>
 
-                          <Link
-                            href={`/admin/inventory?productId=${p.id}`}
-                            className="text-xs font-semibold text-brand hover:underline"
-                          >
-                            Adjust Stock
-                          </Link>
-
-                          <form
-                            action={async () => {
-                              'use server';
-                              await deleteProductAction(p.id);
-                            }}
-                          >
-                            <button
-                              type="submit"
-                              title="Delete or Archive Product"
-                              className="text-slate-400 hover:text-rose-600 transition p-1"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </form>
+                          <ProductDeleteButton
+                            productId={p.id}
+                            productName={p.name}
+                          />
                         </div>
                       </td>
                     </tr>

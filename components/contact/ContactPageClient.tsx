@@ -13,6 +13,9 @@ export default function ContactPageClient() {
   return (
     <div className="container mx-auto px-4 py-12 max-w-5xl space-y-12">
       <div className="text-center space-y-2">
+        <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#2A3B97] text-xs font-bold mb-1">
+          <span>“{t('brand.tagline', 'Your Trust, Our Technology')}”</span>
+        </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           {t('contact.title', 'Contact & Showroom Location')}
         </h1>

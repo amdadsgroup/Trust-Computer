@@ -183,8 +183,8 @@ export default function Header() {
       {/* 1. Main Dark Navy Header Bar */}
       <div className="bg-[#081621] text-white py-2.5 px-4 border-b border-slate-800">
         <div className="container mx-auto flex items-center justify-between gap-4">
-          {/* Left: Official Brand Logo */}
-          <Link href="/" className="flex items-center group flex-shrink-0 py-0.5">
+          {/* Left: Official Brand Logo & Tagline */}
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 py-0.5">
             <div className="relative h-9 sm:h-11 w-auto group-hover:opacity-95 transition">
               <Image
                 src="/brand/trust-computer-logo.png"
@@ -194,6 +194,11 @@ export default function Header() {
                 priority
                 className="h-9 sm:h-11 w-auto object-contain"
               />
+            </div>
+            <div className="hidden xl:flex flex-col border-l border-slate-700/80 pl-3 justify-center">
+              <span className="text-[11px] font-semibold text-slate-300 tracking-wide">
+                {t('brand.tagline', 'Your Trust, Our Technology')}
+              </span>
             </div>
           </Link>
 
@@ -552,6 +557,13 @@ export default function Header() {
               <User className="w-4 h-4" />
               <span>{t('nav.account', 'My Account')} ({t('nav.register_login', 'Register / Login')})</span>
             </Link>
+          </div>
+
+          {/* Mobile Drawer Tagline */}
+          <div className="pt-2 text-center border-t border-slate-100">
+            <p className="text-[11px] font-semibold text-slate-500 italic">
+              “{t('brand.tagline', 'Your Trust, Our Technology')}”
+            </p>
           </div>
         </div>
       )}

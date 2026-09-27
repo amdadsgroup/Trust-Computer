@@ -30,9 +30,9 @@ export default function AboutPageClient() {
           Trust Computer-Moulvibazar
         </h1>
 
-        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 text-accent-700 text-xs sm:text-sm font-semibold">
+        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-red-50 border border-red-200 text-accent-700 text-xs sm:text-sm font-bold">
           <Heart className="w-4 h-4 fill-accent-600 text-accent-600" />
-          <span>{t('about.hero_badge', 'Your Trusted Destination for Quality Computers & CCTV Surveillance in Moulvibazar.')}</span>
+          <span>{t('brand.tagline', 'Your Trust, Our Technology')}</span>
         </div>
       </div>
 
@@ -89,6 +89,7 @@ export default function AboutPageClient() {
             {t('about.credentials_heading', 'Verified Business Credentials')}
           </h3>
           <p><strong className="text-white">{t('about.cred_name', 'Enterprise Name:')}</strong> Trust Computer-Moulvibazar</p>
+          <p><strong className="text-white">Business Tagline:</strong> {t('brand.tagline', 'Your Trust, Our Technology')}</p>
           <p><strong className="text-white">{t('about.cred_management', 'Management:')}</strong> Trust Computer-Moulvibazar Management</p>
           <p><strong className="text-white">{t('about.cred_type', 'Business Type:')}</strong> Computer, Laptop, CCTV & Networking Showroom</p>
           <p><strong className="text-white">{t('about.cred_address', 'Showroom Address:')}</strong> {t('brand.address', 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh')}</p>

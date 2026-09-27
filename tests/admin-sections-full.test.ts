@@ -22,6 +22,8 @@ describe('Admin Dashboard - 17 Fully Functional Sections & Review Removal', () =
   const expectedAdminSections = [
     { name: 'Overview Dashboard', path: 'page.tsx' },
     { name: 'Products & Stock', path: 'products/page.tsx' },
+    { name: 'New Product Page', path: 'products/new/page.tsx' },
+    { name: 'Edit Product Page', path: 'products/[id]/edit/page.tsx' },
     { name: 'Categories', path: 'categories/page.tsx' },
     { name: 'Brands', path: 'brands/page.tsx' },
     { name: 'Order Management', path: 'orders/page.tsx' },
@@ -57,4 +59,28 @@ describe('Admin Dashboard - 17 Fully Functional Sections & Review Removal', () =
     expect(couponActions.toggleCouponActiveAction).toBeDefined();
     expect(couponActions.deleteCouponAction).toBeDefined();
   });
+
+  it('should verify product actions including edit and delete are exported and typed', async () => {
+    const productActions = await import('@/app/admin/(dashboard)/products/actions');
+    expect(productActions.createProductAction).toBeDefined();
+    expect(productActions.updateProductAction).toBeDefined();
+    expect(productActions.deleteProductAction).toBeDefined();
+    expect(productActions.toggleProductActiveAction).toBeDefined();
+    expect(productActions.toggleProductFeaturedAction).toBeDefined();
+  });
+
+  it('should verify reviews are removed from product detail page', () => {
+    const productDetailPath = path.join(process.cwd(), 'app', '(store)', 'products', '[slug]', 'page.tsx');
+    const content = fs.readFileSync(productDetailPath, 'utf-8');
+    expect(content).not.toContain('<ReviewsSection');
+    expect(content).not.toContain('getProductReviews(');
+    expect(content).not.toContain('getProductReviewStats(');
+  });
+
+  it('should verify reviews API route is disabled', async () => {
+    const apiRoutePath = path.join(process.cwd(), 'app', 'api', 'reviews', 'route.ts');
+    const content = fs.readFileSync(apiRoutePath, 'utf-8');
+    expect(content).toContain('The review system has been removed and is disabled');
+  });
 });
+

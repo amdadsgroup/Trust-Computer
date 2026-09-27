@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
+import { brand } from '@/lib/brand';
 import { logoutAdminAction } from '../login/actions';
 import {
   LayoutDashboard,
@@ -76,6 +77,11 @@ export default async function AdminDashboardLayout({
                 ADMIN
               </span>
             </Link>
+          </div>
+          <div className="px-4 py-1.5 bg-slate-950/40 border-b border-slate-800/60">
+            <p className="text-[10px] font-semibold text-slate-400 tracking-wider uppercase">
+              {brand.tagline}
+            </p>
           </div>
 
           {/* Navigation Links */}

@@ -14,6 +14,10 @@ export const translations: Translations = {
     bn: 'Trust Computer-Moulvibazar',
   },
   'brand.tagline': {
+    en: 'Your Trust, Our Technology',
+    bn: 'আপনার আস্থা, আমাদের প্রযুক্তি',
+  },
+  'brand.description': {
     en: 'Your Trusted Destination for Quality Computers & CCTV Surveillance Systems in Moulvibazar.',
     bn: 'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️',
   },
@@ -216,8 +220,8 @@ export const translations: Translations = {
     bn: 'আমাদের সম্পর্কে - Trust Computer',
   },
   'about.hero_badge': {
-    en: 'Your Trusted Destination for Quality Computers & CCTV Surveillance in Moulvibazar.',
-    bn: 'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️',
+    en: 'Your Trust, Our Technology',
+    bn: 'আপনার আস্থা, আমাদের প্রযুক্তি',
   },
   'about.intro_heading': {
     en: 'Who We Are & Our Commitment',

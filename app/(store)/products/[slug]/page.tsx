@@ -64,8 +64,6 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   let product: any = null;
   let relatedProducts: any[] = [];
-  let reviews: any[] = [];
-  let reviewStats: any = { averageRating: 0, totalReviews: 0, breakdown: [] };
 
   try {
     product = await getProductBySlug(params.slug);
@@ -88,14 +86,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       },
       take: 4,
     });
-
-    // Fetch approved reviews and stats in parallel
-    const [reviewResult, stats] = await Promise.all([
-      getProductReviews({ productId: product.id, limit: 10 }),
-      getProductReviewStats(product.id),
-    ]);
-    reviews = reviewResult.reviews;
-    reviewStats = stats;
   } catch (e) {
     console.error('Error fetching product detail:', e);
   }
@@ -343,22 +333,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
         )}
       </div>
-
-      {/* Reviews Section */}
-      <ReviewsSection
-        productId={product.id}
-        initialReviews={reviews.map((r: any) => ({
-          id: r.id,
-          reviewerName: r.reviewerName,
-          rating: r.rating,
-          title: r.title,
-          body: r.body,
-          isVerifiedPurchase: r.isVerifiedPurchase,
-          createdAt: r.createdAt.toISOString(),
-          images: r.images,
-        }))}
-        stats={reviewStats}
-      />
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (

@@ -263,13 +263,18 @@ export default function CheckoutPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-5xl space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-          Secure Checkout
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Complete the form below to place your order. Our team will verify and dispatch your order swiftly.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Secure Checkout
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Complete the form below to place your order. Our team will verify and dispatch your order swiftly.
+          </p>
+        </div>
+        <div className="inline-flex items-center self-start sm:self-auto px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#2A3B97] text-xs font-bold">
+          <span>“Your Trust, Our Technology”</span>
+        </div>
       </div>
 
       {/* Customer Status Banner */}
@@ -750,6 +755,11 @@ export default function CheckoutPage() {
             <div className="flex items-center gap-2">
               <Truck className="w-4 h-4 text-[#0084d6] flex-shrink-0" />
               <span>Direct delivery from T.S Plaza, Kusumbagh Showroom</span>
+            </div>
+            <div className="pt-2 border-t border-slate-200 text-center">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                “Your Trust, Our Technology”
+              </span>
             </div>
           </div>
         </div>

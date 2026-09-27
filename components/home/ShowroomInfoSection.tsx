@@ -25,8 +25,8 @@ export default function ShowroomInfoSection({ whatsappUrl }: { whatsappUrl: stri
             {t('home.showroom_desc')}
           </p>
 
-          <p className="text-slate-500 text-xs italic">
-            “{t('brand.tagline', 'Your Trusted Destination for Quality Computers & CCTV Surveillance Systems in Moulvibazar.')}”
+          <p className="text-[#2A3B97] text-xs sm:text-sm font-bold italic tracking-wide">
+            “{t('brand.tagline', 'Your Trust, Our Technology')}”
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs text-slate-700">
