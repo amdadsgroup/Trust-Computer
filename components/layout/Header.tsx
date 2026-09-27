@@ -4,11 +4,13 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
+import { useCart } from '../cart/CartContext';
 import { useWishlist } from '../wishlist/WishlistContext';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import LanguageToggle from '../ui/LanguageToggle';
 import {
   Search,
+  ShoppingBag,
   Menu,
   X,
   User,
@@ -25,8 +27,12 @@ import {
   Zap,
 } from 'lucide-react';
 
+// In-memory client cache for category counts across route changes
+let clientCategoryCountsCache: { total: number; counts: Record<string, number> } | null = null;
+
 export default function Header() {
   const pathname = usePathname();
+  const { totalItems, setIsOpen } = useCart();
   const { wishlistCount } = useWishlist();
   const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -45,18 +51,20 @@ export default function Header() {
     }
   };
 
-  const [catCounts, setCatCounts] = useState<{ total: number; counts: Record<string, number> }>({
-    total: 1,
-    counts: {
-      'laptop-computer': 1,
-      monitor: 0,
-      gaming: 0,
-      'computer-accessories': 0,
-      'cctv-security': 0,
-      networking: 0,
-      'power-electronics': 0,
-    },
-  });
+  const [catCounts, setCatCounts] = useState<{ total: number; counts: Record<string, number> }>(
+    () => clientCategoryCountsCache || {
+      total: 1,
+      counts: {
+        'laptop-computer': 1,
+        monitor: 0,
+        gaming: 0,
+        'computer-accessories': 0,
+        'cctv-security': 0,
+        networking: 0,
+        'power-electronics': 0,
+      },
+    }
+  );
 
   const [searchParamCategory, setSearchParamCategory] = useState<string | null>(null);
 
@@ -68,15 +76,22 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
+    if (clientCategoryCountsCache) {
+      setCatCounts(clientCategoryCountsCache);
+      return;
+    }
+
     fetch('/api/categories/counts')
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && typeof data.total === 'number') {
+          clientCategoryCountsCache = data;
           setCatCounts(data);
         }
       })
       .catch(() => { });
-  }, [pathname]);
+  }, []);
+
 
   const isPillActive = (catSlug: string | null) => {
     if (!pathname) return false;
@@ -239,6 +254,28 @@ export default function Header() {
                 <span className="text-[10px] text-slate-400 block -mt-0.5">({wishlistCount})</span>
               </div>
             </Link>
+
+            {/* Cart Trigger */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="hidden lg:flex items-center gap-2 group text-left relative focus:outline-none"
+              aria-label="Shopping Cart"
+            >
+              <div className="text-slate-300 group-hover:text-brand-300 transition relative">
+                <ShoppingBag className="w-5 h-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -top-1.5 -right-2 bg-rose-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </div>
+              <div>
+                <span className="text-xs font-bold block text-white group-hover:text-brand-300 transition">
+                  {t('nav.cart', 'Cart')}
+                </span>
+                <span className="text-[10px] text-slate-400 block -mt-0.5">({totalItems})</span>
+              </div>
+            </button>
 
             {/* Customer Account */}
             <Link
