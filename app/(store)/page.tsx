@@ -21,7 +21,9 @@ import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
 import { unstable_cache } from 'next/cache';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 60;
+export const maxDuration = 30;
 
 const homeProductSelect = {
   id: true,
@@ -135,7 +137,7 @@ const getCachedHomePageData = unstable_cache(
       }
     }
   },
-  ['homepage-full-data-v2'],
+  ['homepage-full-data-v3'],
   {
     revalidate: 60,
     tags: ['homepage', 'products', 'categories', 'banners', 'offers', 'homepage-sections'],
@@ -144,8 +146,27 @@ const getCachedHomePageData = unstable_cache(
 
 
 export default async function HomePage() {
-  const { featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections } =
+  let { featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections } =
     await getCachedHomePageData();
+
+  // Bulletproof safety net: If cached data yielded no products, fetch live from DB directly at runtime
+  if (featuredProducts.length === 0 || newArrivals.length === 0) {
+    try {
+      const activeDbProducts = await prisma.product.findMany({
+        where: { isActive: true },
+        orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
+        select: homeProductSelect,
+        take: 8,
+      });
+      if (activeDbProducts.length > 0) {
+        if (featuredProducts.length === 0) featuredProducts = activeDbProducts;
+        if (newArrivals.length === 0) newArrivals = activeDbProducts;
+      }
+    } catch (e) {
+      console.error('Error fetching live fallback products in HomePage:', e);
+    }
+  }
+
   const whatsappUrl = getGeneralWhatsAppLink();
 
   // Only display verified products fetched from the database
