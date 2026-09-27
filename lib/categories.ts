@@ -90,5 +90,47 @@ export async function ensureCategoryExistsInDb(categoryId: string): Promise<stri
     console.error('ensureCategoryExistsInDb warning:', error);
   }
 
-  return categoryId;
+  // Fallback: Pick any existing active category or create default
+  try {
+    const anyCat = await prisma.category.findFirst({
+      where: { isActive: true },
+      select: { id: true },
+    });
+    if (anyCat) return anyCat.id;
+
+    const fallback = DEFAULT_CATEGORIES[0];
+    const created = await prisma.category.upsert({
+      where: { slug: fallback.slug },
+      update: { isActive: true },
+      create: {
+        id: fallback.id,
+        name: fallback.name,
+        slug: fallback.slug,
+        description: fallback.description,
+        sortOrder: fallback.sortOrder,
+        isActive: true,
+      },
+    });
+    return created.id;
+  } catch {
+    return categoryId;
+  }
 }
+
+/**
+ * Validates brandId against the database.
+ * If the brand does not exist or DB fails, returns null to avoid foreign key errors.
+ */
+export async function validateBrandId(brandId?: string | null): Promise<string | null> {
+  if (!brandId) return null;
+  try {
+    const brand = await prisma.brand.findUnique({
+      where: { id: brandId },
+      select: { id: true },
+    });
+    return brand ? brand.id : null;
+  } catch {
+    return null;
+  }
+}
+

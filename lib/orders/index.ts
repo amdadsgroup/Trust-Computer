@@ -3,6 +3,7 @@ import { OrderStatus, PaymentStatus, PaymentMethod, InventoryMovementType } from
 import prisma from '@/lib/db';
 import { adjustInventory } from '@/lib/inventory';
 import { CheckoutInput } from '@/lib/validations';
+import { getValidAdminUserId } from '@/lib/auth';
 
 /**
  * Valid order status transitions state machine
@@ -120,11 +121,23 @@ export async function createOrderTransactionally(input: CheckoutInput) {
     const orderNumber = generateOrderNumber();
     const trackingToken = generateTrackingToken();
 
-    // 4. Create Order
+    // 4. Safely validate customerId to prevent foreign key constraint violation
+    let validCustomerId: string | null = null;
+    if (input.customerId?.trim()) {
+      const customerExists = await tx.customerProfile.findUnique({
+        where: { id: input.customerId.trim() },
+        select: { id: true },
+      });
+      if (customerExists) {
+        validCustomerId = customerExists.id;
+      }
+    }
+
+    // 5. Create Order
     const order = await tx.order.create({
       data: {
         orderNumber,
-        customerId: input.customerId?.trim() || null,
+        customerId: validCustomerId,
         customerName: input.customerName.trim(),
         customerPhone: input.customerPhone.trim(),
         customerEmail: input.customerEmail?.trim() || null,
@@ -255,13 +268,14 @@ export async function updateOrderStatus(params: {
     });
 
     // Record status transition in history
+    const validUserId = await getValidAdminUserId(params.userId);
     await tx.orderStatusHistory.create({
       data: {
         orderId: order.id,
         fromStatus: order.status,
         toStatus: params.newStatus,
         note: params.note || `Status updated to ${params.newStatus}`,
-        changedByUserId: params.userId,
+        changedByUserId: validUserId,
       },
     });
 

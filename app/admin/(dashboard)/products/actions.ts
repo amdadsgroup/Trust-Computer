@@ -2,11 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db';
-import { requireAuth, recordAuditLog } from '@/lib/auth';
+import { requireAuth, recordAuditLog, getValidAdminUserId } from '@/lib/auth';
 import { productCreateSchema } from '@/lib/validations';
 import { adjustInventory } from '@/lib/inventory';
 import { InventoryMovementType } from '@prisma/client';
-import { ensureCategoryExistsInDb } from '@/lib/categories';
+import { ensureCategoryExistsInDb, validateBrandId } from '@/lib/categories';
 
 export async function createProductAction(formData: FormData) {
   const session = await requireAuth();
@@ -80,6 +80,12 @@ export async function createProductAction(formData: FormData) {
     // Ensure category exists in database to avoid foreign key failure
     const validatedCategoryId = await ensureCategoryExistsInDb(categoryId);
 
+    // Validate optional brandId to avoid foreign key failure
+    const validatedBrandId = await validateBrandId(brandId);
+
+    // Resolve valid admin user ID to avoid foreign key failure on InventoryMovement
+    const validUserId = await getValidAdminUserId(session.userId);
+
     // Create product and initial inventory ledger entry in transaction
     const product = await prisma.$transaction(async (tx) => {
       const prod = await tx.product.create({
@@ -100,7 +106,7 @@ export async function createProductAction(formData: FormData) {
           isActive,
           warrantyInfo,
           categoryId: validatedCategoryId,
-          brandId,
+          brandId: validatedBrandId,
           images: imageUrl
             ? {
                 create: [{ url: imageUrl, isPrimary: true, sortOrder: 0 }],
@@ -118,7 +124,7 @@ export async function createProductAction(formData: FormData) {
             previousStock: 0,
             newStock: stock,
             reason: 'Initial stock on product creation',
-            createdByUserId: session.userId,
+            createdByUserId: validUserId,
           },
         });
       }
@@ -128,7 +134,7 @@ export async function createProductAction(formData: FormData) {
 
     // Audit log
     await recordAuditLog({
-      userId: session.userId,
+      userId: validUserId || undefined,
       action: 'PRODUCT_CREATE',
       entityType: 'Product',
       entityId: product.id,

@@ -7,6 +7,14 @@
 import prisma from '@/lib/db';
 
 export async function getOrCreateWishlist(customerId: string) {
+  if (!customerId) return null;
+
+  const profile = await prisma.customerProfile.findUnique({
+    where: { id: customerId },
+    select: { id: true },
+  });
+  if (!profile) return null;
+
   let wishlist = await prisma.wishlist.findUnique({
     where: { customerId },
     include: {
@@ -50,6 +58,17 @@ export async function getOrCreateWishlist(customerId: string) {
 
 export async function addToWishlist(customerId: string, productId: string) {
   const wishlist = await getOrCreateWishlist(customerId);
+  if (!wishlist) {
+    return { success: false, error: 'Customer not found' };
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: { id: true },
+  });
+  if (!product) {
+    return { success: false, error: 'Product not found' };
+  }
 
   try {
     await prisma.wishlistItem.create({

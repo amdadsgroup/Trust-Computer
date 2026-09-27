@@ -119,10 +119,21 @@ export async function recordCouponUsage(
     orderId: string;
   }
 ) {
+  let validCustomerId: string | null = null;
+  if (params.customerId) {
+    const customer = await tx.customerProfile.findUnique({
+      where: { id: params.customerId },
+      select: { id: true },
+    });
+    if (customer) {
+      validCustomerId = customer.id;
+    }
+  }
+
   await tx.couponUsage.create({
     data: {
       couponId: params.couponId,
-      customerId: params.customerId ?? null,
+      customerId: validCustomerId,
       orderId: params.orderId,
     },
   });

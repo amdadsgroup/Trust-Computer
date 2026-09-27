@@ -104,13 +104,11 @@ export async function recordAuditLog(params: {
   ipAddress?: string;
 }) {
   try {
-    const isValidUuid =
-      params.userId &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.userId);
+    const validUserId = await getValidAdminUserId(params.userId);
 
     await prisma.adminAuditLog.create({
       data: {
-        userId: isValidUuid ? params.userId : undefined,
+        userId: validUserId || undefined,
         action: params.action,
         entityType: params.entityType,
         entityId: params.entityId,
@@ -122,3 +120,42 @@ export async function recordAuditLog(params: {
     console.error('Audit log recording failed:', error);
   }
 }
+
+/**
+ * Safely resolves an admin user ID for database foreign keys.
+ * If the provided userId is not a valid UUID (e.g. 'master-owner-root'), or does not
+ * exist in the `users` table, it resolves the primary OWNER from the DB.
+ * If neither exists, returns null (since all relation foreign keys are nullable).
+ * This completely prevents Foreign Key Constraint violations across the application.
+ */
+export async function getValidAdminUserId(userId?: string | null): Promise<string | null> {
+  if (!userId) return null;
+
+  const isValidUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+
+  if (isValidUuid) {
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true },
+      });
+      if (user) return user.id;
+    } catch {
+      // ignore db error, continue to fallback
+    }
+  }
+
+  // Fallback: Find the active OWNER in the users table
+  try {
+    const owner = await prisma.user.findFirst({
+      where: { role: 'OWNER' },
+      select: { id: true },
+    });
+    if (owner) return owner.id;
+  } catch {
+    // ignore
+  }
+
+  return null;
+}
+

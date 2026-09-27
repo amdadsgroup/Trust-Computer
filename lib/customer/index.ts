@@ -430,6 +430,14 @@ export async function getCustomerAddresses(customerId: string) {
 }
 
 export async function addCustomerAddress(customerId: string, input: CustomerAddressInput) {
+  const profile = await prisma.customerProfile.findUnique({
+    where: { id: customerId },
+    select: { id: true },
+  });
+  if (!profile) {
+    throw new Error('Customer profile not found.');
+  }
+
   // If set as default, remove default from previous addresses
   if (input.isDefault) {
     await prisma.customerAddress.updateMany({

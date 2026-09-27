@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/db';
 import { adminLoginSchema } from '@/lib/validations';
-import { verifyPassword, hashPassword, setSessionCookie, clearSessionCookie, recordAuditLog } from '@/lib/auth';
+import { verifyPassword, hashPassword, setSessionCookie, clearSessionCookie, recordAuditLog, getValidAdminUserId } from '@/lib/auth';
 
 const INITIAL_OWNER_EMAIL = (process.env.INITIAL_OWNER_EMAIL || 'trustcomputermb@gmail.com').toLowerCase().trim();
 const INITIAL_OWNER_PASSWORD = process.env.INITIAL_OWNER_PASSWORD || 'Trust@Moulvibazar2026!';
@@ -33,11 +33,15 @@ export async function loginAdminAction(formData: FormData) {
     }
 
     if (isMasterOwner) {
-      // Non-blocking: persist master owner to DB in background if not found
       if (!user) {
-        hashPassword(INITIAL_OWNER_PASSWORD)
-          .then((passwordHash) =>
-            prisma.user.create({
+        user = await prisma.user.findFirst({
+          where: { role: 'OWNER' },
+        }).catch(() => null);
+
+        if (!user) {
+          try {
+            const passwordHash = await hashPassword(INITIAL_OWNER_PASSWORD);
+            user = await prisma.user.create({
               data: {
                 email: INITIAL_OWNER_EMAIL,
                 passwordHash,
@@ -46,14 +50,18 @@ export async function loginAdminAction(formData: FormData) {
                 role: 'OWNER',
                 isActive: true,
               },
-            })
-          )
-          .catch(() => {}); // fire-and-forget
+            });
+          } catch {
+            // ignore
+          }
+        }
       }
 
-      // Set session immediately — no bcrypt needed for master owner (env var comparison)
+      const validId = user?.id || (await getValidAdminUserId('master-owner-root')) || 'master-owner-root';
+
+      // Set session with valid DB UUID
       await setSessionCookie({
-        userId: user?.id || 'master-owner-root',
+        userId: validId,
         email: INITIAL_OWNER_EMAIL,
         name: user?.name || INITIAL_OWNER_NAME,
         role: 'OWNER',
@@ -61,10 +69,10 @@ export async function loginAdminAction(formData: FormData) {
 
       // Audit log is non-blocking — don't await it
       recordAuditLog({
-        userId: user?.id || 'master-owner-root',
+        userId: validId,
         action: 'OWNER_LOGIN',
         entityType: 'User',
-        entityId: user?.id || 'master-owner-root',
+        entityId: validId,
         details: { email: INITIAL_OWNER_EMAIL, role: 'OWNER' },
       }).catch(() => {});
 

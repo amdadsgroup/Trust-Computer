@@ -12,6 +12,7 @@
 
 import prisma from '@/lib/db';
 import { ReservationStatus } from '@prisma/client';
+import { getValidAdminUserId } from '@/lib/auth';
 
 export const RESERVATION_TTL_MINUTES = 15;
 
@@ -136,6 +137,7 @@ export async function confirmReservations(
         data: { stock: newStock },
       });
 
+      const validUserId = await getValidAdminUserId(adminUserId);
       await tx.inventoryMovement.create({
         data: {
           productId: reservation.productId,
@@ -145,7 +147,7 @@ export async function confirmReservations(
           newStock,
           reason: `Sale via order ${orderId}`,
           referenceId: orderId,
-          createdByUserId: adminUserId ?? null,
+          createdByUserId: validUserId,
         },
       });
 

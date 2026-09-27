@@ -1,5 +1,6 @@
 import { Prisma, InventoryMovementType } from '@prisma/client';
 import prisma from '@/lib/db';
+import { getValidAdminUserId } from '@/lib/auth';
 
 export interface RecordMovementParams {
   productId: string;
@@ -46,6 +47,8 @@ export async function adjustInventory(
   });
 
   // 3. Record immutable inventory movement ledger
+  const validUserId = await getValidAdminUserId(params.userId);
+
   const movement = await client.inventoryMovement.create({
     data: {
       productId: params.productId,
@@ -55,7 +58,7 @@ export async function adjustInventory(
       newStock,
       reason: params.reason,
       referenceId: params.referenceId,
-      createdByUserId: params.userId,
+      createdByUserId: validUserId,
     },
   });
 

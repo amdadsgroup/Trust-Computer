@@ -138,10 +138,34 @@ export async function getOfferById(id: string) {
   });
 }
 
+async function resolveOfferRelations(productId?: string | null, categoryId?: string | null) {
+  let validProductId: string | null = null;
+  if (productId?.trim()) {
+    const prod = await prisma.product.findUnique({
+      where: { id: productId.trim() },
+      select: { id: true },
+    });
+    if (prod) validProductId = prod.id;
+  }
+
+  let validCategoryId: string | null = null;
+  if (categoryId?.trim()) {
+    const cat = await prisma.category.findUnique({
+      where: { id: categoryId.trim() },
+      select: { id: true },
+    });
+    if (cat) validCategoryId = cat.id;
+  }
+
+  return { validProductId, validCategoryId };
+}
+
 /**
  * Creates a new offer
  */
 export async function createOffer(input: OfferInput) {
+  const { validProductId, validCategoryId } = await resolveOfferRelations(input.productId, input.categoryId);
+
   return await prisma.offer.create({
     data: {
       title: input.title.trim(),
@@ -150,8 +174,8 @@ export async function createOffer(input: OfferInput) {
       badge: input.badge?.trim() || null,
       discountType: input.discountType as DiscountType,
       discountValue: input.discountValue ?? null,
-      productId: input.productId?.trim() || null,
-      categoryId: input.categoryId?.trim() || null,
+      productId: validProductId,
+      categoryId: validCategoryId,
       buttonText: input.buttonText?.trim() || 'View Offer',
       buttonUrl: input.buttonUrl?.trim() || null,
       priority: input.priority ?? 0,
@@ -166,6 +190,8 @@ export async function createOffer(input: OfferInput) {
  * Updates an existing offer
  */
 export async function updateOffer(id: string, input: OfferInput) {
+  const { validProductId, validCategoryId } = await resolveOfferRelations(input.productId, input.categoryId);
+
   return await prisma.offer.update({
     where: { id },
     data: {
@@ -175,8 +201,8 @@ export async function updateOffer(id: string, input: OfferInput) {
       badge: input.badge?.trim() || null,
       discountType: input.discountType as DiscountType,
       discountValue: input.discountValue ?? null,
-      productId: input.productId?.trim() || null,
-      categoryId: input.categoryId?.trim() || null,
+      productId: validProductId,
+      categoryId: validCategoryId,
       buttonText: input.buttonText?.trim() || 'View Offer',
       buttonUrl: input.buttonUrl?.trim() || null,
       priority: input.priority ?? 0,

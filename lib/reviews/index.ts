@@ -35,12 +35,33 @@ export async function createReview(input: CreateReviewInput) {
     throw new Error('Review body must be at least 10 characters.');
   }
 
-  // Prevent duplicate reviews from the same customer for the same product
+  // Verify product exists to prevent FK violation
+  const product = await prisma.product.findUnique({
+    where: { id: input.productId },
+    select: { id: true },
+  });
+  if (!product) {
+    throw new Error('Product not found.');
+  }
+
+  // Safely resolve customerId if provided
+  let validCustomerId: string | null = null;
   if (input.customerId) {
+    const customer = await prisma.customerProfile.findUnique({
+      where: { id: input.customerId },
+      select: { id: true },
+    });
+    if (customer) {
+      validCustomerId = customer.id;
+    }
+  }
+
+  // Prevent duplicate reviews from the same customer for the same product
+  if (validCustomerId) {
     const existing = await prisma.review.findFirst({
       where: {
         productId: input.productId,
-        customerId: input.customerId,
+        customerId: validCustomerId,
         status: { not: ReviewStatus.REJECTED },
       },
     });
@@ -53,7 +74,7 @@ export async function createReview(input: CreateReviewInput) {
   const review = await prisma.review.create({
     data: {
       productId: input.productId,
-      customerId: input.customerId ?? null,
+      customerId: validCustomerId,
       reviewerName: input.reviewerName.trim(),
       rating: input.rating,
       title: input.title?.trim() || null,
