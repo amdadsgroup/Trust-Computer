@@ -87,4 +87,13 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     const content = fs.readFileSync(guidelinesPath, 'utf-8');
     expect(content).toContain('Your Trust, Our Technology');
   });
+
+  it('should display brand tagline in topbar for both mobile and desktop views', () => {
+    const headerPath = path.join(process.cwd(), 'components', 'layout', 'Header.tsx');
+    const content = fs.readFileSync(headerPath, 'utf-8');
+    expect(content).toContain("t('brand.tagline', 'Your Trust, Our Technology')");
+    // Ensure tagline is not hidden on mobile screens
+    expect(content).not.toContain('hidden xl:flex flex-col border-l border-slate-700/80 pl-3 justify-center');
+    expect(content).toContain('flex flex-col border-l border-slate-700/80');
+  });
 });

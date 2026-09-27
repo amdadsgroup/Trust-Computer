@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   createBannerAction,
   updateBannerAction,
@@ -47,6 +48,7 @@ export default function BannerManagementClient({
 }: {
   initialBanners: BannerData[];
 }) {
+  const router = useRouter();
   const [banners, setBanners] = useState<BannerData[]>(initialBanners);
   const [isModalOpen, setIsFormOpen] = useState(false);
   const [editingBannerId, setEditingBannerId] = useState<string | null>(null);
@@ -178,10 +180,12 @@ export default function BannerManagementClient({
 
       if (result.success) {
         setIsFormOpen(false);
-        window.location.reload();
+        setFeedback({ type: 'success', message: 'Banner saved successfully' });
+        router.refresh();
       } else {
         setFeedback({ type: 'error', message: result.error || 'Failed to save banner' });
       }
+
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'An unexpected error occurred' });
     } finally {

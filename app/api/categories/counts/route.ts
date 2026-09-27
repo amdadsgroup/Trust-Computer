@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/db';
+import { unstable_cache } from 'next/cache';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
-export async function GET() {
-  try {
+const getCachedCategoryCounts = unstable_cache(
+  async () => {
     const [total, categories] = await Promise.all([
       prisma.product.count({ where: { isActive: true } }),
       prisma.category.findMany({
@@ -23,14 +24,21 @@ export async function GET() {
       counts[c.slug] = c._count.products;
     });
 
-    return NextResponse.json(
-      { total, counts },
-      {
-        headers: {
-          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
-        },
-      }
-    );
+    return { total, counts };
+  },
+  ['api-category-counts-v1'],
+  { revalidate: 300, tags: ['category-counts', 'categories', 'products'] }
+);
+
+export async function GET() {
+  try {
+    const data = await getCachedCategoryCounts();
+
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      },
+    });
   } catch (error) {
     console.error('Error fetching category counts:', error);
     return NextResponse.json({
@@ -47,3 +55,4 @@ export async function GET() {
     });
   }
 }
+

@@ -21,16 +21,13 @@ export async function loginAdminAction(formData: FormData) {
   const isMasterOwner = email === INITIAL_OWNER_EMAIL && password === INITIAL_OWNER_PASSWORD;
 
   try {
-    // Run DB lookup with a short timeout — don't let a slow DB block the master-owner fast path
     let user: any = null;
     try {
-      user = await Promise.race([
-        prisma.user.findUnique({ where: { email } }),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-      ]);
+      user = await prisma.user.findUnique({ where: { email } });
     } catch (dbErr) {
       console.warn('DB lookup during login warning:', dbErr);
     }
+
 
     if (isMasterOwner) {
       if (!user) {

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import {
   createOfferAction,
   updateOfferAction,
@@ -53,6 +54,7 @@ export default function OffersManagementClient({
   products: { id: string; name: string; sku: string; sellingPrice: number }[];
   categories: { id: string; name: string; slug: string }[];
 }) {
+  const router = useRouter();
   const [offers, setOffers] = useState<OfferData[]>(initialOffers);
   const [isModalOpen, setIsFormOpen] = useState(false);
   const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
@@ -186,10 +188,12 @@ export default function OffersManagementClient({
 
       if (result.success) {
         setIsFormOpen(false);
-        window.location.reload();
+        setFeedback({ type: 'success', message: 'Offer saved successfully' });
+        router.refresh();
       } else {
         setFeedback({ type: 'error', message: result.error || 'Failed to save offer' });
       }
+
     } catch (err: any) {
       setFeedback({ type: 'error', message: err.message || 'An unexpected error occurred' });
     } finally {

@@ -18,8 +18,9 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  weight: ['400', '500', '600', '700', '800', '900'],
+  weight: ['400', '600', '700', '800'],
 });
+
 
 export const viewport: Viewport = {
   themeColor: '#2A3B97',

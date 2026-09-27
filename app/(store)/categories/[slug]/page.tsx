@@ -6,8 +6,56 @@ import ProductCard from '@/components/products/ProductCard';
 import { PackageOpen, ChevronRight, Home, Filter, SlidersHorizontal, Check, ShieldCheck } from 'lucide-react';
 import { Prisma } from '@prisma/client';
 
-export const dynamic = 'force-dynamic';
+import { unstable_cache } from 'next/cache';
+
+export const revalidate = 60;
 export const maxDuration = 30;
+
+const getCachedCategoryData = unstable_cache(
+  async (slugs: string[]) => {
+    return await prisma.category.findFirst({
+      where: {
+        slug: {
+          in: slugs.map((s) => s.toLowerCase()),
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        products: {
+          where: {
+            isActive: true,
+          },
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            sku: true,
+            sellingPrice: true,
+            compareAtPrice: true,
+            stock: true,
+            lowStockThreshold: true,
+            warrantyInfo: true,
+            images: {
+              select: { url: true, altText: true },
+              orderBy: { sortOrder: 'asc' },
+              take: 1,
+            },
+            category: { select: { name: true, slug: true } },
+            brand: { select: { name: true, slug: true } },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 24,
+        },
+      },
+    });
+  },
+  ['category-page-data'],
+  { revalidate: 60, tags: ['categories', 'products'] }
+);
+
 
 interface CategoryPageProps {
   params: {
@@ -56,55 +104,60 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     searchSlugs.push(aliasInfo.canonical);
   }
 
+  const hasFilters = sp.brand || sp.inStockOnly || sp.sort;
+
   try {
-    category = await prisma.category.findFirst({
-      where: {
-        slug: {
-          in: searchSlugs,
-          mode: 'insensitive',
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        description: true,
-        products: {
-          where: {
-            isActive: true,
-            ...(sp.brand ? { brand: { slug: sp.brand } } : {}),
-            ...(sp.inStockOnly === 'true' ? { stock: { gt: 0 } } : {}),
+    if (!hasFilters) {
+      category = await getCachedCategoryData(searchSlugs);
+    } else {
+      category = await prisma.category.findFirst({
+        where: {
+          slug: {
+            in: searchSlugs.map((s) => s.toLowerCase()),
           },
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            sku: true,
-            sellingPrice: true,
-            compareAtPrice: true,
-            stock: true,
-            lowStockThreshold: true,
-            warrantyInfo: true,
-            images: {
-              select: { url: true, altText: true },
-              orderBy: { sortOrder: 'asc' },
-              take: 1,
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          products: {
+            where: {
+              isActive: true,
+              ...(sp.brand ? { brand: { slug: sp.brand } } : {}),
+              ...(sp.inStockOnly === 'true' ? { stock: { gt: 0 } } : {}),
             },
-            category: { select: { name: true, slug: true } },
-            brand: { select: { name: true, slug: true } },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              sku: true,
+              sellingPrice: true,
+              compareAtPrice: true,
+              stock: true,
+              lowStockThreshold: true,
+              warrantyInfo: true,
+              images: {
+                select: { url: true, altText: true },
+                orderBy: { sortOrder: 'asc' },
+                take: 1,
+              },
+              category: { select: { name: true, slug: true } },
+              brand: { select: { name: true, slug: true } },
+            },
+            orderBy:
+              sp.sort === 'price_asc'
+                ? { sellingPrice: 'asc' }
+                : sp.sort === 'price_desc'
+                ? { sellingPrice: 'desc' }
+                : sp.sort === 'name_asc'
+                ? { name: 'asc' }
+                : { createdAt: 'desc' },
+            take: 24,
           },
-          orderBy:
-            sp.sort === 'price_asc'
-              ? { sellingPrice: 'asc' }
-              : sp.sort === 'price_desc'
-              ? { sellingPrice: 'desc' }
-              : sp.sort === 'name_asc'
-              ? { name: 'asc' }
-              : { createdAt: 'desc' },
-          take: 24,
         },
-      },
-    });
+      });
+    }
 
     if (category) {
       products = category.products || [];
@@ -113,6 +166,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
   } catch (err) {
     console.error('Error fetching category page:', err);
   }
+
 
   if (!category) {
     const fallbackName = aliasInfo?.name || params.slug

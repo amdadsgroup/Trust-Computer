@@ -8,7 +8,7 @@ import {
   toggleOfferActive,
 } from '@/lib/offers';
 import { offerSchema } from '@/lib/validations';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function createOfferAction(data: unknown) {
   try {
@@ -27,6 +27,8 @@ export async function createOfferAction(data: unknown) {
 
     revalidatePath('/admin/offers');
     revalidatePath('/');
+    revalidateTag('offers');
+    revalidateTag('homepage');
     return { success: true, offerId: offer.id };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {
@@ -53,6 +55,8 @@ export async function updateOfferAction(id: string, data: unknown) {
 
     revalidatePath('/admin/offers');
     revalidatePath('/');
+    revalidateTag('offers');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {
@@ -76,6 +80,8 @@ export async function deleteOfferAction(id: string) {
 
     revalidatePath('/admin/offers');
     revalidatePath('/');
+    revalidateTag('offers');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete offer' };
@@ -97,8 +103,11 @@ export async function toggleOfferActiveAction(id: string, isActive: boolean) {
 
     revalidatePath('/admin/offers');
     revalidatePath('/');
+    revalidateTag('offers');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to update offer status' };
   }
 }
+

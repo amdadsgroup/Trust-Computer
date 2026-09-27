@@ -2,7 +2,7 @@
 
 import { requireRole, recordAuditLog } from '@/lib/auth';
 import { updateHomepageSection, reorderHomepageSections } from '@/lib/homepage';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function updateHomepageSectionAction(
   sectionKey: string,
@@ -21,6 +21,8 @@ export async function updateHomepageSectionAction(
 
     revalidatePath('/admin/homepage');
     revalidatePath('/');
+    revalidateTag('homepage-sections');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to update section' };
@@ -41,8 +43,11 @@ export async function reorderHomepageSectionsAction(sectionKeys: string[]) {
 
     revalidatePath('/admin/homepage');
     revalidatePath('/');
+    revalidateTag('homepage-sections');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to reorder sections' };
   }
 }
+

@@ -193,19 +193,19 @@ export default function Header() {
       <div className="bg-[#081621] text-white py-2.5 px-4 border-b border-slate-800">
         <div className="container mx-auto flex items-center justify-between gap-4">
           {/* Left: Official Brand Logo & Tagline */}
-          <Link href="/" className="flex items-center gap-3 group flex-shrink-0 py-0.5">
-            <div className="relative h-9 sm:h-11 w-auto group-hover:opacity-95 transition">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 py-0.5">
+            <div className="relative h-8 sm:h-11 w-auto group-hover:opacity-95 transition shrink-0">
               <Image
                 src="/brand/trust-computer-logo.png"
                 alt="Trust Computer-Moulvibazar"
                 width={200}
                 height={42}
                 priority
-                className="h-9 sm:h-11 w-auto object-contain"
+                className="h-8 sm:h-11 w-auto object-contain"
               />
             </div>
-            <div className="hidden xl:flex flex-col border-l border-slate-700/80 pl-3 justify-center">
-              <span className="text-[11px] font-semibold text-slate-300 tracking-wide">
+            <div className="flex flex-col border-l border-slate-700/80 pl-2 sm:pl-3 justify-center">
+              <span className="text-[9.5px] sm:text-[11px] font-semibold text-slate-300 tracking-tight sm:tracking-wide leading-tight">
                 {t('brand.tagline', 'Your Trust, Our Technology')}
               </span>
             </div>

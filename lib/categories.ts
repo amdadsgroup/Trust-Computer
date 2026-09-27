@@ -1,5 +1,6 @@
 import prisma from '@/lib/db';
 import { DEFAULT_CATEGORIES, StoreCategoryItem } from './categories-data';
+import { unstable_cache } from 'next/cache';
 
 export * from './categories-data';
 
@@ -8,44 +9,49 @@ export * from './categories-data';
  * Prioritizes the 7 official store categories in proper sortOrder,
  * and guarantees never returning an empty list.
  */
-export async function getAdminCategories(): Promise<Array<{ id: string; name: string; slug?: string }>> {
-  try {
-    const dbCategories = await prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
-      select: { id: true, name: true, slug: true, sortOrder: true },
-    });
+export const getAdminCategories = unstable_cache(
+  async (): Promise<Array<{ id: string; name: string; slug?: string }>> => {
+    try {
+      const dbCategories = await prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        select: { id: true, name: true, slug: true, sortOrder: true },
+      });
 
-    if (dbCategories && dbCategories.length > 0) {
-      // Check if all 7 default categories are in the result; if any are missing or inactive, merge them in
-      const existingSlugs = new Set(dbCategories.map((c) => c.slug));
-      const missingDefaults = DEFAULT_CATEGORIES.filter((d) => !existingSlugs.has(d.slug));
+      if (dbCategories && dbCategories.length > 0) {
+        // Check if all 7 default categories are in the result; if any are missing or inactive, merge them in
+        const existingSlugs = new Set(dbCategories.map((c) => c.slug));
+        const missingDefaults = DEFAULT_CATEGORIES.filter((d) => !existingSlugs.has(d.slug));
 
-      if (missingDefaults.length === 0) {
-        return dbCategories;
+        if (missingDefaults.length === 0) {
+          return dbCategories;
+        }
+
+        return [
+          ...dbCategories,
+          ...missingDefaults.map((d) => ({
+            id: d.id,
+            name: d.name,
+            slug: d.slug,
+            sortOrder: d.sortOrder,
+          })),
+        ].sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));
       }
-
-      return [
-        ...dbCategories,
-        ...missingDefaults.map((d) => ({
-          id: d.id,
-          name: d.name,
-          slug: d.slug,
-          sortOrder: d.sortOrder,
-        })),
-      ].sort((a, b) => (a.sortOrder || 99) - (b.sortOrder || 99));
+    } catch (error) {
+      console.error('Error querying categories from DB, using defaults fallback:', error);
     }
-  } catch (error) {
-    console.error('Error querying categories from DB, using defaults fallback:', error);
-  }
 
-  // Resilient fallback: All 7 official default categories
-  return DEFAULT_CATEGORIES.map((d) => ({
-    id: d.id,
-    name: d.name,
-    slug: d.slug,
-  }));
-}
+    // Resilient fallback: All 7 official default categories
+    return DEFAULT_CATEGORIES.map((d) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+    }));
+  },
+  ['admin-categories-v1'],
+  { revalidate: 300, tags: ['categories'] }
+);
+
 
 /**
  * Ensures that the given category exists in the database.

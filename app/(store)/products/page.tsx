@@ -11,6 +11,7 @@ import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, Packag
 import { unstable_cache } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export const maxDuration = 30;
 
 interface ProductsPageProps {
@@ -83,10 +84,37 @@ const getCachedFilterMetadata = unstable_cache(
   { revalidate: 120, tags: ['categories', 'brands', 'products'] }
 );
 
+const getCachedDefaultProducts = unstable_cache(
+  async () => {
+    const [products, totalCount] = await Promise.all([
+      prisma.product.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        take: 12,
+        select: productSelect,
+      }),
+      prisma.product.count({ where: { isActive: true } }),
+    ]);
+    return { products, totalCount };
+  },
+  ['catalog-default-page-1'],
+  { revalidate: 60, tags: ['products'] }
+);
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const sp = searchParams || {};
   const page = Math.max(1, parseInt(sp.page || '1', 10));
   const pageSize = 12;
+
+  const isDefaultQuery =
+    page === 1 &&
+    !sp.search &&
+    !sp.category &&
+    !sp.brand &&
+    !sp.sort &&
+    !sp.minPrice &&
+    !sp.maxPrice &&
+    !sp.inStockOnly;
 
   // Build Prisma where filter
   const where: Prisma.ProductWhereInput = {
@@ -140,28 +168,41 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   let totalStoreCount = 0;
 
   try {
-    const [productData, metaData] = await Promise.all([
-      Promise.all([
-        prisma.product.findMany({
-          where,
-          orderBy,
-          skip: (page - 1) * pageSize,
-          take: pageSize,
-          select: productSelect,
-        }),
-        prisma.product.count({ where }),
-      ]),
-      getCachedFilterMetadata(),
-    ]);
+    if (isDefaultQuery) {
+      const [defaultProds, metaData] = await Promise.all([
+        getCachedDefaultProducts(),
+        getCachedFilterMetadata(),
+      ]);
+      products = defaultProds.products;
+      totalCount = defaultProds.totalCount;
+      categories = metaData.categories;
+      brands = metaData.brands;
+      totalStoreCount = metaData.totalInStore;
+    } else {
+      const [productData, metaData] = await Promise.all([
+        Promise.all([
+          prisma.product.findMany({
+            where,
+            orderBy,
+            skip: (page - 1) * pageSize,
+            take: pageSize,
+            select: productSelect,
+          }),
+          prisma.product.count({ where }),
+        ]),
+        getCachedFilterMetadata(),
+      ]);
 
-    products = productData[0];
-    totalCount = productData[1];
-    categories = metaData.categories;
-    brands = metaData.brands;
-    totalStoreCount = metaData.totalInStore;
+      products = productData[0];
+      totalCount = productData[1];
+      categories = metaData.categories;
+      brands = metaData.brands;
+      totalStoreCount = metaData.totalInStore;
+    }
   } catch (e) {
     console.error('Error fetching product catalog:', e);
   }
+
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

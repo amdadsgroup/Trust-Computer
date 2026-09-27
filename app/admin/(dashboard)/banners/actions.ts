@@ -9,7 +9,7 @@ import {
   reorderBanners,
 } from '@/lib/banners';
 import { bannerSchema } from '@/lib/validations';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export async function createBannerAction(data: unknown) {
   try {
@@ -28,6 +28,8 @@ export async function createBannerAction(data: unknown) {
 
     revalidatePath('/admin/banners');
     revalidatePath('/');
+    revalidateTag('banners');
+    revalidateTag('homepage');
     return { success: true, bannerId: banner.id };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {
@@ -54,6 +56,8 @@ export async function updateBannerAction(id: string, data: unknown) {
 
     revalidatePath('/admin/banners');
     revalidatePath('/');
+    revalidateTag('banners');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {
@@ -77,6 +81,8 @@ export async function deleteBannerAction(id: string) {
 
     revalidatePath('/admin/banners');
     revalidatePath('/');
+    revalidateTag('banners');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to delete banner' };
@@ -98,6 +104,8 @@ export async function toggleBannerActiveAction(id: string, isActive: boolean) {
 
     revalidatePath('/admin/banners');
     revalidatePath('/');
+    revalidateTag('banners');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to update status' };
@@ -118,8 +126,11 @@ export async function reorderBannersAction(bannerIds: string[]) {
 
     revalidatePath('/admin/banners');
     revalidatePath('/');
+    revalidateTag('banners');
+    revalidateTag('homepage');
     return { success: true };
   } catch (err: any) {
     return { success: false, error: err.message || 'Failed to reorder banners' };
   }
 }
+

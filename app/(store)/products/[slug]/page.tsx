@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
-import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 
 export const revalidate = 60;
 
@@ -26,18 +26,55 @@ interface ProductDetailPageProps {
   };
 }
 
-const getProductBySlug = cache(async (slug: string) => {
-  return await prisma.product.findUnique({
-    where: { slug },
-    include: {
-      images: { orderBy: { sortOrder: 'asc' } },
-      specifications: { orderBy: { sortOrder: 'asc' } },
-      variants: true,
-      category: true,
-      brand: true,
-    },
-  });
-});
+const getProductBySlug = unstable_cache(
+  async (slug: string) => {
+    return await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        images: { orderBy: { sortOrder: 'asc' } },
+        specifications: { orderBy: { sortOrder: 'asc' } },
+        variants: true,
+        category: true,
+        brand: true,
+      },
+    });
+  },
+  ['product-detail-data'],
+  { revalidate: 60, tags: ['products'] }
+);
+
+const getRelatedProducts = unstable_cache(
+  async (categoryId: string, productId: string) => {
+    return await prisma.product.findMany({
+      where: {
+        categoryId,
+        id: { not: productId },
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        sku: true,
+        sellingPrice: true,
+        compareAtPrice: true,
+        stock: true,
+        lowStockThreshold: true,
+        warrantyInfo: true,
+        images: {
+          select: { url: true, altText: true },
+          orderBy: { sortOrder: 'asc' },
+          take: 1,
+        },
+        category: { select: { name: true, slug: true } },
+        brand: { select: { name: true, slug: true } },
+      },
+      take: 4,
+    });
+  },
+  ['related-products-data'],
+  { revalidate: 120, tags: ['products'] }
+);
 
 export async function generateMetadata({ params }: ProductDetailPageProps) {
   try {
@@ -50,7 +87,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       description: `${product.name} - ৳${Number(product.sellingPrice).toLocaleString('en-BD')}. Available at Trust Computer-Moulvibazar. ${product.warrantyInfo || ''}`,
       openGraph: {
         title: product.name,
-        description: product.description.slice(0, 160),
+        description: product.description ? product.description.slice(0, 160) : '',
         images: product.images[0]?.url ? [{ url: product.images[0].url }] : [],
       },
     };
@@ -70,23 +107,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       notFound();
     }
 
-    // Related products from same category
-    relatedProducts = await prisma.product.findMany({
-      where: {
-        categoryId: product.categoryId,
-        id: { not: product.id },
-        isActive: true,
-      },
-      include: {
-        images: { orderBy: { sortOrder: 'asc' }, take: 1 },
-        category: true,
-        brand: true,
-      },
-      take: 4,
-    });
+    if (product.categoryId) {
+      relatedProducts = await getRelatedProducts(product.categoryId, product.id);
+    }
   } catch (e) {
     console.error('Error fetching product detail:', e);
   }
+
 
   if (!product) {
     notFound();

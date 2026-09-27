@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog, getValidAdminUserId } from '@/lib/auth';
 import { productCreateSchema } from '@/lib/validations';
@@ -145,6 +145,9 @@ export async function createProductAction(formData: FormData) {
     revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
+    revalidateTag('products');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
     return { success: true, productId: product.id };
   } catch (error: any) {
     console.error('Failed to create product:', error);
@@ -173,6 +176,9 @@ export async function toggleProductActiveAction(productId: string, currentState:
     revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
+    revalidateTag('products');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
     return { success: true };
   } catch (e: any) {
     return { error: e.message || 'Failed to update product status.' };
@@ -200,6 +206,8 @@ export async function toggleProductFeaturedAction(productId: string, currentStat
     revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
+    revalidateTag('products');
+    revalidateTag('homepage');
     return { success: true, isFeatured: updated.isFeatured };
   } catch (e: any) {
     return { error: e.message || 'Failed to update featured status.' };
@@ -380,6 +388,9 @@ export async function updateProductAction(productId: string, formData: FormData)
     revalidatePath(`/admin/products/${productId}/edit`);
     revalidatePath('/admin');
     revalidatePath('/admin/inventory');
+    revalidateTag('products');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
 
     return { success: true, productId };
   } catch (error: any) {
@@ -464,6 +475,9 @@ export async function deleteProductAction(productId: string) {
     revalidatePath('/admin/products');
     revalidatePath('/admin');
     revalidatePath('/admin/inventory');
+    revalidateTag('products');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
 
     return { success: true };
   } catch (e: any) {

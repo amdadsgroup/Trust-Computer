@@ -19,8 +19,9 @@ import {
 import ShowroomInfoSection from '@/components/home/ShowroomInfoSection';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+import { unstable_cache } from 'next/cache';
+
+export const revalidate = 60;
 
 const homeProductSelect = {
   id: true,
@@ -45,56 +46,64 @@ const homeProductSelect = {
   },
 };
 
-async function getHomePageData() {
-  try {
-    const [featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections] =
-      await Promise.all([
-        prisma.product.findMany({
-          where: { isActive: true, isFeatured: true },
-          select: homeProductSelect,
-          take: 8,
-        }),
-        prisma.product.findMany({
-          where: { isActive: true },
-          orderBy: { createdAt: 'desc' },
-          select: homeProductSelect,
-          take: 8,
-        }),
-        prisma.category.findMany({
-          where: { isActive: true },
-          select: { id: true, name: true, slug: true },
-          orderBy: { sortOrder: 'asc' },
-          take: 12,
-        }),
-        getActiveBanners(),
-        getActiveOffers(),
-        getHomepageSections(),
-      ]);
+const getCachedHomePageData = unstable_cache(
+  async () => {
+    try {
+      const [featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections] =
+        await Promise.all([
+          prisma.product.findMany({
+            where: { isActive: true, isFeatured: true },
+            select: homeProductSelect,
+            take: 8,
+          }),
+          prisma.product.findMany({
+            where: { isActive: true },
+            orderBy: { createdAt: 'desc' },
+            select: homeProductSelect,
+            take: 8,
+          }),
+          prisma.category.findMany({
+            where: { isActive: true },
+            select: { id: true, name: true, slug: true },
+            orderBy: { sortOrder: 'asc' },
+            take: 12,
+          }),
+          getActiveBanners(),
+          getActiveOffers(),
+          getHomepageSections(),
+        ]);
 
-    return {
-      featuredProducts,
-      newArrivals,
-      categories,
-      activeBanners,
-      activeOffers,
-      sections,
-    };
-  } catch (error) {
-    console.error('Database fetch error on home page:', error);
-    return {
-      featuredProducts: [],
-      newArrivals: [],
-      categories: [],
-      activeBanners: [],
-      activeOffers: [],
-      sections: [],
-    };
+      return {
+        featuredProducts,
+        newArrivals,
+        categories,
+        activeBanners,
+        activeOffers,
+        sections,
+      };
+    } catch (error) {
+      console.error('Database fetch error on home page:', error);
+      return {
+        featuredProducts: [],
+        newArrivals: [],
+        categories: [],
+        activeBanners: [],
+        activeOffers: [],
+        sections: [],
+      };
+    }
+  },
+  ['homepage-full-data-v1'],
+  {
+    revalidate: 60,
+    tags: ['homepage', 'products', 'categories', 'banners', 'offers', 'homepage-sections'],
   }
-}
+);
+
 
 export default async function HomePage() {
   const { featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections } =
-    await getHomePageData();
+    await getCachedHomePageData();
   const whatsappUrl = getGeneralWhatsAppLink();
 
   // Only display verified products fetched from the database

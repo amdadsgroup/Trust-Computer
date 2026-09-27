@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
 import { categorySchema, brandSchema } from '@/lib/validations';
@@ -62,6 +62,9 @@ export async function createCategoryAction(formData: FormData) {
     revalidatePath('/admin/categories');
     revalidatePath('/categories');
     revalidatePath('/');
+    revalidateTag('categories');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
     return { success: true, category };
   } catch (e: any) {
     console.error('Error in createCategoryAction:', e);
@@ -115,6 +118,8 @@ export async function createBrandAction(formData: FormData) {
 
     revalidatePath('/admin/categories');
     revalidatePath('/admin/brands');
+    revalidatePath('/products');
+    revalidateTag('brands');
     return { success: true, brand };
   } catch (e: any) {
     console.error('Error in createBrandAction:', e);
@@ -157,6 +162,10 @@ export async function deleteCategoryAction(categoryId: string) {
 
     revalidatePath('/admin/categories');
     revalidatePath('/categories');
+    revalidatePath('/');
+    revalidateTag('categories');
+    revalidateTag('homepage');
+    revalidateTag('category-counts');
     return { success: true };
   } catch (e: any) {
     console.error('Error in deleteCategoryAction:', e);
@@ -199,6 +208,8 @@ export async function deleteBrandAction(brandId: string) {
 
     revalidatePath('/admin/categories');
     revalidatePath('/admin/brands');
+    revalidatePath('/products');
+    revalidateTag('brands');
     return { success: true };
   } catch (e: any) {
     console.error('Error in deleteBrandAction:', e);
