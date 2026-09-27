@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { UserPlus, Mail, Lock, Phone, User, AlertCircle, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { registerCustomerAction } from '@/app/(store)/auth/actions';
 
 function RegisterForm() {
   const router = useRouter();
