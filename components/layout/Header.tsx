@@ -75,7 +75,7 @@ export default function Header() {
           setCatCounts(data);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [pathname]);
 
   const isPillActive = (catSlug: string | null) => {
@@ -305,20 +305,18 @@ export default function Header() {
                 <li key={idx} className="shrink-0">
                   <Link
                     href={cat.href}
-                    className={`group px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-[13px] font-bold flex items-center gap-2 transition-all duration-150 border ${
-                      active
+                    className={`group px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-[13px] font-bold flex items-center gap-2 transition-all duration-150 border ${active
                         ? 'bg-[#2644a6] text-white border-[#2644a6] shadow-sm'
                         : 'bg-white text-slate-800 border-slate-200/90 hover:border-brand-300 hover:bg-slate-50/80 hover:text-brand-700 shadow-xs'
-                    }`}
+                      }`}
                   >
                     <span>{cat.icon(active)}</span>
                     <span>{cat.name}</span>
                     <span
-                      className={`text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full ml-0.5 min-w-[20px] text-center ${
-                        active
+                      className={`text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full ml-0.5 min-w-[20px] text-center ${active
                           ? 'bg-white/20 text-white'
                           : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200/80'
-                      }`}
+                        }`}
                     >
                       {cat.count}
                     </span>
@@ -420,22 +418,20 @@ export default function Header() {
                     key={idx}
                     href={cat.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`p-2 rounded-xl transition flex items-center justify-between border ${
-                      active
+                    className={`p-2 rounded-xl transition flex items-center justify-between border ${active
                         ? 'bg-[#2644a6] text-white border-[#2644a6]'
                         : 'bg-slate-50 hover:bg-slate-100 border-slate-200/60 text-slate-800'
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-1.5 truncate">
                       <span>{cat.icon(active)}</span>
                       <span className="truncate">{cat.name}</span>
                     </div>
                     <span
-                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                        active
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${active
                           ? 'bg-white/20 text-white'
                           : 'bg-white text-slate-500 border border-slate-200/60'
-                      }`}
+                        }`}
                     >
                       {cat.count}
                     </span>
