@@ -122,10 +122,11 @@ export async function ensureCategoryExistsInDb(categoryId: string): Promise<stri
  * If the brand does not exist or DB fails, returns null to avoid foreign key errors.
  */
 export async function validateBrandId(brandId?: string | null): Promise<string | null> {
-  if (!brandId) return null;
+  const cleanId = brandId?.trim();
+  if (!cleanId) return null;
   try {
     const brand = await prisma.brand.findUnique({
-      where: { id: brandId },
+      where: { id: cleanId },
       select: { id: true },
     });
     return brand ? brand.id : null;

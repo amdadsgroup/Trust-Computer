@@ -139,7 +139,7 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
   });
 
   return (
-    <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:border-brand-200/80 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative">
+    <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:border-brand-200/80 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative h-full">
       {/* Top Floating Badges & Wishlist Action */}
       <div className="absolute top-2.5 inset-x-2.5 z-10 flex items-center justify-between pointer-events-none">
         <div className="flex flex-col gap-1 items-start pointer-events-auto">
@@ -178,8 +178,8 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
         </button>
       </div>
 
-      {/* Product Image Area */}
-      <Link href={`/products/${product.slug}`} className="block relative pt-[78%] bg-slate-50/80 overflow-hidden">
+      {/* Product Image Area (1:1 Square) */}
+      <Link href={`/products/${product.slug}`} className="block relative w-full aspect-square bg-slate-50/80 overflow-hidden">
         {primaryImage ? (
           <Image
             src={primaryImage}
@@ -187,17 +187,17 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             loading="lazy"
-            className="object-contain p-4 group-hover:scale-108 transition-transform duration-300"
+            className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-gradient-to-b from-slate-50 to-slate-100/60">
-            <div className="w-12 h-12 rounded-xl bg-white border border-slate-200/90 shadow-xs flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
-              <Laptop className="w-6 h-6 text-brand-600" />
+            <div className="w-14 h-14 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+              <Laptop className="w-7 h-7 text-brand-600" />
             </div>
-            <span className="text-[10px] font-bold text-slate-500 line-clamp-1 max-w-[85%]">
+            <span className="text-[11px] font-bold text-slate-700 line-clamp-1 max-w-[85%]">
               {product.name}
             </span>
-            <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5">
+            <span className="text-[9px] text-slate-400 uppercase tracking-widest mt-0.5">
               Trust Computer
             </span>
           </div>

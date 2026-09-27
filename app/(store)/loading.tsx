@@ -20,7 +20,7 @@ export default function StoreLoading() {
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between">
-            <div className="pt-[78%] bg-slate-100 relative" />
+            <div className="aspect-square bg-slate-100 relative" />
             <div className="p-4 space-y-3">
               <div className="h-3 w-20 bg-slate-200 rounded" />
               <div className="h-4 w-full bg-slate-200 rounded" />

@@ -113,7 +113,7 @@ export default function ComparePage() {
 
                       {/* Product Image */}
                       <Link href={`/products/${product.slug}`} className="block">
-                        <div className="relative w-full pt-[75%] bg-slate-50 rounded-xl overflow-hidden border border-slate-100">
+                        <div className="relative w-full aspect-square bg-slate-50 rounded-xl overflow-hidden border border-slate-100">
                           {product.images?.[0]?.url ? (
                             <Image
                               src={product.images[0].url}
