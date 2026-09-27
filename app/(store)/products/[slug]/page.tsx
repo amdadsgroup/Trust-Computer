@@ -15,8 +15,6 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
-import { getProductReviews, getProductReviewStats } from '@/lib/reviews';
-import ReviewsSection from '@/components/products/ReviewsSection';
 
 import { cache } from 'react';
 
