@@ -13,6 +13,7 @@ import {
   Filter,
 } from 'lucide-react';
 import { toggleProductActiveAction, deleteProductAction } from './actions';
+import { getAdminCategories } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
 
@@ -97,11 +98,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
         },
       }),
       prisma.product.count({ where }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true },
-        orderBy: { name: 'asc' },
-      }),
+      getAdminCategories(),
       prisma.brand.findMany({
         where: { isActive: true },
         select: { id: true, name: true },

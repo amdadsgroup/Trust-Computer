@@ -4,6 +4,8 @@ import prisma from '@/lib/db';
 import NewProductForm from '@/components/admin/NewProductForm';
 import { ArrowLeft } from 'lucide-react';
 
+import { getAdminCategories } from '@/lib/categories';
+
 export const dynamic = 'force-dynamic';
 
 export default async function NewProductPage() {
@@ -12,21 +14,23 @@ export default async function NewProductPage() {
 
   try {
     const [fetchedCategories, fetchedBrands] = await Promise.all([
-      prisma.category.findMany({
-        where: { isActive: true },
-        orderBy: { name: 'asc' },
-        select: { id: true, name: true },
-      }),
-      prisma.brand.findMany({
-        where: { isActive: true },
-        orderBy: { name: 'asc' },
-        select: { id: true, name: true },
-      }),
+      getAdminCategories(),
+      prisma.brand
+        .findMany({
+          where: { isActive: true },
+          orderBy: { name: 'asc' },
+          select: { id: true, name: true },
+        })
+        .catch((err) => {
+          console.warn('Brand fetch warning on new product page:', err);
+          return [];
+        }),
     ]);
     categories = fetchedCategories;
     brands = fetchedBrands;
   } catch (error) {
-    console.error('Error fetching categories/brands on new product page:', error);
+    console.error('Error on new product page, using category defaults:', error);
+    categories = await getAdminCategories();
   }
 
   return (

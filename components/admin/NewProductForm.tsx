@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from '@/app/admin/(dashboard)/products/actions';
 import { Loader2, AlertCircle } from 'lucide-react';
+import { DEFAULT_CATEGORIES } from '@/lib/categories-data';
 
 interface NewProductFormProps {
   categories: Array<{ id: string; name: string }>;
@@ -12,6 +13,7 @@ interface NewProductFormProps {
 
 export default function NewProductForm({ categories, brands }: NewProductFormProps) {
   const router = useRouter();
+  const availableCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
@@ -115,7 +117,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
             className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand cursor-pointer"
           >
             <option value="">Select Category</option>
-            {categories.map((c) => (
+            {availableCategories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>

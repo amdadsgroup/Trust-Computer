@@ -6,6 +6,7 @@ import { requireAuth, recordAuditLog } from '@/lib/auth';
 import { productCreateSchema } from '@/lib/validations';
 import { adjustInventory } from '@/lib/inventory';
 import { InventoryMovementType } from '@prisma/client';
+import { ensureCategoryExistsInDb } from '@/lib/categories';
 
 export async function createProductAction(formData: FormData) {
   const session = await requireAuth();
@@ -76,6 +77,9 @@ export async function createProductAction(formData: FormData) {
       }
     }
 
+    // Ensure category exists in database to avoid foreign key failure
+    const validatedCategoryId = await ensureCategoryExistsInDb(categoryId);
+
     // Create product and initial inventory ledger entry in transaction
     const product = await prisma.$transaction(async (tx) => {
       const prod = await tx.product.create({
@@ -95,7 +99,7 @@ export async function createProductAction(formData: FormData) {
           isBestSeller,
           isActive,
           warrantyInfo,
-          categoryId,
+          categoryId: validatedCategoryId,
           brandId,
           images: imageUrl
             ? {

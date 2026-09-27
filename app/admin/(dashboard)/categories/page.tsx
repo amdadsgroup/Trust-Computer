@@ -3,6 +3,8 @@ import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import CategoriesManagementClient from './CategoriesManagementClient';
 
+import { DEFAULT_CATEGORIES } from '@/lib/categories-data';
+
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCategoriesPage() {
@@ -26,6 +28,18 @@ export default async function AdminCategoriesPage() {
     brands = fetchedBrands;
   } catch (error) {
     console.error('Error fetching categories/brands:', error);
+  }
+
+  if (!categories || categories.length === 0) {
+    categories = DEFAULT_CATEGORIES.map((d) => ({
+      id: d.id,
+      name: d.name,
+      slug: d.slug,
+      description: d.description,
+      sortOrder: d.sortOrder,
+      isActive: true,
+      _count: { products: 0 },
+    }));
   }
 
   return (
