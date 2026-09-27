@@ -141,8 +141,10 @@ export async function createProductAction(formData: FormData) {
       details: { name: product.name, sku: product.sku, price: sellingPrice, stock },
     });
 
+    revalidatePath('/');
     revalidatePath('/products');
     revalidatePath('/admin/products');
+    revalidatePath('/admin');
     return { success: true, productId: product.id };
   } catch (error: any) {
     console.error('Failed to create product:', error);
@@ -167,11 +169,40 @@ export async function toggleProductActiveAction(productId: string, currentState:
       details: { newState: updated.isActive },
     });
 
+    revalidatePath('/');
     revalidatePath('/products');
     revalidatePath('/admin/products');
+    revalidatePath('/admin');
     return { success: true };
   } catch (e: any) {
     return { error: e.message || 'Failed to update product status.' };
+  }
+}
+
+export async function toggleProductFeaturedAction(productId: string, currentState: boolean) {
+  const session = await requireAuth();
+
+  try {
+    const updated = await prisma.product.update({
+      where: { id: productId },
+      data: { isFeatured: !currentState },
+    });
+
+    await recordAuditLog({
+      userId: session.userId,
+      action: 'PRODUCT_TOGGLE_FEATURED',
+      entityType: 'Product',
+      entityId: productId,
+      details: { newState: updated.isFeatured },
+    });
+
+    revalidatePath('/');
+    revalidatePath('/products');
+    revalidatePath('/admin/products');
+    revalidatePath('/admin');
+    return { success: true, isFeatured: updated.isFeatured };
+  } catch (e: any) {
+    return { error: e.message || 'Failed to update featured status.' };
   }
 }
 
@@ -197,8 +228,10 @@ export async function deleteProductAction(productId: string) {
         details: { reason: 'Product has order items; archived instead of deleted' },
       });
 
+      revalidatePath('/');
       revalidatePath('/products');
       revalidatePath('/admin/products');
+      revalidatePath('/admin');
       return { success: true, message: 'Product archived because it has associated customer orders.' };
     }
 
@@ -214,8 +247,10 @@ export async function deleteProductAction(productId: string) {
       details: {},
     });
 
+    revalidatePath('/');
     revalidatePath('/products');
     revalidatePath('/admin/products');
+    revalidatePath('/admin');
     return { success: true };
   } catch (e: any) {
     return { error: e.message || 'Failed to delete product.' };

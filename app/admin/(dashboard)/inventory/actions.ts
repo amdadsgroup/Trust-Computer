@@ -52,6 +52,8 @@ export async function submitStockAdjustmentAction(formData: FormData) {
       },
     });
 
+    revalidatePath('/');
+    revalidatePath('/products');
     revalidatePath('/admin/inventory');
     revalidatePath('/admin/products');
     revalidatePath('/admin');

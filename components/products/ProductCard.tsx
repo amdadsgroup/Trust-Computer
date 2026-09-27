@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingBag, MessageCircle, Check, GitCompare, Heart, ShieldCheck } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Check, GitCompare, Heart, ShieldCheck, Laptop } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
 import { useCompare } from '../compare/CompareContext';
 import { useWishlist } from '../wishlist/WishlistContext';
@@ -179,7 +179,7 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
       </div>
 
       {/* Product Image Area */}
-      <Link href={`/products/${product.slug}`} className="block relative pt-[78%] bg-slate-50/60 overflow-hidden">
+      <Link href={`/products/${product.slug}`} className="block relative pt-[78%] bg-slate-50/80 overflow-hidden">
         {primaryImage ? (
           <Image
             src={primaryImage}
@@ -190,8 +190,16 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
             className="object-contain p-4 group-hover:scale-108 transition-transform duration-300"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-300 text-xs font-mono">
-            Trust Computer
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-3 text-center bg-gradient-to-b from-slate-50 to-slate-100/60">
+            <div className="w-12 h-12 rounded-xl bg-white border border-slate-200/90 shadow-xs flex items-center justify-center mb-1.5 group-hover:scale-110 transition-transform">
+              <Laptop className="w-6 h-6 text-brand-600" />
+            </div>
+            <span className="text-[10px] font-bold text-slate-500 line-clamp-1 max-w-[85%]">
+              {product.name}
+            </span>
+            <span className="text-[8px] text-slate-400 uppercase tracking-widest mt-0.5">
+              Trust Computer
+            </span>
           </div>
         )}
       </Link>

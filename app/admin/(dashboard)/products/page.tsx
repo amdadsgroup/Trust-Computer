@@ -11,8 +11,13 @@ import {
   ChevronRight,
   Trash2,
   Filter,
+  Star,
 } from 'lucide-react';
-import { toggleProductActiveAction, deleteProductAction } from './actions';
+import {
+  toggleProductActiveAction,
+  toggleProductFeaturedAction,
+  deleteProductAction,
+} from './actions';
 import { getAdminCategories } from '@/lib/categories';
 
 export const dynamic = 'force-dynamic';
@@ -319,24 +324,50 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
                       </td>
 
                       <td className="py-3 px-4">
-                        <form
-                          action={async () => {
-                            'use server';
-                            await toggleProductActiveAction(p.id, p.isActive);
-                          }}
-                        >
-                          <button
-                            type="submit"
-                            title="Click to toggle active status"
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition hover:opacity-80 cursor-pointer ${
-                              p.isActive
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-slate-100 text-slate-500 border border-slate-200'
-                            }`}
+                        <div className="flex flex-col gap-1.5 items-start">
+                          <form
+                            action={async () => {
+                              'use server';
+                              await toggleProductActiveAction(p.id, p.isActive);
+                            }}
                           >
-                            {p.isActive ? 'Active' : 'Inactive'}
-                          </button>
-                        </form>
+                            <button
+                              type="submit"
+                              title="Click to toggle active status"
+                              className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full transition hover:opacity-80 cursor-pointer ${
+                                p.isActive
+                                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  : 'bg-slate-100 text-slate-500 border border-slate-200'
+                              }`}
+                            >
+                              {p.isActive ? '● Active' : '○ Inactive'}
+                            </button>
+                          </form>
+
+                          <form
+                            action={async () => {
+                              'use server';
+                              await toggleProductFeaturedAction(p.id, p.isFeatured);
+                            }}
+                          >
+                            <button
+                              type="submit"
+                              title={
+                                p.isFeatured
+                                  ? 'Featured on homepage (click to remove from homepage)'
+                                  : 'Not featured (click to feature on homepage)'
+                              }
+                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full transition cursor-pointer flex items-center gap-1 ${
+                                p.isFeatured
+                                  ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 shadow-xs'
+                                  : 'bg-slate-50 text-slate-400 border border-slate-200 hover:text-slate-600 hover:bg-slate-100'
+                              }`}
+                            >
+                              <Star className={`w-3 h-3 ${p.isFeatured ? 'fill-amber-500 text-amber-500' : 'text-slate-400'}`} />
+                              <span>{p.isFeatured ? 'Featured' : 'Regular'}</span>
+                            </button>
+                          </form>
+                        </div>
                       </td>
 
                       <td className="py-3 px-4 text-right">

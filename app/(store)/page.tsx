@@ -19,7 +19,8 @@ import {
 import ShowroomInfoSection from '@/components/home/ShowroomInfoSection';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const homeProductSelect = {
   id: true,
