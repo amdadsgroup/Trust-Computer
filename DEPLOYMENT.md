@@ -27,10 +27,11 @@ Ensure the following critical production variables are set:
 
 | Variable | Description | Example / Recommendation |
 |---|---|---|
-| `DATABASE_URL` | PostgreSQL pooler connection URL | `postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres?schema=public` |
+| `DATABASE_URL` | Supabase Transaction Pooler URL (Port 6543) for Vercel/serverless runtime | `postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true&sslmode=require&connection_limit=10&connect_timeout=30&pool_timeout=30` |
+| `DIRECT_URL` | Supabase Session Pooler URL (Port 5432) for Prisma migrations/CLI | `postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres?sslmode=require&connect_timeout=30` |
 | `AUTH_SECRET` | 32+ character random secret for JWT signing | `openssl rand -base64 32` |
 | `AUTH_COOKIE_NAME` | Session cookie name | `trust_admin_session` |
-| `APP_URL` | Canonical public store URL | `https://trustcomputermb.com` |
+| `APP_URL` | Canonical public store URL | `https://trustcomputer.vercel.app` (or custom domain) |
 | `NEXT_PUBLIC_WHATSAPP` | Store WhatsApp number | `+8801753765372` |
 | `PAYMENT_GATEWAY_PROVIDER` | Active gateway | `COD_MANUAL` (or `BKASH`, `SSLCOMMERZ`) |
 
