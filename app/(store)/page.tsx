@@ -49,29 +49,53 @@ const homeProductSelect = {
 const getCachedHomePageData = unstable_cache(
   async () => {
     try {
-      const [featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections] =
-        await Promise.all([
-          prisma.product.findMany({
-            where: { isActive: true, isFeatured: true },
-            select: homeProductSelect,
-            take: 8,
-          }),
-          prisma.product.findMany({
-            where: { isActive: true },
-            orderBy: { createdAt: 'desc' },
-            select: homeProductSelect,
-            take: 8,
-          }),
-          prisma.category.findMany({
-            where: { isActive: true },
-            select: { id: true, name: true, slug: true },
-            orderBy: { sortOrder: 'asc' },
-            take: 12,
-          }),
-          getActiveBanners(),
-          getActiveOffers(),
-          getHomepageSections(),
-        ]);
+      const [
+        featuredRes,
+        newArrivalsRes,
+        categoriesRes,
+        bannersRes,
+        offersRes,
+        sectionsRes,
+      ] = await Promise.allSettled([
+        prisma.product.findMany({
+          where: { isActive: true, isFeatured: true },
+          select: homeProductSelect,
+          take: 8,
+        }),
+        prisma.product.findMany({
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+          select: homeProductSelect,
+          take: 8,
+        }),
+        prisma.category.findMany({
+          where: { isActive: true },
+          select: { id: true, name: true, slug: true },
+          orderBy: { sortOrder: 'asc' },
+          take: 12,
+        }),
+        getActiveBanners(),
+        getActiveOffers(),
+        getHomepageSections(),
+      ]);
+
+      let featuredProducts = featuredRes.status === 'fulfilled' ? featuredRes.value : [];
+      let newArrivals = newArrivalsRes.status === 'fulfilled' ? newArrivalsRes.value : [];
+
+      // If no products were explicitly flagged isFeatured, automatically feature top active products
+      if (featuredProducts.length === 0 && newArrivals.length > 0) {
+        featuredProducts = newArrivals;
+      }
+
+      // If newArrivals was empty but featured had items, fallback
+      if (newArrivals.length === 0 && featuredProducts.length > 0) {
+        newArrivals = featuredProducts;
+      }
+
+      const categories = categoriesRes.status === 'fulfilled' ? categoriesRes.value : [];
+      const activeBanners = bannersRes.status === 'fulfilled' ? bannersRes.value : [];
+      const activeOffers = offersRes.status === 'fulfilled' ? offersRes.value : [];
+      const sections = sectionsRes.status === 'fulfilled' ? sectionsRes.value : [];
 
       return {
         featuredProducts,
@@ -83,17 +107,35 @@ const getCachedHomePageData = unstable_cache(
       };
     } catch (error) {
       console.error('Database fetch error on home page:', error);
-      return {
-        featuredProducts: [],
-        newArrivals: [],
-        categories: [],
-        activeBanners: [],
-        activeOffers: [],
-        sections: [],
-      };
+      // Emergency direct query if Promise.allSettled outer block threw
+      try {
+        const directDbProducts = await prisma.product.findMany({
+          where: { isActive: true },
+          orderBy: { createdAt: 'desc' },
+          select: homeProductSelect,
+          take: 8,
+        });
+        return {
+          featuredProducts: directDbProducts,
+          newArrivals: directDbProducts,
+          categories: [],
+          activeBanners: [],
+          activeOffers: [],
+          sections: [],
+        };
+      } catch {
+        return {
+          featuredProducts: [],
+          newArrivals: [],
+          categories: [],
+          activeBanners: [],
+          activeOffers: [],
+          sections: [],
+        };
+      }
     }
   },
-  ['homepage-full-data-v1'],
+  ['homepage-full-data-v2'],
   {
     revalidate: 60,
     tags: ['homepage', 'products', 'categories', 'banners', 'offers', 'homepage-sections'],
@@ -438,7 +480,7 @@ export default async function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-              {displayNewArrivals.slice(0, 4).map((product) => (
+              {displayNewArrivals.slice(0, 8).map((product) => (
                 <ProductCard
                   key={product.id}
                   product={{
