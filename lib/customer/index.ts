@@ -234,9 +234,13 @@ export async function registerCustomer(input: CustomerRegisterInput): Promise<{
     return { success: true, customerId: profile.id };
   } catch (error: any) {
     console.error('Customer registration error:', error);
+    let msg = error?.message || 'Registration failed. Please check your information and try again.';
+    if (msg.includes("Can't reach database") || msg.includes('prisma') || msg.includes('invocation')) {
+      msg = 'Database connection temporarily busy. Please wait a moment and try again.';
+    }
     return {
       success: false,
-      error: error.message || 'Registration failed. Please check your information and try again.',
+      error: msg,
     };
   }
 }
@@ -312,9 +316,13 @@ export async function loginCustomer(input: CustomerLoginInput): Promise<{
     return { success: true, customerId: profile.id };
   } catch (error: any) {
     console.error('Customer login error:', error);
+    let msg = error?.message || 'Unable to sign in. Please verify your credentials.';
+    if (msg.includes("Can't reach database") || msg.includes('prisma') || msg.includes('invocation')) {
+      msg = 'Database connection temporarily busy. Please wait a moment and try again.';
+    }
     return {
       success: false,
-      error: error.message || 'Unable to sign in. Please verify your credentials.',
+      error: msg,
     };
   }
 }
