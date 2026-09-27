@@ -3,12 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingBag, MessageCircle, Check, GitCompare, Heart, ShieldCheck, Laptop } from 'lucide-react';
+import { ShoppingBag, Check, Heart, ShieldCheck, Laptop } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
-import { useCompare } from '../compare/CompareContext';
 import { useWishlist } from '../wishlist/WishlistContext';
 import { useToast } from '@/components/ui/toast';
-import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export interface ProductCardProps {
@@ -31,14 +29,12 @@ export interface ProductCardProps {
 
 const ProductCard = React.memo(function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart();
-  const { addToCompare, removeFromCompare, isInCompare } = useCompare();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { success, info } = useToast();
   const { t, isBangla } = useLanguage();
 
   const [added, setAdded] = React.useState(false);
 
-  const inCompare = isInCompare(product.id);
   const inWishlist = isInWishlist(product.id);
 
   const price = Number(product.sellingPrice);
@@ -97,46 +93,6 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
       info(isBangla ? 'উইশলিস্ট থেকে সরানো হয়েছে' : 'Removed from wishlist');
     }
   };
-
-  const handleToggleCompare = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (inCompare) {
-      removeFromCompare(product.id);
-      info(isBangla ? 'তুলনা তালিকা থেকে সরানো হয়েছে' : 'Removed from comparison');
-    } else {
-      const addedItem = addToCompare({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        sku: product.sku,
-        sellingPrice: price,
-        compareAtPrice: comparePrice,
-        stock: product.stock,
-        images: product.images,
-        category: product.category,
-        brand: product.brand,
-        warrantyInfo: product.warrantyInfo,
-      });
-      if (addedItem) {
-        success(isBangla ? 'তুলনা তালিকায় যোগ করা হয়েছে' : 'Added to product comparison');
-      } else {
-        info(
-          isBangla
-            ? 'সর্বোচ্চ ৪টি পণ্য একসাথে তুলনা করা যাবে'
-            : 'You can compare up to 4 products at once'
-        );
-      }
-    }
-  };
-
-  const whatsappUrl = getProductInquiryWhatsAppLink({
-    name: product.name,
-    sku: product.sku,
-    price,
-    slug: product.slug,
-    isBangla,
-  });
 
   return (
     <div className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-xl hover:border-brand-200/80 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1 relative h-full">
@@ -271,61 +227,33 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
             )}
           </div>
 
-          <div className="grid grid-cols-5 gap-1.5">
-            {/* Add to Cart */}
-            <button
-              onClick={handleAddToCart}
-              disabled={isOutOfStock}
-              className={`col-span-3 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl text-xs font-bold transition shadow-sm ${
-                added
-                  ? 'bg-emerald-600 text-white'
-                  : isOutOfStock
-                  ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                  : 'bg-brand-600 hover:bg-brand-700 text-white hover:shadow-md hover:shadow-brand-600/20 active:scale-95'
-              }`}
-              aria-label="Add product to cart"
-            >
-              {added ? (
-                <>
-                  <Check className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>{t('product.added', 'Added!')}</span>
-                </>
-              ) : isOutOfStock ? (
-                <span>{t('product.out_of_stock', 'Out of Stock')}</span>
-              ) : (
-                <>
-                  <ShoppingBag className="w-3.5 h-3.5" />
-                  <span>{t('product.add_to_cart', 'Add to Cart')}</span>
-                </>
-              )}
-            </button>
-
-            {/* Compare Button */}
-            <button
-              onClick={handleToggleCompare}
-              className={`col-span-1 flex items-center justify-center rounded-xl p-2 transition border ${
-                inCompare
-                  ? 'bg-brand-50 text-brand-700 border-brand-300 font-bold'
-                  : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200/80 hover:text-slate-900'
-              }`}
-              title={inCompare ? (isBangla ? 'তুলনা তালিকা থেকে সরান' : 'Remove from comparison') : (isBangla ? 'অন্য পণ্যের সাথে তুলনা করুন' : 'Compare this product')}
-              aria-label={inCompare ? 'Remove from comparison' : 'Compare this product'}
-            >
-              <GitCompare className="w-3.5 h-3.5" />
-            </button>
-
-            {/* WhatsApp Inquiry */}
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="col-span-1 flex items-center justify-center bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-xl p-2 transition"
-              title={isBangla ? 'হোয়াটসঅ্যাপে সরাসরি কথা বলুন' : 'Inquire via WhatsApp'}
-              aria-label="Inquire via WhatsApp"
-            >
-              <MessageCircle className="w-3.5 h-3.5" />
-            </a>
-          </div>
+          {/* Add to Cart Button */}
+          <button
+            onClick={handleAddToCart}
+            disabled={isOutOfStock}
+            className={`w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-bold transition shadow-sm ${
+              added
+                ? 'bg-emerald-600 text-white'
+                : isOutOfStock
+                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                : 'bg-brand-600 hover:bg-brand-700 text-white hover:shadow-md hover:shadow-brand-600/20 active:scale-[0.98]'
+            }`}
+            aria-label="Add product to cart"
+          >
+            {added ? (
+              <>
+                <Check className="w-4 h-4 stroke-[3]" />
+                <span>{t('product.added', 'Added!')}</span>
+              </>
+            ) : isOutOfStock ? (
+              <span>{t('product.out_of_stock', 'Out of Stock')}</span>
+            ) : (
+              <>
+                <ShoppingBag className="w-4 h-4" />
+                <span>{t('product.add_to_cart', 'Add to Cart')}</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
@@ -19,6 +19,14 @@ import {
   Heart,
   PackageSearch,
   Gift,
+  Boxes,
+  Laptop,
+  Monitor,
+  Gamepad2,
+  Keyboard,
+  Camera,
+  Wifi,
+  Zap,
 } from 'lucide-react';
 
 export default function Header() {
@@ -43,14 +51,131 @@ export default function Header() {
     }
   };
 
+  const [catCounts, setCatCounts] = useState<{ total: number; counts: Record<string, number> }>({
+    total: 1,
+    counts: {
+      'laptop-computer': 1,
+      monitor: 0,
+      gaming: 0,
+      'computer-accessories': 0,
+      'cctv-security': 0,
+      networking: 0,
+      'power-electronics': 0,
+    },
+  });
+
+  const [searchParamCategory, setSearchParamCategory] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setSearchParamCategory(params.get('category'));
+    }
+  }, [pathname]);
+
+  useEffect(() => {
+    fetch('/api/categories/counts')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && typeof data.total === 'number') {
+          setCatCounts(data);
+        }
+      })
+      .catch(() => {});
+  }, [pathname]);
+
+  const isPillActive = (catSlug: string | null) => {
+    if (!pathname) return false;
+    if (catSlug === null || catSlug === 'all') {
+      return pathname === '/products' && !searchParamCategory;
+    }
+    return (
+      pathname === `/categories/${catSlug}` ||
+      (pathname === '/products' && searchParamCategory === catSlug)
+    );
+  };
+
   const navCategories = [
-    { key: 'cat.laptop_computer', name: t('cat.laptop_computer', 'Laptop & Computer'), href: '/categories/laptop-computer' },
-    { key: 'cat.monitor', name: t('cat.monitor', 'Monitor'), href: '/categories/monitor' },
-    { key: 'cat.gaming', name: t('cat.gaming', 'Gaming'), href: '/categories/gaming' },
-    { key: 'cat.accessories', name: t('cat.accessories', 'Computer Accessories'), href: '/categories/computer-accessories' },
-    { key: 'cat.cctv_security', name: t('cat.cctv_security', 'CCTV & Security'), href: '/categories/cctv-security' },
-    { key: 'cat.networking', name: t('cat.networking', 'Networking'), href: '/categories/networking' },
-    { key: 'cat.power_electronics', name: t('cat.power_electronics', 'Power & Electronics'), href: '/categories/power-electronics' },
+    {
+      slug: 'all',
+      key: 'cat.all_products',
+      name: t('cat.all_products', 'All Products'),
+      href: '/products',
+      icon: (active: boolean) => (
+        <Boxes className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-[#2644a6]'}`} />
+      ),
+      count: catCounts.total ?? 0,
+    },
+    {
+      slug: 'laptop-computer',
+      key: 'cat.laptop_computer',
+      name: t('cat.laptop_computer', 'Laptop & Computer'),
+      href: '/categories/laptop-computer',
+      icon: (active: boolean) => (
+        <Laptop className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-indigo-600'}`} />
+      ),
+      count: catCounts.counts['laptop-computer'] ?? 0,
+    },
+    {
+      slug: 'monitor',
+      key: 'cat.monitor',
+      name: t('cat.monitor', 'Monitor'),
+      href: '/categories/monitor',
+      icon: (active: boolean) => (
+        <Monitor className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-blue-600'}`} />
+      ),
+      count: catCounts.counts['monitor'] ?? 0,
+    },
+    {
+      slug: 'gaming',
+      key: 'cat.gaming',
+      name: t('cat.gaming', 'Gaming'),
+      href: '/categories/gaming',
+      icon: (active: boolean) => (
+        <Gamepad2 className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-rose-500'}`} />
+      ),
+      count: catCounts.counts['gaming'] ?? 0,
+    },
+    {
+      slug: 'computer-accessories',
+      key: 'cat.accessories',
+      name: t('cat.accessories', 'Computer Accessories'),
+      href: '/categories/computer-accessories',
+      icon: (active: boolean) => (
+        <Keyboard className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-blue-700'}`} />
+      ),
+      count: catCounts.counts['computer-accessories'] ?? 0,
+    },
+    {
+      slug: 'cctv-security',
+      key: 'cat.cctv_security',
+      name: t('cat.cctv_security', 'CCTV & Security'),
+      href: '/categories/cctv-security',
+      icon: (active: boolean) => (
+        <Camera className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-emerald-600'}`} />
+      ),
+      count: catCounts.counts['cctv-security'] ?? 0,
+    },
+    {
+      slug: 'networking',
+      key: 'cat.networking',
+      name: t('cat.networking', 'Networking'),
+      href: '/categories/networking',
+      icon: (active: boolean) => (
+        <Wifi className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-teal-500'}`} />
+      ),
+      count: catCounts.counts['networking'] ?? 0,
+    },
+    {
+      slug: 'power-electronics',
+      key: 'cat.power_electronics',
+      name: t('cat.power_electronics', 'Power & Electronics'),
+      href: '/categories/power-electronics',
+      icon: (active: boolean) => (
+        <Zap className={`w-4 h-4 shrink-0 ${active ? 'text-white' : 'text-amber-500'}`} />
+      ),
+      count: catCounts.counts['power-electronics'] ?? 0,
+    },
   ];
 
   return (
@@ -238,33 +363,37 @@ export default function Header() {
         </form>
       </div>
 
-      {/* Mobile Horizontal Swipeable Category Bar */}
-      <div className="md:hidden bg-[#0d2030] border-b border-slate-800 overflow-x-auto py-2 px-3 flex items-center gap-2 scrollbar-none whitespace-nowrap text-xs">
-        {navCategories.map((cat, idx) => (
-          <Link
-            key={idx}
-            href={cat.href}
-            className="bg-slate-800/80 text-slate-300 hover:text-white font-medium px-3 py-1.5 rounded-full text-[11px] flex-shrink-0 transition active:bg-[#2A3B97] active:text-white"
-          >
-            {cat.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* 2. White Horizontal Category Navigation Bar */}
-      <nav className="hidden md:block bg-white border-b border-slate-200">
-        <div className="container mx-auto px-4">
-          <ul className="flex items-center justify-between overflow-x-auto text-[13px] font-bold text-slate-800 whitespace-nowrap py-1">
-            {navCategories.map((cat, idx) => (
-              <li key={idx}>
-                <Link
-                  href={cat.href}
-                  className="px-2.5 py-2.5 inline-block hover:text-[#2A3B97] transition text-[12px] xl:text-[13px]"
-                >
-                  {cat.name}
-                </Link>
-              </li>
-            ))}
+      {/* 2. Topbar Category Navigation Bar (Pill Design) */}
+      <nav className="bg-[#f8fafc] border-b border-slate-200/90 py-2 sm:py-2.5">
+        <div className="container mx-auto px-3 sm:px-4">
+          <ul className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto scrollbar-none py-0.5 whitespace-nowrap">
+            {navCategories.map((cat, idx) => {
+              const active = isPillActive(cat.slug);
+              return (
+                <li key={idx} className="shrink-0">
+                  <Link
+                    href={cat.href}
+                    className={`group px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-[13px] font-bold flex items-center gap-2 transition-all duration-150 border ${
+                      active
+                        ? 'bg-[#2644a6] text-white border-[#2644a6] shadow-sm'
+                        : 'bg-white text-slate-800 border-slate-200/90 hover:border-brand-300 hover:bg-slate-50/80 hover:text-brand-700 shadow-xs'
+                    }`}
+                  >
+                    <span>{cat.icon(active)}</span>
+                    <span>{cat.name}</span>
+                    <span
+                      className={`text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full ml-0.5 min-w-[20px] text-center ${
+                        active
+                          ? 'bg-white/20 text-white'
+                          : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200/80'
+                      }`}
+                    >
+                      {cat.count}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </nav>
@@ -374,16 +503,35 @@ export default function Header() {
               Categories
             </span>
             <div className="grid grid-cols-2 gap-2 text-xs font-bold text-slate-800">
-              {navCategories.map((cat, idx) => (
-                <Link
-                  key={idx}
-                  href={cat.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 transition truncate"
-                >
-                  {cat.name}
-                </Link>
-              ))}
+              {navCategories.map((cat, idx) => {
+                const active = isPillActive(cat.slug);
+                return (
+                  <Link
+                    key={idx}
+                    href={cat.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`p-2 rounded-xl transition flex items-center justify-between border ${
+                      active
+                        ? 'bg-[#2644a6] text-white border-[#2644a6]'
+                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200/60 text-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5 truncate">
+                      <span>{cat.icon(active)}</span>
+                      <span className="truncate">{cat.name}</span>
+                    </div>
+                    <span
+                      className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        active
+                          ? 'bg-white/20 text-white'
+                          : 'bg-white text-slate-500 border border-slate-200/60'
+                      }`}
+                    >
+                      {cat.count}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
 

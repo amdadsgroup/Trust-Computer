@@ -40,15 +40,19 @@ describe('Phase 4 — Design Polish & UI System', () => {
     expect(layoutContent).toContain('themeColor: \'#2A3B97\'');
   });
 
-  it('should integrate Wishlist and Compare into ProductCard and Header', () => {
+  it('should integrate Wishlist into ProductCard, and Compare into ProductDetailActions and Header', () => {
     const cardContent = fs.readFileSync(
       path.join(process.cwd(), 'components/products/ProductCard.tsx'),
       'utf-8'
     );
     expect(cardContent).toContain('useWishlist');
-    expect(cardContent).toContain('useCompare');
     expect(cardContent).toContain('handleToggleWishlist');
-    expect(cardContent).toContain('handleToggleCompare');
+
+    const detailActionsContent = fs.readFileSync(
+      path.join(process.cwd(), 'app/(store)/products/[slug]/ProductDetailActions.tsx'),
+      'utf-8'
+    );
+    expect(detailActionsContent).toContain('useCompare');
 
     const headerContent = fs.readFileSync(
       path.join(process.cwd(), 'components/layout/Header.tsx'),
