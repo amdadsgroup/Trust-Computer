@@ -41,7 +41,7 @@ export default function ProductsLoading() {
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden flex flex-col justify-between"
               >
                 {/* Image Placeholder */}
-                <div className="aspect-square bg-slate-100 relative" />
+                <div className="aspect-[4/3] bg-slate-100 relative" />
 
                 {/* Details Placeholder */}
                 <div className="p-4 space-y-3">
