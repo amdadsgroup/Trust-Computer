@@ -4,18 +4,14 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
-import { useCart } from '../cart/CartContext';
 import { useWishlist } from '../wishlist/WishlistContext';
-import { useCompare } from '../compare/CompareContext';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import LanguageToggle from '../ui/LanguageToggle';
 import {
   Search,
-  ShoppingBag,
   Menu,
   X,
   User,
-  GitCompare,
   Heart,
   PackageSearch,
   Gift,
@@ -31,9 +27,7 @@ import {
 
 export default function Header() {
   const pathname = usePathname();
-  const { totalItems, setIsOpen } = useCart();
   const { wishlistCount } = useWishlist();
-  const { compareCount } = useCompare();
   const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -225,27 +219,6 @@ export default function Header() {
 
           {/* Right Action Icons */}
           <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0">
-            {/* Compare */}
-            <Link
-              href="/compare"
-              className="hidden lg:flex items-center gap-2 group text-left relative"
-            >
-              <div className="text-slate-300 group-hover:text-brand-400 transition relative">
-                <GitCompare className="w-5 h-5" />
-                {compareCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 bg-brand-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                    {compareCount}
-                  </span>
-                )}
-              </div>
-              <div>
-                <span className="text-xs font-bold block text-white group-hover:text-brand-300 transition">
-                  {t('nav.compare', 'Compare')}
-                </span>
-                <span className="text-[10px] text-slate-400 block -mt-0.5">({compareCount})</span>
-              </div>
-            </Link>
-
             {/* Wishlist */}
             <Link
               href="/wishlist"
@@ -266,8 +239,6 @@ export default function Header() {
                 <span className="text-[10px] text-slate-400 block -mt-0.5">({wishlistCount})</span>
               </div>
             </Link>
-
-
 
             {/* Customer Account */}
             <Link
@@ -293,50 +264,6 @@ export default function Header() {
               <PackageSearch className="w-4 h-4 flex-shrink-0" />
               <span>{t('nav.track_order', 'Track Order')}</span>
             </Link>
-
-            {/* Mobile Compare Button with live counter */}
-            <Link
-              href="/compare"
-              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
-              aria-label="Compare Products"
-              title={t('nav.compare', 'Compare')}
-            >
-              <GitCompare className="w-5 h-5 text-sky-400" />
-              {compareCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-brand-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
-                  {compareCount > 9 ? '9+' : compareCount}
-                </span>
-              )}
-            </Link>
-
-            {/* Mobile Wishlist Button with live counter */}
-            <Link
-              href="/wishlist"
-              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
-              aria-label="Wishlist"
-              title={t('nav.wishlist', 'Wishlist')}
-            >
-              <Heart className="w-5 h-5 text-accent-400" />
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-accent-500 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
-                  {wishlistCount > 9 ? '9+' : wishlistCount}
-                </span>
-              )}
-            </Link>
-
-            {/* Mobile Cart Trigger with Live Counter */}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="md:hidden relative p-1.5 text-slate-300 hover:text-white rounded-lg active:bg-slate-800 transition"
-              aria-label="Shopping Cart"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
-                  {totalItems > 99 ? '99+' : totalItems}
-                </span>
-              )}
-            </button>
 
             {/* Mobile Menu Hamburger */}
             <button
@@ -411,7 +338,7 @@ export default function Header() {
             <LanguageToggle variant="pill" />
           </div>
 
-          {/* Quick Access Utility Cards (Desktop PCs, Offers, Compare, Wishlist) */}
+          {/* Quick Access Utility Cards (Desktop PCs, Offers, Wishlist) */}
           <div className="space-y-2">
             <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block">
               Quick Shortcuts
@@ -457,33 +384,11 @@ export default function Header() {
                 </div>
               </Link>
 
-              {/* Compare Products */}
-              <Link
-                href="/compare"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200/80 flex items-center justify-between gap-2 active:scale-[0.98] transition"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-lg bg-sky-100 text-[#2A3B97]">
-                    <GitCompare className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <span className="font-bold text-xs block">{t('nav.compare', 'Compare')}</span>
-                    <span className="text-[10px] text-slate-500">Side-by-side</span>
-                  </div>
-                </div>
-                {compareCount > 0 && (
-                  <span className="bg-[#2A3B97] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    {compareCount}
-                  </span>
-                )}
-              </Link>
-
               {/* Wishlist */}
               <Link
                 href="/wishlist"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200/80 flex items-center justify-between gap-2 active:scale-[0.98] transition"
+                className="col-span-2 p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-900 border border-slate-200/80 flex items-center justify-between gap-2 active:scale-[0.98] transition"
               >
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-lg bg-rose-100 text-[#E91D26]">

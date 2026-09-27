@@ -69,22 +69,22 @@ describe('Mobile App-Like Experience & PWA Configuration', () => {
     expect(filterDrawer).toContain('env(safe-area-inset-bottom');
   });
 
-  it('should make Compare, Wishlist, Offers, and Desktop PCs fully accessible in mobile mode without needing account', () => {
+  it('should make Wishlist, Offers, and Desktop PCs fully accessible in mobile mode without needing account', () => {
     const fs = require('fs');
     const headerContent = fs.readFileSync('components/layout/Header.tsx', 'utf-8');
     const bottomNavContent = fs.readFileSync('components/layout/BottomNav.tsx', 'utf-8');
 
     // Mobile Header Icons and Swipeable Bar
-    expect(headerContent).toContain("href=\"/compare\"");
+    expect(headerContent).not.toContain("href=\"/compare\"");
     expect(headerContent).toContain("href=\"/wishlist\"");
     expect(headerContent).toContain("href=\"/products?offer=true\"");
     expect(headerContent).toContain("href=\"/categories/desktop-components\"");
     expect(headerContent).toContain("md:hidden");
 
-    // Bottom Navigation includes Wishlist and Compare alongside Core items
+    // Bottom Navigation includes Wishlist alongside Core items without Compare
     expect(bottomNavContent).toContain("'Wishlist'");
-    expect(bottomNavContent).toContain("'Compare'");
-    expect(bottomNavContent).toContain("grid-cols-6");
+    expect(bottomNavContent).not.toContain("'Compare'");
+    expect(bottomNavContent).toContain("grid-cols-5");
   });
 });
 

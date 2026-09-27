@@ -7,14 +7,10 @@ import Footer from '@/components/layout/Footer';
 import FloatingDock from '@/components/layout/FloatingDock';
 import BottomNav from '@/components/layout/BottomNav';
 import { CartProvider } from '@/components/cart/CartContext';
-import { CompareProvider } from '@/components/compare/CompareContext';
 import { WishlistProvider } from '@/components/wishlist/WishlistContext';
 import { ToastProvider } from '@/components/ui/toast';
 
 const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'), {
-  ssr: false,
-});
-const CompareBar = dynamic(() => import('@/components/compare/CompareBar'), {
   ssr: false,
 });
 
@@ -100,17 +96,14 @@ export default function RootLayout({
         <LanguageProvider>
           <ToastProvider>
             <WishlistProvider>
-              <CompareProvider>
-                <CartProvider>
-                  <Header />
-                  <main className="flex-1 pb-16 md:pb-0">{children}</main>
-                  <Footer />
-                  <CartDrawer />
-                  <CompareBar />
-                  <FloatingDock />
-                  <BottomNav />
-                </CartProvider>
-              </CompareProvider>
+              <CartProvider>
+                <Header />
+                <main className="flex-1 pb-16 md:pb-0">{children}</main>
+                <Footer />
+                <CartDrawer />
+                <FloatingDock />
+                <BottomNav />
+              </CartProvider>
             </WishlistProvider>
           </ToastProvider>
         </LanguageProvider>

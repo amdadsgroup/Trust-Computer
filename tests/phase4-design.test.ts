@@ -36,11 +36,11 @@ describe('Phase 4 — Design Polish & UI System', () => {
     const layoutContent = fs.readFileSync(path.join(process.cwd(), 'app/layout.tsx'), 'utf-8');
     expect(layoutContent).toContain('ToastProvider');
     expect(layoutContent).toContain('WishlistProvider');
-    expect(layoutContent).toContain('CompareProvider');
+    expect(layoutContent).not.toContain('CompareProvider');
     expect(layoutContent).toContain('themeColor: \'#2A3B97\'');
   });
 
-  it('should integrate Wishlist into ProductCard, and Compare into ProductDetailActions and Header', () => {
+  it('should integrate Wishlist into ProductCard and Header, and remove Compare', () => {
     const cardContent = fs.readFileSync(
       path.join(process.cwd(), 'components/products/ProductCard.tsx'),
       'utf-8'
@@ -52,16 +52,16 @@ describe('Phase 4 — Design Polish & UI System', () => {
       path.join(process.cwd(), 'app/(store)/products/[slug]/ProductDetailActions.tsx'),
       'utf-8'
     );
-    expect(detailActionsContent).toContain('useCompare');
+    expect(detailActionsContent).not.toContain('useCompare');
 
     const headerContent = fs.readFileSync(
       path.join(process.cwd(), 'components/layout/Header.tsx'),
       'utf-8'
     );
     expect(headerContent).toContain('wishlistCount');
-    expect(headerContent).toContain('compareCount');
+    expect(headerContent).not.toContain('compareCount');
     expect(headerContent).toContain('/wishlist');
-    expect(headerContent).toContain('/compare');
+    expect(headerContent).not.toContain('/compare');
   });
 
   it('should have dynamic brand and stock filters on category page', () => {

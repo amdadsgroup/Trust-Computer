@@ -4,15 +4,13 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '../cart/CartContext';
-import { useCompare } from '../compare/CompareContext';
 import { useWishlist } from '../wishlist/WishlistContext';
-import { ShoppingBag, GitCompare, Heart, GraduationCap } from 'lucide-react';
+import { ShoppingBag, Heart, GraduationCap } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
 export default function FloatingDock() {
   const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
-  const { compareCount } = useCompare();
   const { wishlistCount } = useWishlist();
   const { t, isBangla } = useLanguage();
 
@@ -50,23 +48,6 @@ export default function FloatingDock() {
           <Heart className="w-5 h-5 text-slate-300 group-hover:text-accent-400 transition-colors" />
           <span className="text-[9px] font-bold uppercase tracking-wider mt-1 text-slate-300 group-hover:text-white">
             WISH
-          </span>
-        </Link>
-
-        {/* Compare Button */}
-        <Link
-          href="/compare"
-          className="relative flex flex-col items-center justify-center p-3 sm:p-3.5 hover:bg-slate-800 transition group w-14 sm:w-16"
-          title={isBangla ? 'পণ্য তুলনা (Compare Products)' : 'Compare Products'}
-        >
-          {compareCount > 0 && (
-            <span className="absolute top-1.5 right-1.5 bg-brand-500 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-              {compareCount}
-            </span>
-          )}
-          <GitCompare className="w-5 h-5 text-slate-300 group-hover:text-brand-300 transition-colors" />
-          <span className="text-[9px] font-bold uppercase tracking-wider mt-1 text-slate-300 group-hover:text-white">
-            COMPARE
           </span>
         </Link>
 

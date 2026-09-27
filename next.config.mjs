@@ -21,6 +21,15 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error'] } : false,
   },
+  async redirects() {
+    return [
+      {
+        source: '/compare',
+        destination: '/products',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

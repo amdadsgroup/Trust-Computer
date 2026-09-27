@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
-import { useCompare } from '@/components/compare/CompareContext';
 import { useWishlist } from '@/components/wishlist/WishlistContext';
 import { useToast } from '@/components/ui/toast';
-import { ShoppingBag, MessageCircle, Plus, Minus, Check, Zap, Heart, GitCompare } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Plus, Minus, Check, Zap, Heart } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
@@ -31,7 +30,6 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const { addItem, setIsOpen } = useCart();
-  const { isInCompare, addToCompare, removeFromCompare } = useCompare();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { success, info } = useToast();
   const { isBangla, t } = useLanguage();
@@ -46,7 +44,6 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
   });
 
   const isOutOfStock = product.stock <= 0;
-  const inCompare = isInCompare(product.id);
   const inWishlist = isInWishlist(product.id);
 
   const handleAddToCart = () => {
@@ -112,37 +109,6 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
       success(isBangla ? 'উইশলিস্টে যোগ করা হয়েছে!' : 'Added to your wishlist!');
     } else {
       info(isBangla ? 'উইশলিস্ট থেকে সরানো হয়েছে' : 'Removed from wishlist');
-    }
-  };
-
-  const handleToggleCompare = () => {
-    if (inCompare) {
-      removeFromCompare(product.id);
-      info(isBangla ? 'তুলনা তালিকা থেকে সরানো হয়েছে' : 'Removed from comparison');
-    } else {
-      const ok = addToCompare({
-        id: product.id,
-        name: product.name,
-        slug: product.slug,
-        sku: product.sku,
-        sellingPrice: product.price,
-        compareAtPrice: product.compareAtPrice,
-        stock: product.stock,
-        images: product.image ? [{ url: product.image }] : [],
-        category: product.category,
-        brand: product.brand,
-        warrantyInfo: product.warranty,
-      });
-
-      if (ok) {
-        success(isBangla ? 'তুলনা তালিকায় যোগ করা হয়েছে!' : 'Added to product comparison!');
-      } else {
-        info(
-          isBangla
-            ? 'সর্বোচ্চ ৪টি পণ্য একসাথে তুলনা করা যাবে'
-            : 'You can compare up to 4 products at once'
-        );
-      }
     }
   };
 
@@ -219,11 +185,11 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
         </button>
       </div>
 
-      {/* Secondary Quick Actions: Wishlist + Compare */}
-      <div className="grid grid-cols-2 gap-2.5 pt-1">
+      {/* Secondary Quick Action: Wishlist */}
+      <div className="pt-1">
         <button
           onClick={handleToggleWishlist}
-          className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border transition ${
+          className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border transition ${
             inWishlist
               ? 'bg-rose-50 text-accent-600 border-accent-200'
               : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
@@ -234,22 +200,6 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
             {inWishlist
               ? (isBangla ? 'উইশলিস্টে সংরক্ষিত' : 'In Wishlist')
               : (isBangla ? 'উইশলিস্টে রাখুন' : 'Add to Wishlist')}
-          </span>
-        </button>
-
-        <button
-          onClick={handleToggleCompare}
-          className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold border transition ${
-            inCompare
-              ? 'bg-brand-50 text-brand-700 border-brand-200'
-              : 'bg-white hover:bg-slate-50 text-slate-700 border-slate-200'
-          }`}
-        >
-          <GitCompare className={`w-4 h-4 ${inCompare ? 'text-brand-600' : 'text-slate-400'}`} />
-          <span>
-            {inCompare
-              ? (isBangla ? 'তুলনা তালিকায় আছে' : 'In Compare')
-              : (isBangla ? 'অন্য পণ্যের সাথে তুলনা' : 'Compare Product')}
           </span>
         </button>
       </div>

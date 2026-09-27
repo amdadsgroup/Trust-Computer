@@ -3,10 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, Search, ShoppingBag, User, Heart, GitCompare } from 'lucide-react';
+import { Home, Package, Search, ShoppingBag, User, Heart } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
 import { useWishlist } from '../wishlist/WishlistContext';
-import { useCompare } from '../compare/CompareContext';
 import MobileSearchModal from '../search/MobileSearchModal';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 
@@ -14,7 +13,6 @@ export default function BottomNav() {
   const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
   const { wishlistCount } = useWishlist();
-  const { compareCount } = useCompare();
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const { t } = useLanguage();
 
@@ -50,13 +48,6 @@ export default function BottomNav() {
       isActive: pathname.startsWith('/wishlist'),
     },
     {
-      label: t('nav.compare', 'Compare'),
-      href: '/compare',
-      icon: GitCompare,
-      badge: compareCount,
-      isActive: pathname.startsWith('/compare'),
-    },
-    {
       label: t('nav.cart', 'Cart'),
       isAction: true,
       onClick: () => setIsOpen(true),
@@ -80,7 +71,7 @@ export default function BottomNav() {
           isProductDetailPage ? 'translate-y-full pointer-events-none' : 'translate-y-0'
         }`}
       >
-        <div className="grid grid-cols-6 h-14 items-center">
+        <div className="grid grid-cols-5 h-14 items-center">
           {navItems.map((item, idx) => {
             const Icon = item.icon;
             const content = (
