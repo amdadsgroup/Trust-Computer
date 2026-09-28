@@ -90,15 +90,25 @@ export async function requestPasswordResetAction(data: unknown) {
         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://trustcomputer.vercel.app');
       const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(tokenResult.token)}`;
 
+      let emailDispatched = false;
+      let emailError: string | undefined;
+
       if (isEmailConfigured()) {
-        await sendPasswordResetEmail({
+        const sendResult = await sendPasswordResetEmail({
           to: email,
           name: tokenResult.name || 'Valued Customer',
           resetUrl,
           expiresInMinutes: 60,
         });
-      } else {
-        // If email service credentials are not yet configured, provide instant direct reset link
+
+        if (sendResult.success && !sendResult.simulated) {
+          emailDispatched = true;
+        } else if (sendResult.error) {
+          emailError = sendResult.error;
+        }
+      }
+
+      if (!emailDispatched) {
         directResetUrl = resetUrl;
       }
     }
@@ -116,11 +126,18 @@ export async function requestPasswordResetAction(data: unknown) {
       }
     }
 
+    let responseMessage = 'If an account exists with that email address, password reset instructions have been sent.';
+    if (directResetUrl) {
+      if (tokenResult.exists) {
+        responseMessage = 'Your password reset link is ready!';
+      }
+    } else {
+      responseMessage = 'Password reset instructions have been sent to your email. Please check your inbox and spam folder.';
+    }
+
     return {
       success: true,
-      message: directResetUrl
-        ? 'Your password reset link is ready!'
-        : 'If an account exists with that email address, password reset instructions have been sent.',
+      message: responseMessage,
       directResetUrl,
     };
   } catch (err: any) {

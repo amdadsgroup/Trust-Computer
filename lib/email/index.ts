@@ -232,9 +232,17 @@ Contact: ${process.env.NEXT_PUBLIC_PHONE || '01753-765372'}
         };
       } else {
         console.error('[PASSWORD RESET] Resend API error:', resendData);
+        return {
+          success: false,
+          error: resendData.message || 'Resend email delivery failed.',
+        };
       }
     } catch (resendErr: any) {
       console.error('[PASSWORD RESET] Resend dispatch error:', resendErr);
+      return {
+        success: false,
+        error: resendErr.message || 'Resend service connection failed.',
+      };
     }
   }
 
