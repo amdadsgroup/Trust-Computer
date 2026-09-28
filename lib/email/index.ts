@@ -206,6 +206,7 @@ Contact: ${process.env.NEXT_PUBLIC_PHONE || '01753-765372'}
   const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey) {
     try {
+      const resendFrom = process.env.RESEND_FROM || `"${storeName}" <onboarding@resend.dev>`;
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -213,7 +214,7 @@ Contact: ${process.env.NEXT_PUBLIC_PHONE || '01753-765372'}
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          from: formattedFrom,
+          from: resendFrom,
           to: [to],
           subject: `Reset Your Password - ${storeName}`,
           html,
