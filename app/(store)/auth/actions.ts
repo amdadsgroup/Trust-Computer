@@ -24,6 +24,7 @@ import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export async function registerCustomerAction(data: unknown) {
   try {
@@ -85,9 +86,24 @@ export async function requestPasswordResetAction(data: unknown) {
 
     // 2. If an account was found, dispatch email or provide direct reset link
     if (tokenResult.exists && tokenResult.token) {
-      const origin =
-        process.env.APP_URL ||
-        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://trustcomputer.vercel.app');
+      let origin = 'https://www.trustcomputermb.com';
+      try {
+        const headersList = headers();
+        const host = headersList.get('x-forwarded-host') || headersList.get('host');
+        const proto =
+          headersList.get('x-forwarded-proto') || (host?.includes('localhost') ? 'http' : 'https');
+        if (host) {
+          origin = `${proto}://${host}`;
+        }
+      } catch {
+        origin =
+          process.env.APP_URL && !process.env.APP_URL.includes('localhost')
+            ? process.env.APP_URL
+            : process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}`
+            : 'https://www.trustcomputermb.com';
+      }
+
       const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(tokenResult.token)}`;
 
       let emailDispatched = false;
