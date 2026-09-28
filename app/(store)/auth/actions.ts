@@ -63,22 +63,65 @@ export async function logoutCustomerAction() {
   redirect('/login');
 }
 
+import {
+  createPasswordResetToken,
+  verifyPasswordResetToken,
+  resetPasswordWithToken,
+  VerifyTokenResult,
+} from '@/lib/auth/password-reset';
+import { sendPasswordResetEmail, isEmailConfigured } from '@/lib/email';
+import { hashPassword } from '@/lib/auth';
+import prisma from '@/lib/db';
+
 export async function requestPasswordResetAction(data: unknown) {
   try {
     const validated = customerPasswordResetRequestSchema.parse(data);
-    if (isSupabaseConfigured()) {
-      const supabase = createClient();
-      const origin = process.env.APP_URL || 'http://localhost:3000';
-      const { error } = await supabase.auth.resetPasswordForEmail(validated.email, {
-        redirectTo: `${origin}/reset-password`,
-      });
-      if (error) {
-        return { success: false, error: error.message };
+    const email = validated.email.trim().toLowerCase();
+
+    // 1. Generate secure database-backed reset token
+    const tokenResult = await createPasswordResetToken(email);
+
+    let directResetUrl: string | undefined;
+
+    // 2. If an account was found, dispatch email or provide direct reset link
+    if (tokenResult.exists && tokenResult.token) {
+      const origin =
+        process.env.APP_URL ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://trustcomputer.vercel.app');
+      const resetUrl = `${origin}/reset-password?token=${encodeURIComponent(tokenResult.token)}`;
+
+      if (isEmailConfigured()) {
+        await sendPasswordResetEmail({
+          to: email,
+          name: tokenResult.name || 'Valued Customer',
+          resetUrl,
+          expiresInMinutes: 60,
+        });
+      } else {
+        // If email service credentials are not yet configured, provide instant direct reset link
+        directResetUrl = resetUrl;
       }
     }
+
+    // 3. Optional Supabase Auth trigger if configured
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = createClient();
+        const origin = process.env.APP_URL || 'https://trustcomputer.vercel.app';
+        await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${origin}/reset-password`,
+        });
+      } catch (sbErr) {
+        console.warn('Optional Supabase password reset error (ignored):', sbErr);
+      }
+    }
+
     return {
       success: true,
-      message: 'If an account exists with that email address, password reset instructions have been sent.',
+      message: directResetUrl
+        ? 'Your password reset link is ready!'
+        : 'If an account exists with that email address, password reset instructions have been sent.',
+      directResetUrl,
     };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {
@@ -88,16 +131,61 @@ export async function requestPasswordResetAction(data: unknown) {
   }
 }
 
+export async function verifyResetTokenAction(token: string): Promise<VerifyTokenResult> {
+  try {
+    if (!token || typeof token !== 'string') {
+      return { valid: false, error: 'Password reset token is required.' };
+    }
+
+    const verification = await verifyPasswordResetToken(token);
+    return verification;
+  } catch (err: any) {
+    return { valid: false, error: err.message || 'Failed to verify reset token.' };
+  }
+}
+
 export async function updateCustomerPasswordAction(data: unknown) {
   try {
+    const rawData = data as Record<string, unknown> | undefined;
+
+    // A. If a reset token is supplied, reset via secure token verification
+    if (rawData?.token && typeof rawData.token === 'string') {
+      const validated = customerPasswordUpdateSchema.parse(data);
+      const result = await resetPasswordWithToken(rawData.token, validated.password);
+
+      if (!result.success) {
+        return { success: false, error: result.error || 'Failed to update password.' };
+      }
+
+      return {
+        success: true,
+        message: result.message || 'Password has been updated successfully.',
+      };
+    }
+
+    // B. If no token, user must be logged in to update their password
     const validated = customerPasswordUpdateSchema.parse(data);
+    const customer = await getCurrentCustomer();
+
+    if (!customer) {
+      return {
+        success: false,
+        error: 'Authentication required. Please use the reset link sent to your email or log in.',
+      };
+    }
+
+    // Hash and update local database profile
+    const newPasswordHash = await hashPassword(validated.password);
+    await prisma.customerProfile.update({
+      where: { id: customer.id },
+      data: { passwordHash: newPasswordHash },
+    });
+
     if (isSupabaseConfigured()) {
       const supabase = createClient();
-      const { error } = await supabase.auth.updateUser({ password: validated.password });
-      if (error) {
-        return { success: false, error: error.message };
-      }
+      await supabase.auth.updateUser({ password: validated.password });
     }
+
     return { success: true, message: 'Password has been updated successfully.' };
   } catch (err: any) {
     if (err.errors && err.errors[0]) {

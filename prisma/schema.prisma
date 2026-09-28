@@ -345,13 +345,14 @@ enum DiscountType {
 }
 
 model CustomerProfile {
-  id          String            @id // Matches Supabase Auth user ID (UUID)
-  email       String            @unique
-  fullName    String
-  phone       String?
-  avatarUrl   String?
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  id           String            @id // Matches Supabase Auth user ID (UUID)
+  email        String            @unique
+  passwordHash String?
+  fullName     String
+  phone        String?
+  avatarUrl    String?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 
   addresses   CustomerAddress[]
   orders      Order[]
@@ -672,4 +673,18 @@ model StockReservation {
   @@index([sessionKey])
   @@index([status, expiresAt])
   @@map("stock_reservations")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  email     String
+  tokenHash String    @unique
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  usedAt    DateTime?
+  userType  String    @default("CUSTOMER") // "CUSTOMER" | "STAFF"
+
+  @@index([email])
+  @@index([tokenHash])
+  @@map("password_reset_tokens")
 }

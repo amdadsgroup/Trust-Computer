@@ -163,6 +163,7 @@ export type CustomerPasswordResetRequestInput = z.infer<typeof customerPasswordR
 
 export const customerPasswordUpdateSchema = z
   .object({
+    token: z.string().optional(),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     confirmPassword: z.string().min(6, 'Confirm password must be at least 6 characters'),
   })
@@ -172,6 +173,19 @@ export const customerPasswordUpdateSchema = z
   });
 
 export type CustomerPasswordUpdateInput = z.infer<typeof customerPasswordUpdateSchema>;
+
+export const customerPasswordUpdateWithTokenSchema = z
+  .object({
+    token: z.string().min(1, 'Password reset token is required'),
+    password: z.string().min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(6, 'Confirm password must be at least 6 characters'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+export type CustomerPasswordUpdateWithTokenInput = z.infer<typeof customerPasswordUpdateWithTokenSchema>;
 
 // Banner Schemas
 export const bannerSchema = z.object({

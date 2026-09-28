@@ -9,6 +9,7 @@ import {
   CustomerProfileUpdateInput,
   CustomerAddressInput,
 } from '@/lib/validations';
+import { hashPassword, verifyPassword } from '@/lib/auth';
 
 const CUSTOMER_COOKIE_NAME = 'trust_customer_session';
 const AUTH_SECRET = process.env.AUTH_SECRET || 'trust_customer_super_secure_jwt_secret_moulvibazar_2026';
@@ -172,6 +173,8 @@ export async function registerCustomer(input: CustomerRegisterInput): Promise<{
       };
     }
 
+    const passwordHash = await hashPassword(input.password);
+
     if (isSupabaseConfigured()) {
       const supabase = createClient();
       const { data, error } = await supabase.auth.signUp({
@@ -195,6 +198,7 @@ export async function registerCustomer(input: CustomerRegisterInput): Promise<{
           data: {
             id: data.user.id,
             email,
+            passwordHash,
             fullName,
             phone,
           },
@@ -219,6 +223,7 @@ export async function registerCustomer(input: CustomerRegisterInput): Promise<{
       data: {
         id: customerId,
         email,
+        passwordHash,
         fullName,
         phone,
       },
@@ -297,13 +302,28 @@ export async function loginCustomer(input: CustomerLoginInput): Promise<{
       }
     }
 
-    // Fallback mode
+    // Fallback / Database authentication mode
     const profile = await prisma.customerProfile.findUnique({
       where: { email },
     });
 
     if (!profile) {
       return { success: false, error: 'Invalid email address or password.' };
+    }
+
+    // If profile has a hashed password, verify it with bcrypt
+    if (profile.passwordHash) {
+      const isMatch = await verifyPassword(input.password, profile.passwordHash);
+      if (!isMatch) {
+        return { success: false, error: 'Incorrect email address or password.' };
+      }
+    } else {
+      // Legacy customer migration: set password hash for existing accounts
+      const newHash = await hashPassword(input.password);
+      await prisma.customerProfile.update({
+        where: { id: profile.id },
+        data: { passwordHash: newHash },
+      });
     }
 
     await setCustomerSessionCookie({
