@@ -289,3 +289,174 @@ Contact: ${process.env.NEXT_PUBLIC_PHONE || '01753-765372'}
     };
   }
 }
+
+export interface SendKeepaliveAlertEmailParams {
+  to?: string;
+  errorCategory: string;
+  errorMessage: string;
+  timestamp: string;
+}
+
+/**
+ * Sends a critical alert email to the store owner/admin when Supabase is unreachable.
+ * Never includes raw connection strings or secrets.
+ */
+export async function sendKeepaliveFailureAlertEmail({
+  to,
+  errorCategory,
+  errorMessage,
+  timestamp,
+}: SendKeepaliveAlertEmailParams): Promise<{
+  success: boolean;
+  simulated?: boolean;
+  messageId?: string;
+  error?: string;
+}> {
+  const recipient =
+    to ||
+    process.env.ADMIN_ALERT_EMAIL ||
+    process.env.INITIAL_OWNER_EMAIL ||
+    process.env.SMTP_USER ||
+    'trustcomputermb@gmail.com';
+
+  const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Trust Computer-Moulvibazar';
+  const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'alerts@trustcomputermb.com';
+  const formattedFrom = `"${storeName} System Monitor" <${fromEmail}>`;
+
+  // Sanitize any error message to strictly prevent database credentials or connection strings from leaking
+  const safeMessage = errorMessage
+    .replace(/postgresql:\/\/[^@]+@/gi, 'postgresql://[REDACTED_CREDENTIALS]@')
+    .replace(/postgres:[^@]+@/gi, 'postgres:[REDACTED_PASSWORD]@')
+    .slice(0, 300);
+
+  const subject = `⚠️ [ALERT] Supabase Database Unreachable - ${storeName}`;
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Database Connectivity Alert</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1e293b;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 30px 15px;">
+    <tr>
+      <td align="center">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 560px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid #fee2e2;">
+          <tr>
+            <td style="background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%); padding: 28px 24px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 800;">
+                ⚠️ Supabase Connectivity Alert
+              </h1>
+              <p style="margin: 6px 0 0 0; color: #fecaca; font-size: 13px;">
+                ${storeName} Automated Health Monitor
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 28px 24px;">
+              <p style="margin: 0 0 16px 0; font-size: 14px; line-height: 22px; color: #334155;">
+                The automated keep-alive monitor detected that your Supabase PostgreSQL database is currently <strong>unreachable</strong>.
+              </p>
+              
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; margin: 16px 0;">
+                <tr>
+                  <td style="padding: 14px; font-size: 13px; color: #991b1b;">
+                    <div><strong>Incident Time:</strong> ${timestamp}</div>
+                    <div style="margin-top: 6px;"><strong>Failure Category:</strong> ${errorCategory}</div>
+                    <div style="margin-top: 6px;"><strong>Details:</strong> ${safeMessage}</div>
+                  </td>
+                </tr>
+              </table>
+
+              <h3 style="margin: 20px 0 8px 0; font-size: 14px; color: #0f172a;">Recommended Immediate Actions:</h3>
+              <ol style="margin: 0; padding-left: 20px; font-size: 13px; line-height: 20px; color: #475569;">
+                <li>Log in to the <a href="https://supabase.com/dashboard" style="color: #2563eb; font-weight: 600;">Supabase Dashboard</a> and verify if your project has been paused due to inactivity.</li>
+                <li>If paused, click <strong>Restore Project</strong> (restoration usually takes 1–3 minutes).</li>
+                <li>Verify your Vercel database environment variables (<code>DATABASE_URL</code> transaction pooler on port 6543).</li>
+              </ol>
+            </td>
+          </tr>
+          <tr>
+            <td style="background-color: #f8fafc; border-top: 1px solid #f1f5f9; padding: 18px 24px; text-align: center; font-size: 11px; color: #94a3b8;">
+              This is an automated alert from your Trust Computer production monitoring service.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+
+  const text = `
+[ALERT] Supabase Database Unreachable - ${storeName}
+Incident Time: ${timestamp}
+Failure Category: ${errorCategory}
+Details: ${safeMessage}
+
+Action Required:
+1. Log in to the Supabase Dashboard (https://supabase.com/dashboard).
+2. Check if the project is paused due to inactivity. If paused, click 'Restore'.
+3. Verify connection pooler status and Vercel environment variables.
+`.trim();
+
+  // 1. Resend API support if configured
+  const resendApiKey = process.env.RESEND_API_KEY;
+  if (resendApiKey) {
+    try {
+      const resendFrom = process.env.RESEND_FROM || `"${storeName} Monitor" <onboarding@resend.dev>`;
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: resendFrom,
+          to: [recipient],
+          subject,
+          html,
+          text,
+        }),
+      });
+
+      const resendData = await resendRes.json();
+      if (resendRes.ok) {
+        return { success: true, simulated: false, messageId: resendData.id };
+      }
+    } catch (err: any) {
+      console.error('[KEEPALIVE ALERT] Resend failure:', err);
+    }
+  }
+
+  // 2. Nodemailer SMTP support
+  const transporter = getEmailTransporter();
+  if (!transporter) {
+    console.warn('\n======================================================');
+    console.warn(' [KEEPALIVE MONITOR ALERT - LOCAL/SIMULATED]');
+    console.warn(` Recipient: ${recipient}`);
+    console.warn(` Subject: ${subject}`);
+    console.warn(` Incident Time: ${timestamp}`);
+    console.warn(` Category: ${errorCategory}`);
+    console.warn(` Details: ${safeMessage}`);
+    console.warn('======================================================\n');
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: formattedFrom,
+      to: recipient,
+      subject,
+      text,
+      html,
+    });
+    return { success: true, simulated: false, messageId: info.messageId };
+  } catch (err: any) {
+    console.error('[KEEPALIVE ALERT] SMTP dispatch failed:', err);
+    return { success: false, error: err.message };
+  }
+}
+
