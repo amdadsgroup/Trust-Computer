@@ -12,11 +12,16 @@ export const revalidate = 60;
 export const maxDuration = 30;
 
 const getCachedCategoryData = unstable_cache(
-  async (slugs: string[]) => {
+  async (primarySlug: string, fallbackSlug?: string) => {
+    const searchSlugs = [primarySlug.toLowerCase()];
+    if (fallbackSlug) {
+      searchSlugs.push(fallbackSlug.toLowerCase());
+    }
+
     return await prisma.category.findFirst({
       where: {
         slug: {
-          in: slugs.map((s) => s.toLowerCase()),
+          in: searchSlugs,
         },
       },
       select: {
@@ -52,10 +57,9 @@ const getCachedCategoryData = unstable_cache(
       },
     });
   },
-  ['category-page-data'],
+  ['category-page-data-v3'],
   { revalidate: 60, tags: ['categories', 'products'] }
 );
-
 
 interface CategoryPageProps {
   params: {
@@ -78,6 +82,37 @@ const SLUG_ALIASES: Record<string, { canonical: string; name: string }> = {
   'networking-equipment': { canonical: 'networking', name: 'Networking' },
   'printers-scanners': { canonical: 'computer-accessories', name: 'Computer Accessories' },
 };
+
+const DEFAULT_CATEGORY_SLUGS = [
+  'laptop-computer',
+  'monitor',
+  'gaming',
+  'computer-accessories',
+  'cctv-security',
+  'networking',
+  'power-electronics',
+  'desktop-components',
+  'laptops-notebooks',
+  'cctv-surveillance',
+  'networking-equipment',
+  'printers-scanners',
+];
+
+export async function generateStaticParams() {
+  try {
+    const categories = await prisma.category.findMany({
+      select: { slug: true },
+    });
+    const set = new Set([
+      ...categories.map((c) => c.slug.toLowerCase()),
+      ...Object.keys(SLUG_ALIASES),
+      ...DEFAULT_CATEGORY_SLUGS,
+    ]);
+    return Array.from(set).map((slug) => ({ slug }));
+  } catch {
+    return DEFAULT_CATEGORY_SLUGS.map((slug) => ({ slug }));
+  }
+}
 
 export async function generateMetadata({ params }: CategoryPageProps) {
   const alias = SLUG_ALIASES[params.slug.toLowerCase()];
@@ -108,7 +143,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
   try {
     if (!hasFilters) {
-      category = await getCachedCategoryData(searchSlugs);
+      category = await getCachedCategoryData(params.slug, aliasInfo?.canonical);
     } else {
       category = await prisma.category.findFirst({
         where: {

@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 import { getOrderInquiryWhatsAppLink } from '@/lib/whatsapp';
 
-export const dynamic = 'force-dynamic';
 
 interface TrackOrderPageProps {
   searchParams: {

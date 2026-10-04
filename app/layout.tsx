@@ -14,6 +14,10 @@ const CartDrawer = dynamic(() => import('@/components/cart/CartDrawer'), {
   ssr: false,
 });
 
+const NavigationProgress = dynamic(() => import('@/components/ui/NavigationProgress'), {
+  ssr: false,
+});
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -98,6 +102,7 @@ export default function RootLayout({
           <ToastProvider>
             <WishlistProvider>
               <CartProvider>
+                <NavigationProgress />
                 <Header />
                 <main className="flex-1 pb-16 md:pb-0">{children}</main>
                 <Footer />

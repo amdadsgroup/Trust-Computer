@@ -10,7 +10,6 @@ import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, Packag
 
 import { unstable_cache } from 'next/cache';
 
-export const dynamic = 'force-dynamic';
 export const revalidate = 60;
 export const maxDuration = 30;
 

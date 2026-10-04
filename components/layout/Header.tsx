@@ -342,6 +342,7 @@ export default function Header() {
                 <li key={idx} className="shrink-0">
                   <Link
                     href={cat.href}
+                    prefetch={true}
                     className={`group px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-[13px] font-bold flex items-center gap-2 transition-all duration-150 border ${active
                         ? 'bg-[#2644a6] text-white border-[#2644a6] shadow-sm'
                         : 'bg-white text-slate-800 border-slate-200/90 hover:border-brand-300 hover:bg-slate-50/80 hover:text-brand-700 shadow-xs'
@@ -454,6 +455,7 @@ export default function Header() {
                   <Link
                     key={idx}
                     href={cat.href}
+                    prefetch={true}
                     onClick={() => setMobileMenuOpen(false)}
                     className={`p-2 rounded-xl transition flex items-center justify-between border ${active
                         ? 'bg-[#2644a6] text-white border-[#2644a6]'

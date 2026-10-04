@@ -2,7 +2,7 @@ import React from 'react';
 import { getContentPage } from '@/lib/content';
 import PolicyView from '@/components/policies/PolicyView';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 export const metadata = {
   title: 'Warranty Policy | Trust Computer-Moulvibazar',

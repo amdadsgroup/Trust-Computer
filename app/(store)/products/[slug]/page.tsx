@@ -76,6 +76,19 @@ const getRelatedProducts = unstable_cache(
   { revalidate: 120, tags: ['products'] }
 );
 
+export async function generateStaticParams() {
+  try {
+    const products = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { slug: true },
+      take: 100,
+    });
+    return products.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
+}
+
 export async function generateMetadata({ params }: ProductDetailPageProps) {
   try {
     const product = await getProductBySlug(params.slug);

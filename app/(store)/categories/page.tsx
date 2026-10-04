@@ -24,7 +24,7 @@ import {
   Gamepad2,
 } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 120;
 export const maxDuration = 30;
 
 export const metadata = {
