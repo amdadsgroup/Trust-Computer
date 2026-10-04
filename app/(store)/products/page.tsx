@@ -5,6 +5,7 @@ import ProductCard from '@/components/products/ProductCard';
 import MobileFilterDrawer from '@/components/products/MobileFilterDrawer';
 import CategoryBrowseBar from '@/components/products/CategoryBrowseBar';
 import ProductSortSelect from '@/components/products/ProductSortSelect';
+import BudgetPriceFilter from '@/components/products/BudgetPriceFilter';
 import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
 
@@ -140,12 +141,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   }
 
   if (sp.minPrice || sp.maxPrice) {
-    where.sellingPrice = {};
-    if (sp.minPrice) {
-      where.sellingPrice.gte = parseFloat(sp.minPrice);
-    }
-    if (sp.maxPrice) {
-      where.sellingPrice.lte = parseFloat(sp.maxPrice);
+    const minVal = sp.minPrice ? parseFloat(sp.minPrice) : null;
+    const maxVal = sp.maxPrice ? parseFloat(sp.maxPrice) : null;
+
+    if ((minVal !== null && !isNaN(minVal)) || (maxVal !== null && !isNaN(maxVal))) {
+      where.sellingPrice = {};
+      if (minVal !== null && !isNaN(minVal) && minVal >= 0) {
+        where.sellingPrice.gte = minVal;
+      }
+      if (maxVal !== null && !isNaN(maxVal) && maxVal >= 0) {
+        where.sellingPrice.lte = maxVal;
+      }
     }
   }
 
@@ -202,7 +208,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     console.error('Error fetching product catalog:', e);
   }
 
-
   const totalPages = Math.ceil(totalCount / pageSize);
 
   // Helper to build URL query with filters
@@ -213,6 +218,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     if (sp.brand) params.set('brand', sp.brand);
     if (sp.sort) params.set('sort', sp.sort);
     if (sp.inStockOnly) params.set('inStockOnly', sp.inStockOnly);
+    if (sp.minPrice) params.set('minPrice', sp.minPrice);
+    if (sp.maxPrice) params.set('maxPrice', sp.maxPrice);
 
     if (value === null) {
       params.delete(key);
@@ -230,7 +237,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       sp.category ||
       sp.brand ||
       sp.sort ||
-      sp.inStockOnly
+      sp.inStockOnly ||
+      sp.minPrice ||
+      sp.maxPrice
   );
 
   return (
@@ -267,6 +276,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             currentCategory={sp.category}
             currentBrand={sp.brand}
             inStockOnly={sp.inStockOnly}
+            currentMinPrice={sp.minPrice}
+            currentMaxPrice={sp.maxPrice}
             totalCount={totalCount}
           />
 
@@ -302,7 +313,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   className="text-xs text-accent-600 hover:text-accent-800 font-semibold flex items-center gap-1"
                 >
                   <X className="w-3.5 h-3.5" />
-                  <span>Clear</span>
+                  <span>Clear All</span>
                 </Link>
               )}
             </div>
@@ -339,9 +350,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             </div>
 
+            {/* Budget / Price Filter */}
+            <div className="pt-4 border-t border-slate-100">
+              <BudgetPriceFilter
+                currentMinPrice={sp.minPrice}
+                currentMaxPrice={sp.maxPrice}
+              />
+            </div>
+
             {/* Brands Filter */}
             {brands.length > 0 && (
-              <div>
+              <div className="pt-4 border-t border-slate-100">
                 <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">
                   Brands
                 </h3>
@@ -374,7 +393,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             )}
 
             {/* Availability Filter */}
-            <div>
+            <div className="pt-4 border-t border-slate-100">
               <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">
                 Stock Availability
               </h3>
@@ -398,7 +417,88 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         </aside>
 
         {/* Main Products Grid */}
-        <main className="lg:col-span-3">
+        <main className="lg:col-span-3 space-y-4">
+          {/* Active Filter Chips Bar */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200/80 p-3 rounded-2xl">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mr-1">
+                Active Filters:
+              </span>
+
+              {sp.category && (
+                <Link
+                  href={buildFilterUrl('category', null)}
+                  className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-accent text-slate-700 hover:text-accent px-2.5 py-1 rounded-xl text-xs font-semibold shadow-xs transition"
+                >
+                  <span>Category: {categories.find((c) => c.slug === sp.category)?.name || sp.category}</span>
+                  <X className="w-3 h-3 text-slate-400" />
+                </Link>
+              )}
+
+              {(sp.minPrice || sp.maxPrice) && (
+                <Link
+                  href={(() => {
+                    const p = new URLSearchParams();
+                    if (sp.search) p.set('search', sp.search);
+                    if (sp.category) p.set('category', sp.category);
+                    if (sp.brand) p.set('brand', sp.brand);
+                    if (sp.sort) p.set('sort', sp.sort);
+                    if (sp.inStockOnly) p.set('inStockOnly', sp.inStockOnly);
+                    const q = p.toString();
+                    return q ? `/products?${q}` : '/products';
+                  })()}
+                  className="inline-flex items-center gap-1.5 bg-brand-50 border border-brand/30 text-brand px-2.5 py-1 rounded-xl text-xs font-bold shadow-xs hover:border-accent hover:text-accent transition"
+                  title="Remove budget filter"
+                >
+                  <span>
+                    Budget: {sp.minPrice && sp.maxPrice
+                      ? `৳${Number(sp.minPrice).toLocaleString('en-BD')} - ৳${Number(sp.maxPrice).toLocaleString('en-BD')}`
+                      : sp.minPrice
+                      ? `Above ৳${Number(sp.minPrice).toLocaleString('en-BD')}`
+                      : `Up to ৳${Number(sp.maxPrice).toLocaleString('en-BD')}`}
+                  </span>
+                  <X className="w-3 h-3 text-brand hover:text-accent" />
+                </Link>
+              )}
+
+              {sp.brand && (
+                <Link
+                  href={buildFilterUrl('brand', null)}
+                  className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-accent text-slate-700 hover:text-accent px-2.5 py-1 rounded-xl text-xs font-semibold shadow-xs transition"
+                >
+                  <span>Brand: {brands.find((b) => b.slug === sp.brand)?.name || sp.brand}</span>
+                  <X className="w-3 h-3 text-slate-400" />
+                </Link>
+              )}
+
+              {sp.inStockOnly === 'true' && (
+                <Link
+                  href={buildFilterUrl('inStockOnly', null)}
+                  className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-accent text-slate-700 hover:text-accent px-2.5 py-1 rounded-xl text-xs font-semibold shadow-xs transition"
+                >
+                  <span>In Stock Only</span>
+                  <X className="w-3 h-3 text-slate-400" />
+                </Link>
+              )}
+
+              {sp.search && (
+                <Link
+                  href={buildFilterUrl('search', null)}
+                  className="inline-flex items-center gap-1.5 bg-white border border-slate-200 hover:border-accent text-slate-700 hover:text-accent px-2.5 py-1 rounded-xl text-xs font-semibold shadow-xs transition"
+                >
+                  <span>Search: &ldquo;{sp.search}&rdquo;</span>
+                  <X className="w-3 h-3 text-slate-400" />
+                </Link>
+              )}
+
+              <Link
+                href="/products"
+                className="text-xs text-accent-600 hover:text-accent-800 font-bold ml-auto px-2 py-1 transition"
+              >
+                Clear All
+              </Link>
+            </div>
+          )}
           {products.length > 0 ? (
             <>
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-3 sm:gap-6">

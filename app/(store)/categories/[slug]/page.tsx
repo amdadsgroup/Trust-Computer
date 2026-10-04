@@ -139,7 +139,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     searchSlugs.push(aliasInfo.canonical);
   }
 
-  const hasFilters = sp.brand || sp.inStockOnly || sp.sort;
+  const hasFilters = sp.brand || sp.inStockOnly || sp.sort || sp.minPrice || sp.maxPrice;
 
   try {
     if (!hasFilters) {
@@ -161,6 +161,12 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
               isActive: true,
               ...(sp.brand ? { brand: { slug: sp.brand } } : {}),
               ...(sp.inStockOnly === 'true' ? { stock: { gt: 0 } } : {}),
+              ...((sp.minPrice || sp.maxPrice) ? {
+                sellingPrice: {
+                  ...(sp.minPrice && !isNaN(Number(sp.minPrice)) ? { gte: parseFloat(sp.minPrice) } : {}),
+                  ...(sp.maxPrice && !isNaN(Number(sp.maxPrice)) ? { lte: parseFloat(sp.maxPrice) } : {}),
+                }
+              } : {}),
             },
             select: {
               id: true,
@@ -223,6 +229,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     if (sp.sort) p.set('sort', sp.sort);
     if (sp.brand) p.set('brand', sp.brand);
     if (sp.inStockOnly) p.set('inStockOnly', sp.inStockOnly);
+    if (sp.minPrice) p.set('minPrice', sp.minPrice);
+    if (sp.maxPrice) p.set('maxPrice', sp.maxPrice);
 
     if (value === null) {
       p.delete(key);

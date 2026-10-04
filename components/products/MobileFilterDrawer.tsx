@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SlidersHorizontal, X, Check, RotateCcw } from 'lucide-react';
+import BudgetPriceFilter from '@/components/products/BudgetPriceFilter';
 
 interface Category {
   id: string;
@@ -22,6 +23,8 @@ interface MobileFilterDrawerProps {
   currentCategory?: string;
   currentBrand?: string;
   inStockOnly?: string;
+  currentMinPrice?: string;
+  currentMaxPrice?: string;
   totalCount: number;
 }
 
@@ -31,6 +34,8 @@ export default function MobileFilterDrawer({
   currentCategory,
   currentBrand,
   inStockOnly,
+  currentMinPrice,
+  currentMaxPrice,
   totalCount,
 }: MobileFilterDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,9 +45,26 @@ export default function MobileFilterDrawer({
   const [selectedCategory, setSelectedCategory] = useState<string | null>(currentCategory || null);
   const [selectedBrand, setSelectedBrand] = useState<string | null>(currentBrand || null);
   const [selectedInStock, setSelectedInStock] = useState<boolean>(inStockOnly === 'true');
+  const [budget, setBudget] = useState<{ min: string; max: string }>({
+    min: currentMinPrice || '',
+    max: currentMaxPrice || '',
+  });
+
+  useEffect(() => {
+    setSelectedCategory(currentCategory || null);
+    setSelectedBrand(currentBrand || null);
+    setSelectedInStock(inStockOnly === 'true');
+    setBudget({
+      min: currentMinPrice || '',
+      max: currentMaxPrice || '',
+    });
+  }, [currentCategory, currentBrand, inStockOnly, currentMinPrice, currentMaxPrice]);
 
   const activeFilterCount =
-    (selectedCategory ? 1 : 0) + (selectedBrand ? 1 : 0) + (selectedInStock ? 1 : 0);
+    (selectedCategory ? 1 : 0) +
+    (selectedBrand ? 1 : 0) +
+    (selectedInStock ? 1 : 0) +
+    (budget.min || budget.max ? 1 : 0);
 
   const handleApply = () => {
     const params = new URLSearchParams(searchParams.toString());
@@ -56,6 +78,12 @@ export default function MobileFilterDrawer({
     if (selectedInStock) params.set('inStockOnly', 'true');
     else params.delete('inStockOnly');
 
+    if (budget.min) params.set('minPrice', budget.min);
+    else params.delete('minPrice');
+
+    if (budget.max) params.set('maxPrice', budget.max);
+    else params.delete('maxPrice');
+
     params.delete('page');
 
     router.push(`/products?${params.toString()}`);
@@ -66,11 +94,14 @@ export default function MobileFilterDrawer({
     setSelectedCategory(null);
     setSelectedBrand(null);
     setSelectedInStock(false);
+    setBudget({ min: '', max: '' });
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete('category');
     params.delete('brand');
     params.delete('inStockOnly');
+    params.delete('minPrice');
+    params.delete('maxPrice');
     params.delete('page');
 
     router.push(`/products?${params.toString()}`);
@@ -84,10 +115,10 @@ export default function MobileFilterDrawer({
         onClick={() => setIsOpen(true)}
         className="flex lg:hidden items-center justify-center gap-2 bg-white text-slate-800 border border-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold shadow-sm active:bg-slate-50 transition"
       >
-        <SlidersHorizontal className="w-4 h-4 text-[#0084d6]" />
+        <SlidersHorizontal className="w-4 h-4 text-brand" />
         <span>Filter Products</span>
         {activeFilterCount > 0 && (
-          <span className="bg-[#0084d6] text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+          <span className="bg-brand text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
             {activeFilterCount}
           </span>
         )}
@@ -107,7 +138,7 @@ export default function MobileFilterDrawer({
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[#0084d6]" />
+                <SlidersHorizontal className="w-4 h-4 text-brand" />
                 <h3 className="font-bold text-sm text-slate-900">
                   Filter Catalog ({totalCount} items)
                 </h3>
@@ -132,7 +163,7 @@ export default function MobileFilterDrawer({
                     onClick={() => setSelectedCategory(null)}
                     className={`px-3 py-1.5 rounded-xl font-medium transition ${
                       selectedCategory === null
-                        ? 'bg-[#0084d6] text-white font-bold'
+                        ? 'bg-brand text-white font-bold'
                         : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                     }`}
                   >
@@ -144,7 +175,7 @@ export default function MobileFilterDrawer({
                       onClick={() => setSelectedCategory(cat.slug)}
                       className={`px-3 py-1.5 rounded-xl font-medium transition ${
                         selectedCategory === cat.slug
-                          ? 'bg-[#0084d6] text-white font-bold'
+                          ? 'bg-brand text-white font-bold'
                           : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                       }`}
                     >
@@ -154,9 +185,18 @@ export default function MobileFilterDrawer({
                 </div>
               </div>
 
+              {/* Budget Filter */}
+              <div className="pt-2 border-t border-slate-100">
+                <BudgetPriceFilter
+                  isEmbedded={true}
+                  value={budget}
+                  onChange={setBudget}
+                />
+              </div>
+
               {/* Brands Filter */}
               {brands.length > 0 && (
-                <div>
+                <div className="pt-2 border-t border-slate-100">
                   <h4 className="font-bold text-slate-800 uppercase tracking-wider mb-2.5">
                     Brand
                   </h4>
@@ -165,7 +205,7 @@ export default function MobileFilterDrawer({
                       onClick={() => setSelectedBrand(null)}
                       className={`px-3 py-1.5 rounded-xl font-medium transition ${
                         selectedBrand === null
-                          ? 'bg-[#0084d6] text-white font-bold'
+                          ? 'bg-brand text-white font-bold'
                           : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                       }`}
                     >
@@ -177,7 +217,7 @@ export default function MobileFilterDrawer({
                         onClick={() => setSelectedBrand(b.slug)}
                         className={`px-3 py-1.5 rounded-xl font-medium transition ${
                           selectedBrand === b.slug
-                            ? 'bg-[#0084d6] text-white font-bold'
+                            ? 'bg-brand text-white font-bold'
                             : 'bg-slate-100 text-slate-700 active:bg-slate-200'
                         }`}
                       >
@@ -189,7 +229,7 @@ export default function MobileFilterDrawer({
               )}
 
               {/* Stock Status Filter */}
-              <div>
+              <div className="pt-2 border-t border-slate-100">
                 <h4 className="font-bold text-slate-800 uppercase tracking-wider mb-2.5">
                   Availability
                 </h4>
@@ -198,7 +238,7 @@ export default function MobileFilterDrawer({
                     type="checkbox"
                     checked={selectedInStock}
                     onChange={(e) => setSelectedInStock(e.target.checked)}
-                    className="w-4 h-4 rounded text-[#0084d6] focus:ring-[#0084d6]"
+                    className="w-4 h-4 rounded text-brand focus:ring-brand"
                   />
                   <span className="font-semibold text-slate-800">
                     Show only products currently in stock
@@ -218,7 +258,7 @@ export default function MobileFilterDrawer({
               </button>
               <button
                 onClick={handleApply}
-                className="flex-[2] flex items-center justify-center gap-1.5 py-3 rounded-xl bg-[#0084d6] text-white font-bold text-xs shadow-md active:bg-[#0074be]"
+                className="flex-[2] flex items-center justify-center gap-1.5 py-3 rounded-xl bg-brand text-white font-bold text-xs shadow-md active:bg-brand-700"
               >
                 <Check className="w-4 h-4" />
                 <span>Apply Filters</span>
