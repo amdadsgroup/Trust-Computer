@@ -143,7 +143,7 @@ Do **not** flood every interface surface with red and blue. The visual presentat
    - Official full logo with business credentials:
      - **Proprietor**: Shiblu Ahmed
      - **Address**: T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh
-     - **Hotline**: 01753-765372 | **Email**: trustcomputermb@gmail.com
+     - **Sales Hotline**: 01797854836 | **Service**: 01608346407 | **bKash**: 01712556225 | **Email**: trustcomputermb@gmail.com
 4. **Authentication Pages (Customer & Admin)**:
    - Login, registration, password reset, and admin authentication screens feature `/brand/trust-computer-logo.png`.
 5. **Admin Portal**:

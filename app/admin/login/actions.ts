@@ -43,7 +43,7 @@ export async function loginAdminAction(formData: FormData) {
                 email: INITIAL_OWNER_EMAIL,
                 passwordHash,
                 name: INITIAL_OWNER_NAME,
-                phone: '01753-765372',
+                phone: '01797854836',
                 role: 'OWNER',
                 isActive: true,
               },

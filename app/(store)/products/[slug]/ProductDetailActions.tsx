@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartContext';
 import { useWishlist } from '@/components/wishlist/WishlistContext';
 import { useToast } from '@/components/ui/toast';
-import { ShoppingBag, MessageCircle, Plus, Minus, Check, Zap, Heart } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Plus, Minus, Check, Zap, Heart, Phone } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
+import { business } from '@/lib/business';
 
 interface ProductDetailActionsProps {
   product: {
@@ -204,16 +205,45 @@ export default function ProductDetailActions({ product, whatsappUrl }: ProductDe
         </button>
       </div>
 
-      {/* WhatsApp Direct Inquiry */}
-      <a
-        href={dynamicWhatsAppUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-2xl text-xs sm:text-sm font-bold transition shadow-sm"
-      >
-        <MessageCircle className="w-4 h-4" />
-        <span>{isBangla ? 'হোয়াটসঅ্যাপে সরাসরি কথা বলুন' : 'Inquire via WhatsApp'}</span>
-      </a>
+      {/* Need Help Ordering? Sales & Customer Care */}
+      <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 space-y-2.5">
+        <div className="flex items-center justify-between">
+          <div>
+            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
+              {isBangla ? 'অর্ডারে সাহায্য প্রয়োজন?' : 'Need Help Ordering?'}
+            </span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-xs text-slate-600 font-medium">
+                {isBangla ? 'সেলস ও কাস্টমার কেয়ার:' : 'Sales & Customer Care:'}
+              </span>
+              <a
+                href={`tel:${business.sales.phone}`}
+                className="text-xs font-black text-slate-900 hover:text-emerald-700 transition underline underline-offset-2"
+              >
+                {business.sales.phone}
+              </a>
+            </div>
+          </div>
+          <a
+            href={`tel:${business.sales.phone}`}
+            className="p-2 rounded-xl bg-white border border-emerald-200 text-emerald-700 hover:bg-emerald-100 transition shadow-xs"
+            title="Call Sales"
+            aria-label="Call Sales"
+          >
+            <Phone className="w-4 h-4" />
+          </a>
+        </div>
+
+        <a
+          href={dynamicWhatsAppUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition shadow-sm"
+        >
+          <MessageCircle className="w-4 h-4" />
+          <span>{isBangla ? 'হোয়াটসঅ্যাপে যোগাযোগ করুন' : 'WhatsApp Us'}</span>
+        </a>
+      </div>
 
       {/* Sticky Mobile Purchase Bar (App-like UX) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-slate-200/90 p-3 px-4 shadow-[0_-4px_25px_rgba(0,0,0,0.1)] pb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">

@@ -133,7 +133,7 @@ export async function requestPasswordResetAction(data: unknown) {
     if (isSupabaseConfigured()) {
       try {
         const supabase = createClient();
-        const origin = process.env.APP_URL || 'https://trustcomputer.vercel.app';
+        const origin = process.env.APP_URL || 'https://trustcomputermb.com';
         await supabase.auth.resetPasswordForEmail(email, {
           redirectTo: `${origin}/reset-password`,
         });

@@ -93,6 +93,7 @@ describe('Trust Computer - Policies, Content Management & Admin Routes', () => {
     expect(aboutContent).not.toContain('Shiblu Ahmed');
     expect(aboutContent).toContain('Amdads Group');
     expect(aboutContent).toContain('T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar');
-    expect(aboutContent).toContain('01753-765372');
+    expect(aboutContent).toContain('01797854836');
+    expect(aboutContent).toContain('01608346407');
   });
 });

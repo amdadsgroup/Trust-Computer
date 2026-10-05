@@ -139,8 +139,46 @@ export default async function OrderConfirmationPage({
           </div>
           <div className="flex justify-between text-[11px] text-slate-500 pt-1">
             <span>Payment Method:</span>
-            <span className="font-semibold uppercase">{order.paymentMethod}</span>
+            <span className="font-semibold uppercase">
+              {order.paymentMethod === 'BKASH' ? 'bKash Payment / Cash Out' : order.paymentMethod}
+            </span>
           </div>
+
+          {order.paymentMethod === 'BKASH' && (
+            <div className="mt-2 pt-2 border-t border-slate-200/80 space-y-1.5 text-[11px]">
+              <div className="flex justify-between">
+                <span className="text-slate-600">bKash Number:</span>
+                <span className="font-mono font-bold text-slate-800">01712556225</span>
+              </div>
+              {order.payments && order.payments[0]?.transactionId && (
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Transaction ID (TrxID):</span>
+                  <span className="font-mono font-bold text-pink-700 bg-pink-50 px-2 py-0.5 rounded border border-pink-200">
+                    {order.payments[0].transactionId}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-between items-center pt-1">
+                <span className="text-slate-600">Payment Status:</span>
+                <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
+                  order.paymentStatus === 'PAID'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : order.paymentStatus === 'FAILED'
+                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                    : 'bg-amber-100 text-amber-800 border border-amber-300'
+                }`}>
+                  {order.paymentStatus === 'PAID'
+                    ? 'Payment Verified ✓'
+                    : order.paymentStatus === 'FAILED'
+                    ? 'Payment Rejected'
+                    : 'Verification Pending'}
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-500 italic pt-1">
+                * Payment will be verified by the Trust Computer accounts team.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Customer & Address if token matches */}

@@ -130,9 +130,9 @@ export default function PolicyView({ page }: { page: ContentPageData }) {
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="tel:01753765372" className="flex items-center gap-1 text-brand font-bold hover:underline">
+            <a href="tel:01797854836" className="flex items-center gap-1 text-brand font-bold hover:underline">
               <Phone className="w-3.5 h-3.5" />
-              01753-765372
+              01797854836
             </a>
             <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-emerald-600 font-bold hover:underline">
               <MessageCircle className="w-3.5 h-3.5" />

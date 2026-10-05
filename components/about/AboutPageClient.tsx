@@ -93,7 +93,7 @@ export default function AboutPageClient() {
           <p><strong className="text-white">{t('about.cred_management', 'Management:')}</strong> Trust Computer-Moulvibazar Management</p>
           <p><strong className="text-white">{t('about.cred_type', 'Business Type:')}</strong> Computer, Laptop, CCTV & Networking Showroom</p>
           <p><strong className="text-white">{t('about.cred_address', 'Showroom Address:')}</strong> {t('brand.address', 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh')}</p>
-          <p><strong className="text-white">{t('about.cred_phone', 'Hotline / Phone:')}</strong> 01753-765372</p>
+          <p><strong className="text-white">{t('about.cred_phone', 'Hotline / Phone:')}</strong> 01797854836 (Sales) | 01608346407 (Service)</p>
           <p><strong className="text-white">{t('about.cred_email', 'Official Email:')}</strong> trustcomputermb@gmail.com</p>
           <p><strong className="text-white">{t('about.cred_web', 'Official Website:')}</strong> https://trustcomputermb.com</p>
           <p><strong className="text-white">{t('about.cred_developer', 'Software Developed BY:')}</strong> <a href="https://amdadsgroup.netlify.app/" target="_blank" rel="noopener noreferrer" className="font-bold text-white hover:text-blue-400 hover:underline transition ml-1">Amdads Group</a></p>

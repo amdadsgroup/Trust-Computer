@@ -2,9 +2,11 @@
 
 **Client:** Shiblu Ahmed  
 **Platform:** Next.js 14 (App Router) + PostgreSQL (Supabase) + Prisma ORM + Tailwind CSS  
-**Store Location:** T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh  
-**Phone:** `01753-765372` | **WhatsApp:** `+8801753765372`  
-**Developer:** Amdads Group
+- **Store Location:** T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh  
+- **Sales & Care:** `01797854836` | **WhatsApp:** `+8801797854836`  
+- **Service & Repairs:** `01608346407` | **WhatsApp:** `+8801608346407`  
+- **bKash Payment / Cash Out:** `01712556225`  
+- **Developer:** Amdads Group
 
 ---
 
@@ -31,8 +33,12 @@ Ensure the following critical production variables are set:
 | `DIRECT_URL` | Supabase Session Pooler URL (Port 5432) for Prisma migrations/CLI | `postgresql://postgres.[REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres?sslmode=require&connect_timeout=30` |
 | `AUTH_SECRET` | 32+ character random secret for JWT signing | `openssl rand -base64 32` |
 | `AUTH_COOKIE_NAME` | Session cookie name | `trust_admin_session` |
-| `APP_URL` | Canonical public store URL | `https://trustcomputer.vercel.app` (or custom domain) |
-| `NEXT_PUBLIC_WHATSAPP` | Store WhatsApp number | `+8801753765372` |
+| `APP_URL` | Canonical public store URL | `https://trustcomputermb.com` |
+| `NEXT_PUBLIC_PHONE` | Sales Phone number | `01797854836` |
+| `NEXT_PUBLIC_WHATSAPP` | Sales WhatsApp number | `+8801797854836` |
+| `NEXT_PUBLIC_SERVICE_PHONE` | Service Phone number | `01608346407` |
+| `NEXT_PUBLIC_SERVICE_WHATSAPP`| Service WhatsApp number | `+8801608346407` |
+| `NEXT_PUBLIC_BKASH_NUMBER` | bKash Payment number | `01712556225` |
 | `PAYMENT_GATEWAY_PROVIDER` | Active gateway | `COD_MANUAL` (or `BKASH`, `SSLCOMMERZ`) |
 
 ---
@@ -61,7 +67,7 @@ node prisma/seed.js
 
 Create the primary administrator account for Shiblu Ahmed:
 ```bash
-node scripts/create-owner.js "trustcomputermb@gmail.com" "YourSecurePassword2026!" "Shiblu Ahmed" "01753-765372"
+node scripts/create-owner.js "trustcomputermb@gmail.com" "YourSecurePassword2026!" "Shiblu Ahmed" "01797854836"
 ```
 
 Once executed:

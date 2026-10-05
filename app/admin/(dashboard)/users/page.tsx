@@ -105,7 +105,7 @@ export default async function AdminUsersPage() {
                 <input
                   type="tel"
                   name="phone"
-                  placeholder="01753-XXXXXX"
+                  placeholder="01XXXXXXXXX"
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
                 />
               </div>

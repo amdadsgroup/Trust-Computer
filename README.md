@@ -9,8 +9,9 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 - **Business Name:** Trust Computer
 - **Business Type:** Computer, Laptop, Desktop PC Components, Accessories, CCTV Equipment, Networking Devices
 - **Store Location:** T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh
-- **Phone:** `01753-765372`
-- **WhatsApp:** `+8801753765372`
+- **Sales & Customer Care:** Phone: `01797854836` | WhatsApp: `+8801797854836`
+- **Service & Repairs:** Phone: `01608346407` | WhatsApp: `+8801608346407`
+- **bKash Payment / Cash Out:** `01712556225`
 - **Email:** `trustcomputermb@gmail.com`
 - **Official Website:** `https://trustcomputermb.com`
 - **Facebook:** [Trust Computer Facebook Page](https://www.facebook.com/TrustComputerr/)
@@ -30,7 +31,7 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 | **Database & ORM** | PostgreSQL / Supabase, Prisma ORM, Versioned Migrations |
 | **Authentication** | Secure Jose/JWT & HTTP-Only Secure Cookies, Role-Based Access Control (`OWNER`, `ADMIN`, `STAFF`) |
 | **Payments** | Cash on Delivery (COD), Manual / Mobile Banking Transfer (bKash/Nagad), Extensible Gateway Provider Abstraction |
-| **Customer Engagement** | Direct WhatsApp Click-to-Chat Integration (+8801753765372) |
+| **Customer Engagement** | Direct WhatsApp Click-to-Chat Integration (Sales: +8801797854836, Service: +8801608346407) |
 | **Testing** | Vitest for unit & server business logic tests |
 
 ---
@@ -113,4 +114,4 @@ npm run prisma:seed
 ```bash
 npm run dev
 ```
-Open https://trustcomputer.vercel.app/ in your browser.
+Open http://localhost:3000 in your browser (Production: https://trustcomputermb.com).

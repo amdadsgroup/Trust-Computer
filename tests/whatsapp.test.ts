@@ -1,20 +1,30 @@
 import { describe, it, expect } from 'vitest';
 import {
   TC_WHATSAPP_NUMBER,
+  TC_SALES_WHATSAPP_NUMBER,
+  TC_SERVICE_WHATSAPP_NUMBER,
   getGeneralWhatsAppLink,
+  getServiceWhatsAppLink,
   getProductInquiryWhatsAppLink,
   getOrderInquiryWhatsAppLink,
   getCartInquiryWhatsAppLink,
 } from '../lib/whatsapp';
 
 describe('WhatsApp Integration', () => {
-  it('uses the verified Bangladesh international number format (8801753765372)', () => {
-    expect(TC_WHATSAPP_NUMBER).toBe('8801753765372');
+  it('uses the verified sales WhatsApp number (8801797854836)', () => {
+    expect(TC_WHATSAPP_NUMBER).toBe('8801797854836');
+    expect(TC_SALES_WHATSAPP_NUMBER).toBe('8801797854836');
+  });
+
+  it('uses the verified service WhatsApp number (8801608346407)', () => {
+    expect(TC_SERVICE_WHATSAPP_NUMBER).toBe('8801608346407');
+    const serviceLink = getServiceWhatsAppLink();
+    expect(serviceLink).toContain('https://wa.me/8801608346407');
   });
 
   it('generates a valid general inquiry link with URL encoded text', () => {
     const link = getGeneralWhatsAppLink();
-    expect(link).toContain('https://wa.me/8801753765372?text=');
+    expect(link).toContain('https://wa.me/8801797854836?text=');
     expect(link).toContain(encodeURIComponent('Trust Computer'));
   });
 
@@ -26,7 +36,7 @@ describe('WhatsApp Integration', () => {
       slug: 'hikvision-4-channel-hd-dvr',
     });
 
-    expect(link).toContain('https://wa.me/8801753765372?text=');
+    expect(link).toContain('https://wa.me/8801797854836?text=');
     expect(decodeURIComponent(link)).toContain('Hikvision 4 Channel HD DVR');
     expect(decodeURIComponent(link)).toContain('DS-7204HGHI-K1');
     expect(decodeURIComponent(link)).toContain('3,600');

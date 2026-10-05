@@ -13,7 +13,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('validates a correct customer registration payload', () => {
       const valid = customerRegisterSchema.safeParse({
         fullName: 'Shiblu Ahmed',
-        phone: '01753765372',
+        phone: '01797854836',
         email: 'customer@trustcomputermb.com',
         password: 'Password123!',
         confirmPassword: 'Password123!',
@@ -25,7 +25,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('rejects registration when password and confirm password mismatch', () => {
       const invalid = customerRegisterSchema.safeParse({
         fullName: 'Shiblu Ahmed',
-        phone: '01753765372',
+        phone: '01797854836',
         email: 'customer@trustcomputermb.com',
         password: 'Password123!',
         confirmPassword: 'DifferentPassword456',
@@ -40,7 +40,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('rejects registration without terms acceptance', () => {
       const invalid = customerRegisterSchema.safeParse({
         fullName: 'Shiblu Ahmed',
-        phone: '01753765372',
+        phone: '01797854836',
         email: 'customer@trustcomputermb.com',
         password: 'Password123!',
         confirmPassword: 'Password123!',
@@ -85,7 +85,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('validates a complete customer delivery address', () => {
       const valid = customerAddressSchema.safeParse({
         fullName: 'Shiblu Ahmed',
-        phone: '01753765372',
+        phone: '01797854836',
         address: 'T.S Plaza (2nd Floor), Kusumbagh',
         area: 'Moulvibazar Sadar',
         city: 'Moulvibazar',
@@ -99,7 +99,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('rejects short or empty street addresses', () => {
       const invalid = customerAddressSchema.safeParse({
         fullName: 'Shiblu Ahmed',
-        phone: '01753765372',
+        phone: '01797854836',
         address: 'TS',
         area: 'Moulvibazar Sadar',
         city: 'Moulvibazar',
@@ -227,7 +227,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('allows guest checkout without password', () => {
       const valid = checkoutSchema.safeParse({
         customerName: 'Guest Buyer',
-        customerPhone: '01753765372',
+        customerPhone: '01797854836',
         customerEmail: 'guest@example.com',
         deliveryAddress: 'Kusumbagh Point, Moulvibazar',
         cityArea: 'Moulvibazar Sadar',
@@ -241,7 +241,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('accepts checkout with account creation requested', () => {
       const valid = checkoutSchema.safeParse({
         customerName: 'New Member',
-        customerPhone: '01753765372',
+        customerPhone: '01797854836',
         customerEmail: 'member@example.com',
         deliveryAddress: 'Kusumbagh Point, Moulvibazar',
         cityArea: 'Moulvibazar Sadar',
@@ -257,7 +257,7 @@ describe('Customer Account & Banner System Validations', () => {
     it('associates an existing customerId for logged-in checkout', () => {
       const valid = checkoutSchema.safeParse({
         customerName: 'Shiblu Ahmed',
-        customerPhone: '01753765372',
+        customerPhone: '01797854836',
         customerEmail: 'customer@example.com',
         deliveryAddress: 'T.S Plaza, Moulvibazar',
         cityArea: 'Moulvibazar Sadar',

@@ -6,22 +6,32 @@
  * C:\Users\NEED ELECTRO\.gemini\antigravity-ide\brain\...\media_1790234960095.jpg
  */
 
+import { business } from './business';
+
 export const brand = {
-  name: 'Trust Computer',
-  shortName: 'Trust Computer',
-  officialFullName: 'Trust Computer-Moulvibazar',
-  tagline: 'Your Trust, Our Technology',
-  taglineBn: 'আপনার আস্থা, আমাদের প্রযুক্তি',
-  taglineDescription: 'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️',
+  name: business.name,
+  shortName: business.shortName,
+  officialFullName: business.officialFullName,
+  tagline: business.tagline,
+  taglineBn: business.taglineBn,
+  taglineDescription: business.taglineDescription,
   owner: 'Shiblu Ahmed',
-  developer: 'Amdads Group',
+  developer: business.developer,
   developerStatement: 'Software Developed BY Amdads Group',
-  developerUrl: 'https://amdadsgroup.netlify.app/',
-  phone: '01753-765372',
-  email: 'trustcomputermb@gmail.com',
-  address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
-  facebook: 'https://www.facebook.com/TrustComputerr/',
-  whatsapp: '+8801753765372',
+  developerUrl: business.developerUrl,
+  phone: business.sales.phone,
+  phoneFormatted: business.sales.phoneFormatted,
+  rawPhone: business.sales.phone,
+  servicePhone: business.service.phone,
+  bkashNumber: business.payment.bkash,
+  email: business.email,
+  address: business.address,
+  facebook: business.facebookUrl,
+  whatsapp: business.sales.phoneIntl,
+  sales: business.sales,
+  service: business.service,
+  payment: business.payment,
+
 
   // Official Brand Assets
   assets: {

@@ -7,15 +7,18 @@ import { requireAuth, recordAuditLog } from '@/lib/auth';
 export async function updateStoreSettingsAction(formData: FormData) {
   const session = await requireAuth();
 
-  const storeName = formData.get('storeName') as string;
-  const ownerName = formData.get('ownerName') as string;
-  const phone = formData.get('phone') as string;
-  const email = formData.get('email') as string;
-  const address = formData.get('address') as string;
-  const facebookUrl = formData.get('facebookUrl') as string;
-  const whatsappNumber = formData.get('whatsappNumber') as string;
-  const deliveryFeeInside = parseFloat(formData.get('deliveryFeeInsideMoulvibazar') as string);
-  const deliveryFeeOutside = parseFloat(formData.get('deliveryFeeOutsideMoulvibazar') as string);
+  const storeName = (formData.get('storeName') as string)?.trim() || 'Trust Computer-Moulvibazar';
+  const ownerName = (formData.get('ownerName') as string)?.trim() || 'Shiblu Ahmed';
+  const phone = (formData.get('phone') as string)?.trim() || '01797854836';
+  const email = (formData.get('email') as string)?.trim() || 'trustcomputermb@gmail.com';
+  const address = (formData.get('address') as string)?.trim() || 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh';
+  const facebookUrl = (formData.get('facebookUrl') as string)?.trim() || 'https://www.facebook.com/TrustComputerr/';
+  const whatsappNumber = (formData.get('whatsappNumber') as string)?.trim() || '+8801797854836';
+  const servicePhone = (formData.get('servicePhone') as string)?.trim() || '01608346407';
+  const serviceWhatsapp = (formData.get('serviceWhatsapp') as string)?.trim() || '+8801608346407';
+  const bkashNumber = (formData.get('bkashNumber') as string)?.trim() || '01712556225';
+  const deliveryFeeInside = parseFloat((formData.get('deliveryFeeInsideMoulvibazar') as string) || '60');
+  const deliveryFeeOutside = parseFloat((formData.get('deliveryFeeOutsideMoulvibazar') as string) || '120');
 
   try {
     const updated = await prisma.siteSettings.upsert({
@@ -28,6 +31,9 @@ export async function updateStoreSettingsAction(formData: FormData) {
         address,
         facebookUrl,
         whatsappNumber,
+        servicePhone,
+        serviceWhatsapp,
+        bkashNumber,
         deliveryFeeInsideMoulvibazar: deliveryFeeInside,
         deliveryFeeOutsideMoulvibazar: deliveryFeeOutside,
       },
@@ -40,6 +46,9 @@ export async function updateStoreSettingsAction(formData: FormData) {
         address,
         facebookUrl,
         whatsappNumber,
+        servicePhone,
+        serviceWhatsapp,
+        bkashNumber,
         deliveryFeeInsideMoulvibazar: deliveryFeeInside,
         deliveryFeeOutsideMoulvibazar: deliveryFeeOutside,
       },
@@ -50,12 +59,21 @@ export async function updateStoreSettingsAction(formData: FormData) {
       action: 'SETTINGS_UPDATE',
       entityType: 'SiteSettings',
       entityId: updated.id,
-      details: { storeName, phone, deliveryFeeInside, deliveryFeeOutside },
+      details: {
+        storeName,
+        salesPhone: phone,
+        servicePhone,
+        bkashNumber,
+        deliveryFeeInside,
+        deliveryFeeOutside,
+      },
     });
 
     revalidatePath('/');
     revalidatePath('/contact');
+    revalidatePath('/services');
     revalidatePath('/about');
+    revalidatePath('/checkout');
     revalidatePath('/admin/settings');
     return { success: true };
   } catch (error: any) {

@@ -194,6 +194,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/services" className="hover:text-white transition text-emerald-400 font-semibold">
+                  Computer & CCTV Servicing
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className="hover:text-white transition">
                   {isBangla ? 'আমাদের সম্পর্কে (About Us)' : 'About Trust Computer'}
                 </Link>
@@ -234,42 +239,78 @@ export default function Footer() {
           {/* Direct Contact Info */}
           <div>
             <h3 className="font-bold text-white text-sm uppercase tracking-wider mb-4 border-l-2 border-[#0084d6] pl-2">
-              {t('footer.contact_title', 'Showroom Contact')}
+              Official Business Contacts
             </h3>
-            <div className="space-y-3 text-sm text-slate-300">
+            <div className="space-y-3.5 text-xs text-slate-300">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-rose-400 mt-1 flex-shrink-0" />
-                <span className="text-xs leading-relaxed">
+                <MapPin className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
+                <span className="leading-relaxed">
                   {t('brand.address', 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh.')}
                 </span>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                <a href="tel:01753765372" className="text-xs hover:text-white font-medium">
-                  01753-765372
-                </a>
+              {/* 1. Sales & Customer Care */}
+              <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Sales & Customer Care:
+                </span>
+                <div className="flex items-center justify-between">
+                  <a href="tel:01797854836" className="text-white hover:text-blue-400 font-bold font-mono text-sm">
+                    01797854836
+                  </a>
+                  <a
+                    href="https://wa.me/8801797854836"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+              {/* 2. Service & Maintenance */}
+              <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 space-y-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                  Service & Technical Support:
+                </span>
+                <div className="flex items-center justify-between">
+                  <a href="tel:01608346407" className="text-white hover:text-emerald-400 font-bold font-mono text-sm">
+                    01608346407
+                  </a>
+                  <a
+                    href="https://wa.me/8801608346407"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[11px] text-emerald-400 hover:underline flex items-center gap-1 font-semibold"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* 3. bKash Payment / Cash Out */}
+              <div className="p-2.5 rounded-xl bg-slate-900 border border-pink-900/40 space-y-1">
+                <span className="text-[10px] font-bold text-pink-400 uppercase tracking-wider block">
+                  bKash Payment / Cash Out:
+                </span>
+                <div className="flex items-center justify-between">
+                  <span className="text-pink-300 font-black font-mono text-sm">
+                    01712556225
+                  </span>
+                  <span className="text-[10px] text-slate-400">Order Payments</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1 text-slate-400">
+                <Mail className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
                 <a
                   href="mailto:trustcomputermb@gmail.com"
-                  className="text-xs hover:text-white break-all"
+                  className="hover:text-white break-all text-[11px]"
                 >
                   trustcomputermb@gmail.com
-                </a>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <MessageCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-emerald-400 hover:underline"
-                >
-                  {isBangla ? 'হোয়াটসঅ্যাপে সরাসরি চ্যাট করুন' : 'Chat with Us on WhatsApp'}
                 </a>
               </div>
             </div>

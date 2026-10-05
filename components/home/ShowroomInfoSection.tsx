@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Sparkles, MapPin, Phone, Clock, Wrench, MessageCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
+import { business } from '@/lib/business';
 
 export default function ShowroomInfoSection({ whatsappUrl }: { whatsappUrl: string }) {
   const { t } = useLanguage();
@@ -36,7 +37,7 @@ export default function ShowroomInfoSection({ whatsappUrl }: { whatsappUrl: stri
             </div>
             <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
               <Phone className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-              <span>Hotline: 01753-765372</span>
+              <span>Sales: {business.sales.phone} | Service: {business.service.phone}</span>
             </div>
             <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-100">
               <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
@@ -63,11 +64,11 @@ export default function ShowroomInfoSection({ whatsappUrl }: { whatsappUrl: stri
             <span>{t('home.send_whatsapp', 'Send WhatsApp Message')}</span>
           </a>
           <a
-            href="tel:01753765372"
+            href={`tel:${business.sales.phone}`}
             className="flex items-center justify-center gap-2 bg-[#081621] hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md transition"
           >
             <Phone className="w-4 h-4" />
-            <span>{t('home.call_hotline', 'Call Hotline: 01753-765372')}</span>
+            <span>Sales Hotline: {business.sales.phone}</span>
           </a>
           <Link
             href="/contact"

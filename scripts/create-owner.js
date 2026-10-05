@@ -7,7 +7,7 @@ async function main() {
   const email = process.argv[2] || process.env.INITIAL_OWNER_EMAIL || 'trustcomputermb@gmail.com';
   const password = process.argv[3] || process.env.INITIAL_OWNER_PASSWORD || 'Trust@Moulvibazar2026!';
   const name = process.argv[4] || process.env.INITIAL_OWNER_NAME || 'Shiblu Ahmed';
-  const phone = process.argv[5] || process.env.INITIAL_OWNER_PHONE || '01753-765372';
+  const phone = process.argv[5] || process.env.INITIAL_OWNER_PHONE || '01797854836';
 
   console.log(`Setting up initial OWNER account for: ${email}`);
 

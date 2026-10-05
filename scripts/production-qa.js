@@ -1,7 +1,7 @@
 // scripts/production-qa.js
-// Comprehensive live production test suite against https://trustcomputer.vercel.app/
+// Comprehensive live production test suite against https://trustcomputermb.com/
 
-const BASE_URL = 'https://trustcomputer.vercel.app';
+const BASE_URL = process.env.PRODUCTION_URL || process.env.APP_URL || 'https://trustcomputermb.com';
 
 const urlsToTest = [
   { path: '/', name: 'Homepage', expectStatus: [200] },
@@ -15,6 +15,7 @@ const urlsToTest = [
   { path: '/categories/computer-accessories', name: 'Category: Accessories', expectStatus: [200] },
   { path: '/cart', name: 'Shopping Cart', expectStatus: [200] },
   { path: '/checkout', name: 'Checkout Page', expectStatus: [200] },
+  { path: '/services', name: 'Servicing & Repairs Page', expectStatus: [200] },
   { path: '/compare', name: 'Product Comparison (Redirect)', expectStatus: [200, 307, 308, 302] },
   { path: '/wishlist', name: 'Wishlist', expectStatus: [200] },
   { path: '/track-order', name: 'Track Order', expectStatus: [200] },

@@ -26,8 +26,8 @@ export const translations: Translations = {
     bn: 'টি.এস প্লাজা (২য় তলা), কুসুমবাগ, মৌলভীবাজার, বাংলাদেশ।',
   },
   'brand.hotline': {
-    en: '01753-765372',
-    bn: '01753-765372',
+    en: '01797854836',
+    bn: '01797854836',
   },
   'brand.hours': {
     en: 'Sat - Thu: 10:00 AM - 9:00 PM (Friday Closed)',
@@ -304,8 +304,8 @@ export const translations: Translations = {
     bn: 'হোয়াটসঅ্যাপ সাপোর্ট',
   },
   'contact.whatsapp_direct': {
-    en: '+880 1753-765372 (Direct Chat)',
-    bn: '+880 1753-765372 (সরাসরি মেসেজ দিন)',
+    en: '+880 1797854836 (Direct Chat)',
+    bn: '+880 1797854836 (সরাসরি মেসেজ দিন)',
   },
   'contact.email_label': {
     en: 'Official Email',
@@ -410,8 +410,8 @@ export const translations: Translations = {
     bn: 'হোয়াটসঅ্যাপে মেসেজ পাঠান',
   },
   'home.call_hotline': {
-    en: 'Call Hotline: 01753-765372',
-    bn: 'কল করুন: 01753-765372',
+    en: 'Call Hotline: 01797854836',
+    bn: 'কল করুন: 01797854836',
   },
   'home.directions': {
     en: 'Showroom Map & Directions',

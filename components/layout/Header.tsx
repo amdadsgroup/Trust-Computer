@@ -25,7 +25,11 @@ import {
   Camera,
   Wifi,
   Zap,
+  Phone,
+  MessageCircle,
+  Wrench,
 } from 'lucide-react';
+import { business, getSalesWhatsAppLink, getServiceWhatsAppLink } from '@/lib/business';
 
 // In-memory client cache for category counts across route changes
 let clientCategoryCountsCache: { total: number; counts: Record<string, number> } | null = null;
@@ -293,6 +297,25 @@ export default function Header() {
               </div>
             </Link>
 
+            {/* Sales Hotline */}
+            <a
+              href={`tel:${business.sales.phone}`}
+              className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group"
+              title="Call Sales & Customer Care"
+            >
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <Phone className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block leading-tight">
+                  Sales Hotline
+                </span>
+                <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition block">
+                  {business.sales.phone}
+                </span>
+              </div>
+            </a>
+
             {/* Track Order CTA Button */}
             <Link
               href="/track-order"
@@ -497,6 +520,68 @@ export default function Header() {
               <User className="w-4 h-4" />
               <span>{t('nav.account', 'My Account')} ({t('nav.register_login', 'Register / Login')})</span>
             </Link>
+          </div>
+
+          {/* Mobile Direct Support Channels */}
+          <div className="pt-3 border-t border-slate-100 space-y-2">
+            <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider block">
+              Direct Contact & Support
+            </span>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-100 flex flex-col justify-between gap-1.5">
+                <div>
+                  <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wide block">
+                    Sales & Care
+                  </span>
+                  <span className="font-bold text-slate-900 block text-xs">{business.sales.phone}</span>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  <a
+                    href={`tel:${business.sales.phone}`}
+                    className="flex-1 py-1 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center justify-center gap-1 transition"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>Call</span>
+                  </a>
+                  <a
+                    href={getSalesWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-1 px-2 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold text-[11px] flex items-center justify-center gap-1 transition"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>Chat</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-100 flex flex-col justify-between gap-1.5">
+                <div>
+                  <span className="text-[10px] font-bold text-blue-700 uppercase tracking-wide block">
+                    Service & Repair
+                  </span>
+                  <span className="font-bold text-slate-900 block text-xs">{business.service.phone}</span>
+                </div>
+                <div className="flex items-center gap-1.5 pt-1">
+                  <a
+                    href={`tel:${business.service.phone}`}
+                    className="flex-1 py-1 px-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] flex items-center justify-center gap-1 transition"
+                  >
+                    <Phone className="w-3 h-3" />
+                    <span>Call</span>
+                  </a>
+                  <a
+                    href={getServiceWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-1 px-2 rounded-lg bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold text-[11px] flex items-center justify-center gap-1 transition"
+                  >
+                    <MessageCircle className="w-3 h-3" />
+                    <span>Chat</span>
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Mobile Drawer Tagline */}

@@ -75,7 +75,9 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     expect(brand.developerStatement).toBe('Software Developed BY Amdads Group');
     expect(brand.officialFullName).toBe('Trust Computer-Moulvibazar');
     expect(brand.address).toContain('T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar');
-    expect(brand.phone).toBe('01753-765372');
+    expect(brand.phone).toBe('01797854836');
+    expect(brand.servicePhone).toBe('01608346407');
+    expect(brand.bkashNumber).toBe('01712556225');
     expect(brand.email).toBe('trustcomputermb@gmail.com');
   });
 

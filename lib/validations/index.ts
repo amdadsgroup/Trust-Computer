@@ -91,21 +91,37 @@ export const checkoutItemSchema = z.object({
   quantity: z.number().int().min(1, 'Quantity must be at least 1').max(20, 'Maximum 20 units per item'),
 });
 
-export const checkoutSchema = z.object({
-  customerName: z.string().min(2, 'Full name must be at least 2 characters').max(100),
-  customerPhone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01753765372)'),
-  customerEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
-  deliveryAddress: z.string().min(5, 'Delivery address must be at least 5 characters').max(300),
-  cityArea: z.string().min(2, 'Please select your delivery zone / city'),
-  notes: z.string().max(500).optional().or(z.literal('')),
-  deliveryMethod: z.enum(['STANDARD', 'EXPRESS']).default('STANDARD'),
-  paymentMethod: z.enum(['COD', 'BKASH', 'NAGAD', 'SSLCOMMERZ', 'BANK_TRANSFER']).default('COD'),
-  items: z.array(checkoutItemSchema).min(1, 'Your shopping cart is empty'),
-  customerId: z.string().optional(),
-  createAccount: z.boolean().optional(),
-  accountPassword: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
-  couponCode: z.string().optional().or(z.literal('')),
-});
+export const checkoutSchema = z
+  .object({
+    customerName: z.string().min(2, 'Full name must be at least 2 characters').max(100),
+    customerPhone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01797854836)'),
+    customerEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
+    deliveryAddress: z.string().min(5, 'Delivery address must be at least 5 characters').max(300),
+    cityArea: z.string().min(2, 'Please select your delivery zone / city'),
+    notes: z.string().max(500).optional().or(z.literal('')),
+    deliveryMethod: z.enum(['STANDARD', 'EXPRESS']).default('STANDARD'),
+    paymentMethod: z.enum(['COD', 'BKASH', 'NAGAD', 'SSLCOMMERZ', 'BANK_TRANSFER']).default('COD'),
+    transactionId: z.string().trim().max(60).optional().or(z.literal('')),
+    senderNumber: z.string().trim().max(20).optional().or(z.literal('')),
+    items: z.array(checkoutItemSchema).min(1, 'Your shopping cart is empty'),
+    customerId: z.string().optional(),
+    createAccount: z.boolean().optional(),
+    accountPassword: z.string().min(6, 'Password must be at least 6 characters').optional().or(z.literal('')),
+    couponCode: z.string().optional().or(z.literal('')),
+  })
+  .refine(
+    (data) => {
+      if (data.paymentMethod === 'BKASH') {
+        const tid = (data.transactionId || '').trim();
+        return tid.length >= 4 && /^[A-Za-z0-9_-]+$/.test(tid);
+      }
+      return true;
+    },
+    {
+      message: 'A valid bKash Transaction ID (minimum 4 alphanumeric characters) is required when bKash payment is selected.',
+      path: ['transactionId'],
+    }
+  );
 
 export type CheckoutInput = z.infer<typeof checkoutSchema>;
 
@@ -113,7 +129,7 @@ export type CheckoutInput = z.infer<typeof checkoutSchema>;
 export const customerRegisterSchema = z
   .object({
     fullName: z.string().min(2, 'Full name must be at least 2 characters').max(100),
-    phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01753765372)'),
+    phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01797854836)'),
     email: z.string().email('Please enter a valid email address'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     confirmPassword: z.string().min(6, 'Confirm password must be at least 6 characters'),
@@ -136,7 +152,7 @@ export type CustomerLoginInput = z.infer<typeof customerLoginSchema>;
 
 export const customerProfileUpdateSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters').max(100),
-  phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01753765372)'),
+  phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01797854836)'),
   email: z.string().email('Please enter a valid email address').optional(),
 });
 
@@ -144,7 +160,7 @@ export type CustomerProfileUpdateInput = z.infer<typeof customerProfileUpdateSch
 
 export const customerAddressSchema = z.object({
   fullName: z.string().min(2, 'Full name is required').max(100),
-  phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01753765372)'),
+  phone: z.string().regex(bdPhoneRegex, 'Please enter a valid Bangladesh phone number (e.g. 01797854836)'),
   address: z.string().min(5, 'Full street address is required').max(300),
   area: z.string().min(2, 'Area or Upazila is required').max(100),
   city: z.string().min(2, 'City is required').max(100),

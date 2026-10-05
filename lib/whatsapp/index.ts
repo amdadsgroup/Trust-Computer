@@ -1,55 +1,37 @@
 /**
  * Trust Computer - WhatsApp Integration Utilities
- * Business WhatsApp: 01753-765372 (+8801753765372)
+ * Single Source of Truth: lib/business.ts
+ * 
+ * Official Numbers:
+ * Sales & Customer Care: 01797854836 -> 8801797854836 (https://wa.me/8801797854836)
+ * Service & Support: 01608346407 -> 8801608346407 (https://wa.me/8801608346407)
  */
 
-export const TC_WHATSAPP_NUMBER = '8801753765372';
+import {
+  business,
+  getSalesWhatsAppLink,
+  getServiceWhatsAppLink,
+  getProductSalesWhatsAppLink,
+  getOrderWhatsAppLink,
+  getCartWhatsAppLink,
+} from '@/lib/business';
 
-export function getGeneralWhatsAppLink(customMessage?: string, isBangla = false): string {
-  const defaultText = isBangla
-    ? `আসসালামু আলাইকুম, Trust Computer Moulvibazar-এ যোগাযোগ করতে চাচ্ছি।`
-    : `Hello Trust Computer Moulvibazar, I would like to get more information about your products and services.`;
-  const text = customMessage || defaultText;
-  return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
+// Authoritative numbers derived from centralized business config
+export const TC_WHATSAPP_NUMBER = business.sales.whatsapp; // 8801797854836
+export const TC_SALES_WHATSAPP_NUMBER = business.sales.whatsapp; // 8801797854836
+export const TC_SERVICE_WHATSAPP_NUMBER = business.service.whatsapp; // 8801608346407
 
-export function getProductInquiryWhatsAppLink(product: {
-  name: string;
-  sku: string;
-  price: number;
-  slug: string;
-  baseUrl?: string;
-  isBangla?: boolean;
-}): string {
-  const host = product.baseUrl || 'https://trustcomputermb.com';
-  const url = `${host}/products/${product.slug}`;
-  const text = product.isBangla
-    ? `আসসালামু আলাইকুম Trust Computer,\nআমি এই পণ্যটি সম্পর্কে জানতে আগ্রহী:\n- পণ্য: ${product.name}\n- SKU: ${product.sku}\n- মূল্য: ৳${product.price.toLocaleString('en-BD')}\n- লিংক: ${url}`
-    : `Hello Trust Computer Moulvibazar,\nI am inquiring about this product:\n- Product: ${product.name}\n- SKU: ${product.sku}\n- Price: ৳${product.price.toLocaleString('en-BD')}\n- Link: ${url}`;
-  return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
+// Re-export helpers
+export {
+  getSalesWhatsAppLink,
+  getServiceWhatsAppLink,
+  getProductSalesWhatsAppLink,
+  getOrderWhatsAppLink,
+  getCartWhatsAppLink,
+};
 
-export function getOrderInquiryWhatsAppLink(
-  order: {
-    orderNumber: string;
-    total: number;
-  },
-  isBangla = false
-): string {
-  const text = isBangla
-    ? `আসসালামু আলাইকুম Trust Computer,\nআমার অর্ডার সম্পর্কিত তথ্য জানতে চাচ্ছি:\n- অর্ডার নং: ${order.orderNumber}\n- মোট মূল্য: ৳${order.total.toLocaleString('en-BD')}`
-    : `Hello Trust Computer Moulvibazar,\nI would like to track/inquire about my order:\n- Order #: ${order.orderNumber}\n- Total: ৳${order.total.toLocaleString('en-BD')}`;
-  return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
-
-export function getCartInquiryWhatsAppLink(
-  items: Array<{ name: string; quantity: number }>,
-  total: number,
-  isBangla = false
-): string {
-  const itemsText = items.map((i) => `• ${i.name} (x${i.quantity})`).join('\n');
-  const text = isBangla
-    ? `আসসালামু আলাইকুম Trust Computer,\nআমি নিম্নলিখিত পণ্যগুলো অর্ডার করার বিষয়ে পরামর্শ চাচ্ছি:\n${itemsText}\nআনুমানিক সর্বমোট: ৳${total.toLocaleString('en-BD')}`
-    : `Hello Trust Computer Moulvibazar,\nI would like to inquire about ordering these items:\n${itemsText}\nEstimated Subtotal: ৳${total.toLocaleString('en-BD')}`;
-  return `https://wa.me/${TC_WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-}
+// Aliases for backward compatibility
+export const getGeneralWhatsAppLink = getSalesWhatsAppLink;
+export const getProductInquiryWhatsAppLink = getProductSalesWhatsAppLink;
+export const getOrderInquiryWhatsAppLink = getOrderWhatsAppLink;
+export const getCartInquiryWhatsAppLink = getCartWhatsAppLink;

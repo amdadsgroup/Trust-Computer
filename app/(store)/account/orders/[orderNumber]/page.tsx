@@ -237,7 +237,7 @@ export default async function CustomerOrderDetailsPage({
       <div className="bg-blue-50/70 p-4 rounded-2xl border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2 text-blue-900 font-semibold">
           <ShieldCheck className="w-4 h-4 text-[#0084d6] flex-shrink-0" />
-          <span>Need assistance with this order? Contact our helpline at 01753-765372.</span>
+          <span>Need assistance with this order? Contact our helpline at 01797854836.</span>
         </div>
         <Link
           href={`/order-confirmation/${order.orderNumber}?token=${encodeURIComponent(order.trackingToken)}`}

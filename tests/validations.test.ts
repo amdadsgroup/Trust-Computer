@@ -85,7 +85,7 @@ describe('Validation Schemas', () => {
     it('validates a proper Bangladeshi customer checkout form', () => {
       const valid = checkoutSchema.safeParse({
         customerName: 'Shiblu Ahmed',
-        customerPhone: '01753765372',
+        customerPhone: '01797854836',
         customerEmail: 'shiblu@example.com',
         deliveryAddress: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar',
         cityArea: 'Moulvibazar Sadar',
@@ -100,7 +100,7 @@ describe('Validation Schemas', () => {
     it('accepts Bangladeshi phone with +880 prefix', () => {
       const valid = checkoutSchema.safeParse({
         customerName: 'Kazi Tanvir',
-        customerPhone: '+8801753765372',
+        customerPhone: '+8801797854836',
         deliveryAddress: 'Chowmuhana, Sreemangal Road, Moulvibazar',
         cityArea: 'Moulvibazar Sadar',
         items: [{ productId: 'prod-456', quantity: 1 }],
@@ -128,6 +128,43 @@ describe('Validation Schemas', () => {
         items: [],
       });
       expect(invalid.success).toBe(false);
+    });
+
+    it('accepts bKash payment with a valid transaction ID', () => {
+      const valid = checkoutSchema.safeParse({
+        customerName: 'Shiblu Ahmed',
+        customerPhone: '01797854836',
+        deliveryAddress: 'T.S Plaza, Kusumbagh, Moulvibazar',
+        cityArea: 'Moulvibazar Sadar',
+        paymentMethod: 'BKASH',
+        transactionId: 'TRX998877A',
+        senderNumber: '01711000000',
+        items: [{ productId: 'prod-123', quantity: 1 }],
+      });
+      expect(valid.success).toBe(true);
+    });
+
+    it('rejects bKash payment when transaction ID is missing or empty', () => {
+      const missingTrx = checkoutSchema.safeParse({
+        customerName: 'Shiblu Ahmed',
+        customerPhone: '01797854836',
+        deliveryAddress: 'T.S Plaza, Kusumbagh, Moulvibazar',
+        cityArea: 'Moulvibazar Sadar',
+        paymentMethod: 'BKASH',
+        items: [{ productId: 'prod-123', quantity: 1 }],
+      });
+      expect(missingTrx.success).toBe(false);
+
+      const emptyTrx = checkoutSchema.safeParse({
+        customerName: 'Shiblu Ahmed',
+        customerPhone: '01797854836',
+        deliveryAddress: 'T.S Plaza, Kusumbagh, Moulvibazar',
+        cityArea: 'Moulvibazar Sadar',
+        paymentMethod: 'BKASH',
+        transactionId: '   ',
+        items: [{ productId: 'prod-123', quantity: 1 }],
+      });
+      expect(emptyTrx.success).toBe(false);
     });
   });
 
@@ -164,7 +201,7 @@ describe('Validation Schemas', () => {
     it('validates tracking lookup inputs', () => {
       const valid = orderTrackingSchema.safeParse({
         orderNumber: 'TC-20260924-1234',
-        phone: '01753765372',
+        phone: '01797854836',
       });
       expect(valid.success).toBe(true);
     });

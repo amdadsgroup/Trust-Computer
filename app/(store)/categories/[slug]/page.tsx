@@ -413,7 +413,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className="flex items-center gap-2.5">
           <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
           <span>
-            Trust Computer — T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01753-765372
+            Trust Computer — T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01797854836
           </span>
         </div>
         <Link

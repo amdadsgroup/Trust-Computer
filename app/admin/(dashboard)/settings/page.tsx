@@ -18,12 +18,15 @@ export default async function AdminSettingsPage() {
 
   const current = settings || {
     storeName: 'Trust Computer-Moulvibazar',
-    ownerName: 'Trust Computer Management',
-    phone: '01753-765372',
+    ownerName: 'Shiblu Ahmed',
+    phone: '01797854836',
     email: 'trustcomputermb@gmail.com',
     address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
     facebookUrl: 'https://www.facebook.com/TrustComputerr/',
-    whatsappNumber: '+8801753765372',
+    whatsappNumber: '+8801797854836',
+    servicePhone: '01608346407',
+    serviceWhatsapp: '+8801608346407',
+    bkashNumber: '01712556225',
     deliveryFeeInsideMoulvibazar: 60.0,
     deliveryFeeOutsideMoulvibazar: 120.0,
   };
@@ -33,10 +36,10 @@ export default async function AdminSettingsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Store & Showroom Settings
+            Store & Business Contact Settings
           </h1>
           <p className="text-xs text-slate-500 mt-1">
-            Configure showroom contact information, location, and regional delivery charges.
+            Configure showroom contacts (Sales, Service, bKash), location, and regional delivery charges.
           </p>
         </div>
 
@@ -93,19 +96,91 @@ export default async function AdminSettingsPage() {
           <div>
             <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
               <Phone className="w-4 h-4 text-emerald-600" />
-              <span>Contact Details & Social Media</span>
+              <span>Official Business Contacts (Sales, Service & bKash)</span>
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Sales & Customer Care */}
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Hotline / Phone Number</label>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Sales & Customer Care Phone *
+                </label>
                 <input
                   type="text"
                   name="phone"
-                  defaultValue={current.phone}
+                  defaultValue={current.phone || '01797854836'}
                   required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono font-bold"
                 />
+                <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  Official number for product sales and general queries
+                </span>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Sales WhatsApp Number *
+                </label>
+                <input
+                  type="text"
+                  name="whatsappNumber"
+                  defaultValue={current.whatsappNumber || '+8801797854836'}
+                  required
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono font-bold"
+                />
+                <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  International format (e.g. +8801797854836)
+                </span>
+              </div>
+
+              {/* Service & Technical Support */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Service & Technical Support Phone *
+                </label>
+                <input
+                  type="text"
+                  name="servicePhone"
+                  defaultValue={current.servicePhone || '01608346407'}
+                  required
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono font-bold"
+                />
+                <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  Specific hotline for computer & CCTV servicing, repair, technical maintenance
+                </span>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Service WhatsApp Number *
+                </label>
+                <input
+                  type="text"
+                  name="serviceWhatsapp"
+                  defaultValue={current.serviceWhatsapp || '+8801608346407'}
+                  required
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono font-bold"
+                />
+                <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  International format (e.g. +8801608346407)
+                </span>
+              </div>
+
+              {/* bKash Payment Number */}
+              <div className="sm:col-span-2 p-4 rounded-2xl bg-pink-50/70 border border-pink-200/80">
+                <label className="block font-bold text-pink-900 mb-1">
+                  bKash Payment / Cash Out Number *
+                </label>
+                <input
+                  type="text"
+                  name="bkashNumber"
+                  defaultValue={current.bkashNumber || '01712556225'}
+                  required
+                  className="w-full bg-white border border-pink-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-pink-600 font-mono font-black text-slate-900"
+                />
+                <span className="text-[10.5px] text-pink-800 mt-1 block">
+                  Official bKash number provided to customers during checkout and on contact pages for manual payment / cash out.
+                </span>
               </div>
 
               <div>
@@ -116,17 +191,6 @@ export default async function AdminSettingsPage() {
                   defaultValue={current.email}
                   required
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
-                />
-              </div>
-
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">WhatsApp Number</label>
-                <input
-                  type="text"
-                  name="whatsappNumber"
-                  defaultValue={current.whatsappNumber}
-                  required
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand font-mono"
                 />
               </div>
 

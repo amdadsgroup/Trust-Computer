@@ -229,14 +229,30 @@ export async function createOrderTransactionally(input: CheckoutInput) {
       });
 
       // 5.4 Create Payment Record
+      const isBkash = input.paymentMethod === 'BKASH';
+      const bkashTxId = isBkash && input.transactionId?.trim() ? input.transactionId.trim() : null;
+      const paymentMetadata = isBkash
+        ? JSON.stringify({
+            paymentNumber: '01712556225',
+            senderNumber: input.senderNumber?.trim() || null,
+            transactionId: bkashTxId,
+            submittedAt: new Date().toISOString(),
+            status: 'verification_pending',
+          })
+        : null;
+
       await tx.payment.create({
         data: {
           orderId: order.id,
           provider: input.paymentMethod as PaymentMethod,
+          transactionId: bkashTxId,
           amount: total,
           currency: 'BDT',
           status: PaymentStatus.PENDING,
-          notes: `Initial payment record created for order ${orderNumber}`,
+          rawResponseJson: paymentMetadata,
+          notes: isBkash
+            ? `Manual bKash payment submitted (TxID: ${bkashTxId}). Verification pending by Trust Computer admin.`
+            : `Initial payment record created for order ${orderNumber}`,
         },
       });
 

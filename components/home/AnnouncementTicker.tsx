@@ -16,7 +16,7 @@ export default function AnnouncementTicker() {
           {currentDate} ,
         </span>
         <span className="text-slate-600">
-          All our activities and showroom at T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar are open and fully operational. Home & office CCTV camera installation and desktop PC servicing available. Hotline: <strong className="text-brand">01753-765372</strong>.
+          All our activities and showroom at T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar are open and fully operational. Home & office CCTV camera installation and desktop PC servicing available. Sales Hotline: <strong className="text-brand">01797854836</strong> | Service: <strong className="text-brand">01608346407</strong>.
         </span>
         <Link href="/contact" className="text-brand font-bold hover:underline flex-shrink-0 ml-2">
           View showroom map →

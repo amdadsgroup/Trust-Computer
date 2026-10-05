@@ -355,7 +355,7 @@ export default async function CategoriesPage() {
               Need a Custom PC Build or CCTV Package in Moulvibazar?
             </h4>
             <p className="text-xs text-slate-600">
-              Visit our showroom at T.S. Plaza (2nd Floor), Kusumbag or call Hotline: 01753-765372 / 01711-137517.
+              Visit our showroom at T.S. Plaza (2nd Floor), Kusumbag or call Sales: 01797854836 / Service: 01608346407.
             </p>
           </div>
         </div>

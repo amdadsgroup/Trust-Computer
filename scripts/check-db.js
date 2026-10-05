@@ -1,22 +1,32 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-async function main() {
-  console.log('--- CATEGORIES ---');
-  const categories = await prisma.category.findMany();
-  console.log(categories.map(c => ({ id: c.id, name: c.name, slug: c.slug })));
+async function check() {
+  try {
+    const settings = await prisma.siteSettings.findUnique({ where: { id: 'default' } });
+    console.log('Current site settings in DB:', JSON.stringify(settings, null, 2));
+    
+    // Check columns in site_settings
+    const columns = await prisma.$queryRawUnsafe(`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'site_settings'
+    `);
+    console.log('Columns in site_settings:', JSON.stringify(columns, null, 2));
 
-  console.log('\n--- BRANDS ---');
-  const brands = await prisma.brand.findMany();
-  console.log(brands.map(b => ({ id: b.id, name: b.name, slug: b.slug })));
+    // Check columns in payments
+    const paymentCols = await prisma.$queryRawUnsafe(`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'payments'
+    `);
+    console.log('Columns in payments:', JSON.stringify(paymentCols, null, 2));
 
-  console.log('\n--- PRODUCTS COUNT ---');
-  const productCount = await prisma.product.count();
-  console.log('Total Products:', productCount);
-
-  console.log('\n--- ADMIN USERS ---');
-  const users = await prisma.user.findMany({ select: { id: true, email: true, role: true, name: true } });
-  console.log('Users:', users);
+  } catch (err) {
+    console.error('Error querying DB:', err);
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 
-main().catch(console.error).finally(() => prisma.$disconnect());
+check();

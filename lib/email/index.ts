@@ -65,7 +65,7 @@ function generatePasswordResetHtml({
   const storeName = process.env.NEXT_PUBLIC_STORE_NAME || 'Trust Computer-Moulvibazar';
   const storeLocation =
     process.env.NEXT_PUBLIC_LOCATION || 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh';
-  const storePhone = process.env.NEXT_PUBLIC_PHONE || '01753-765372';
+  const storePhone = process.env.NEXT_PUBLIC_PHONE || '01797854836';
 
   return `
 <!DOCTYPE html>
@@ -199,7 +199,7 @@ This link is valid for ${expiresInMinutes} minutes and can only be used once.
 
 If you did not request a password reset, please ignore this email.
 Store: ${storeName}
-Contact: ${process.env.NEXT_PUBLIC_PHONE || '01753-765372'}
+Contact: ${process.env.NEXT_PUBLIC_PHONE || '01797854836'}
 `.trim();
 
   // 1. Resend API support (ideal for Vercel serverless deployments)
