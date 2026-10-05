@@ -174,7 +174,7 @@ export default function CartDrawer() {
 
               <div className="text-center pt-1">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                  “{t('brand.tagline', 'Your Trust, Our Technology')}”
+                  {t('brand.tagline', '- Your Trust, Our Technology -')}
                 </span>
               </div>
             </div>

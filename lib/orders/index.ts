@@ -5,6 +5,7 @@ import { adjustInventory } from '@/lib/inventory';
 import { CheckoutInput } from '@/lib/validations';
 import { getValidAdminUserId } from '@/lib/auth';
 import { validateCoupon } from '@/lib/coupons';
+import { business } from '@/lib/business';
 
 /**
  * Valid order status transitions state machine
@@ -162,6 +163,26 @@ export async function createOrderTransactionally(input: CheckoutInput) {
   const orderNumber = generateOrderNumber();
   const trackingToken = generateTrackingToken();
 
+  // 4.1 Validate bKash Duplicate Transaction ID
+  if (input.paymentMethod === 'BKASH' && input.transactionId?.trim()) {
+    const cleanTxId = input.transactionId.trim();
+    const existingPayment = await prisma.payment.findFirst({
+      where: {
+        transactionId: {
+          equals: cleanTxId,
+          mode: 'insensitive',
+        },
+      },
+      select: { id: true, orderId: true },
+    });
+
+    if (existingPayment) {
+      throw new Error(
+        'This transaction ID has already been submitted. Please contact Trust Computer if you believe this is an error.'
+      );
+    }
+  }
+
   // 5. Execute transactional write operations with safe timeouts
   return await prisma.$transaction(
     async (tx) => {
@@ -231,11 +252,18 @@ export async function createOrderTransactionally(input: CheckoutInput) {
       // 5.4 Create Payment Record
       const isBkash = input.paymentMethod === 'BKASH';
       const bkashTxId = isBkash && input.transactionId?.trim() ? input.transactionId.trim() : null;
+      const cleanSender = isBkash && input.senderNumber?.trim() ? input.senderNumber.trim().replace(/[\s\-()]/g, '') : null;
+      const receiverBkashNumber = business.payment.bkash; // Single source of truth: 01712556225
+
       const paymentMetadata = isBkash
         ? JSON.stringify({
-            paymentNumber: '01712556225',
-            senderNumber: input.senderNumber?.trim() || null,
+            paymentMethod: 'bkash_cash_out',
+            receiverNumber: receiverBkashNumber,
+            paymentNumber: receiverBkashNumber,
+            senderNumber: cleanSender,
+            senderBkashNumber: cleanSender,
             transactionId: bkashTxId,
+            amount: total,
             submittedAt: new Date().toISOString(),
             status: 'verification_pending',
           })
@@ -251,7 +279,7 @@ export async function createOrderTransactionally(input: CheckoutInput) {
           status: PaymentStatus.PENDING,
           rawResponseJson: paymentMetadata,
           notes: isBkash
-            ? `Manual bKash payment submitted (TxID: ${bkashTxId}). Verification pending by Trust Computer admin.`
+            ? `Manual bKash payment submitted (Sender: ${cleanSender || 'N/A'}, TxID: ${bkashTxId}, Receiver: ${receiverBkashNumber}). Verification pending by Trust Computer admin.`
             : `Initial payment record created for order ${orderNumber}`,
         },
       });

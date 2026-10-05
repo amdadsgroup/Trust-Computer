@@ -69,7 +69,8 @@ A dedicated single source of truth was established at [`lib/business.ts`](file:/
 export const business = {
   name: 'Trust Computer',
   officialFullName: 'Trust Computer-Moulvibazar',
-  tagline: 'Your Trust, Our Technology',
+  tagline: '- Your Trust, Our Technology -',
+  taglineBn: '- আপনার আস্থা, আমাদের প্রযুক্তি -',
   productionUrl: 'https://trustcomputermb.com',
   address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
   email: 'trustcomputermb@gmail.com',

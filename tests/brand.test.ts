@@ -81,9 +81,18 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
     expect(brand.email).toBe('trustcomputermb@gmail.com');
   });
 
-  it('should verify official tagline "Your Trust, Our Technology" in brand config and guidelines', () => {
-    expect(brand.tagline).toBe('Your Trust, Our Technology');
-    expect(brand.taglineBn).toBe('আপনার আস্থা, আমাদের প্রযুক্তি');
+  it('should verify official tagline "- Your Trust, Our Technology -" in brand config and guidelines', () => {
+    expect(brand.tagline).toBe('- Your Trust, Our Technology -');
+    expect(brand.taglineBn).toBe('- আপনার আস্থা, আমাদের প্রযুক্তি -');
+    expect(brand.taglineText).toBe('Your Trust, Our Technology');
+    expect(brand.taglineTextBn).toBe('আপনার আস্থা, আমাদের প্রযুক্তি');
+
+    // formatTagline normalization checks
+    expect(brand.formatTagline('Your Trust, Our Technology')).toBe('- Your Trust, Our Technology -');
+    expect(brand.formatTagline('-- Your Trust, Our Technology --')).toBe('- Your Trust, Our Technology -');
+    expect(brand.formatTagline('--- Your Trust, Our Technology ---')).toBe('- Your Trust, Our Technology -');
+    expect(brand.formatTagline('- Your Trust, Our Technology -')).toBe('- Your Trust, Our Technology -');
+    expect(brand.formatTagline('“Your Trust, Our Technology”')).toBe('- Your Trust, Our Technology -');
 
     const guidelinesPath = path.join(process.cwd(), 'BRAND_GUIDELINES.md');
     const content = fs.readFileSync(guidelinesPath, 'utf-8');
@@ -93,9 +102,45 @@ describe('Trust Computer - Official Brand Identity & Color Management', () => {
   it('should display brand tagline in topbar for both mobile and desktop views', () => {
     const headerPath = path.join(process.cwd(), 'components', 'layout', 'Header.tsx');
     const content = fs.readFileSync(headerPath, 'utf-8');
-    expect(content).toContain("t('brand.tagline', 'Your Trust, Our Technology')");
+    expect(content).toContain("t('brand.tagline', '- Your Trust, Our Technology -')");
     // Ensure tagline is not hidden on mobile screens
     expect(content).not.toContain('hidden xl:flex flex-col border-l border-slate-700/80 pl-3 justify-center');
     expect(content).toContain('flex flex-col border-l border-slate-700/80');
+  });
+
+  it('should verify system-wide standardized tagline format with exactly ONE hyphen on each side', () => {
+    // 1. Translations dictionary
+    const translationsPath = path.join(process.cwd(), 'lib', 'i18n', 'translations.ts');
+    const translationsContent = fs.readFileSync(translationsPath, 'utf-8');
+    expect(translationsContent).toContain("en: '- Your Trust, Our Technology -'");
+    expect(translationsContent).toContain("bn: '- আপনার আস্থা, আমাদের প্রযুক্তি -'");
+
+    // 2. Components check
+    const componentsToCheck = [
+      path.join(process.cwd(), 'components', 'layout', 'Header.tsx'),
+      path.join(process.cwd(), 'components', 'layout', 'Footer.tsx'),
+      path.join(process.cwd(), 'components', 'home', 'ShowroomInfoSection.tsx'),
+      path.join(process.cwd(), 'components', 'cart', 'CartDrawer.tsx'),
+      path.join(process.cwd(), 'components', 'about', 'AboutPageClient.tsx'),
+      path.join(process.cwd(), 'components', 'contact', 'ContactPageClient.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'checkout', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'order-confirmation', '[orderNumber]', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'track-order', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'login', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'register', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'forgot-password', 'page.tsx'),
+      path.join(process.cwd(), 'app', '(store)', 'reset-password', 'page.tsx'),
+      path.join(process.cwd(), 'app', 'admin', 'login', 'page.tsx'),
+      path.join(process.cwd(), 'app', 'not-found.tsx'),
+      path.join(process.cwd(), 'lib', 'email', 'index.ts'),
+    ];
+
+    for (const file of componentsToCheck) {
+      const content = fs.readFileSync(file, 'utf-8');
+      expect(content).toContain('- Your Trust, Our Technology -');
+      expect(content).not.toContain('-- Your Trust, Our Technology --');
+      expect(content).not.toContain('--- Your Trust, Our Technology ---');
+      expect(content).not.toContain('“Your Trust, Our Technology”');
+    }
   });
 });

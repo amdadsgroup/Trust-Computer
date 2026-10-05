@@ -191,7 +191,7 @@ function ResetPasswordForm() {
           />
         </Link>
         <p className="text-[11px] font-bold text-[#2A3B97] uppercase tracking-wider">
-          Your Trust, Our Technology
+          - Your Trust, Our Technology -
         </p>
         <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 mb-1">
           <Lock className="w-6 h-6" />

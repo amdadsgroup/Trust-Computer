@@ -223,9 +223,21 @@ export default function CheckoutPage() {
     }
 
     if (paymentMethod === 'BKASH') {
+      const sanitizedSender = senderNumber.trim().replace(/[\s\-()]/g, '');
       const trimmedTxId = transactionId.trim();
+
+      if (!sanitizedSender) {
+        setErrorMessage('Please enter the Sender bKASH Number used for the transaction.');
+        return;
+      }
+
+      if (!/^01[3-9]\d{8}$/.test(sanitizedSender)) {
+        setErrorMessage('Please enter a valid 11-digit Bangladesh bKash mobile number (e.g. 01XXXXXXXXX).');
+        return;
+      }
+
       if (!trimmedTxId || trimmedTxId.length < 4) {
-        setErrorMessage('Please send payment to our official bKash number (01712556225) and enter the Transaction ID before submitting.');
+        setErrorMessage(`Please complete the bKash payment to ${business.payment.bkash} and enter the Transaction ID.`);
         return;
       }
     }
@@ -253,8 +265,8 @@ export default function CheckoutPage() {
         notes: notes.trim() || undefined,
         deliveryMethod: 'STANDARD' as const,
         paymentMethod,
-        transactionId: paymentMethod === 'BKASH' ? transactionId.trim() : undefined,
-        senderNumber: paymentMethod === 'BKASH' && senderNumber.trim() ? senderNumber.trim() : undefined,
+        transactionId: paymentMethod === 'BKASH' ? transactionId.trim().toUpperCase() : undefined,
+        senderNumber: paymentMethod === 'BKASH' ? senderNumber.trim().replace(/[\s\-()]/g, '') : undefined,
         items: items.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
@@ -316,7 +328,7 @@ export default function CheckoutPage() {
           </p>
         </div>
         <div className="inline-flex items-center self-start sm:self-auto px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#2A3B97] text-xs font-bold">
-          <span>“Your Trust, Our Technology”</span>
+          <span>- Your Trust, Our Technology -</span>
         </div>
       </div>
 
@@ -602,7 +614,7 @@ export default function CheckoutPage() {
                 </div>
               </label>
 
-              {/* bKash / Mobile Banking */}
+              {/* bKash Cash Out */}
               <label
                 className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition ${
                   paymentMethod === 'BKASH'
@@ -621,151 +633,182 @@ export default function CheckoutPage() {
                 <div>
                   <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-slate-900">
                     <CreditCard className="w-4 h-4 text-pink-600" />
-                    <span>bKash (Personal / Cash Out)</span>
+                    <span>bKASH Cash Out</span>
                   </div>
                   <p className="text-[11px] text-slate-500 mt-1">
-                    Send payment to our official bKash number and enter Transaction ID.
+                    Send payment to official bKash number ({business.payment.bkash}) and submit Transaction ID.
                   </p>
                 </div>
               </label>
             </div>
 
-            {/* bKash Payment Workflow Container */}
+            {/* bKash Payment Card */}
             {paymentMethod === 'BKASH' && (
-              <div className="mt-4 p-5 rounded-2xl bg-gradient-to-br from-pink-50/70 to-rose-50/40 border-2 border-pink-200/80 space-y-5 animate-in fade-in duration-200">
+              <div className="mt-4 p-5 rounded-2xl bg-white border-2 border-pink-300 shadow-sm space-y-5 animate-in fade-in duration-200">
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-pink-200/60 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-pink-100 pb-3">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-pink-600 text-white flex items-center justify-center font-black text-sm">
+                    <div className="w-9 h-9 rounded-xl bg-pink-600 text-white flex items-center justify-center font-black text-base shadow-xs">
                       ৳
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-sm text-slate-900">
-                        bKash Payment / Cash Out
+                      <h3 className="font-extrabold text-sm sm:text-base text-slate-900 tracking-tight">
+                        bKASH CASH OUT
                       </h3>
-                      <p className="text-[11px] text-slate-600">
-                        Official Trust Computer bKash Account
+                      <p className="text-[11px] text-slate-500">
+                        Official Trust Computer bKash Payment Account
                       </p>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-[11px] font-bold border border-amber-300 self-start sm:self-auto">
-                    <Clock className="w-3.5 h-3.5 text-amber-600 animate-spin" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200 self-start sm:self-auto">
+                    <Clock className="w-3.5 h-3.5 text-amber-600" />
                     <span>Payment Status: Verification Pending</span>
                   </span>
                 </div>
 
                 {/* Number & Amount Card */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-white p-4 rounded-xl border border-pink-200/70 shadow-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-pink-50/50 p-4 rounded-xl border border-pink-200">
                   <div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                      Send Payment To (bKash Number):
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
+                      Pay To:
                     </span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-lg sm:text-xl font-black font-mono text-slate-900 tracking-wider">
+                    <div className="flex items-center gap-2.5 mt-1">
+                      <span className="text-xl sm:text-2xl font-black font-mono text-slate-900 tracking-wider">
                         {business.payment.bkash}
                       </span>
                       <button
                         type="button"
                         onClick={handleCopyBkash}
-                        className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg transition ${
+                        className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition ${
                           copiedBkash
-                            ? 'bg-emerald-600 text-white shadow-sm'
-                            : 'bg-pink-100 text-pink-700 hover:bg-pink-200'
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : 'bg-pink-600 text-white hover:bg-pink-700 shadow-xs'
                         }`}
                         title="Copy bKash Number"
                       >
                         {copiedBkash ? (
                           <>
                             <Check className="w-3.5 h-3.5" />
-                            <span>Number copied ✓</span>
+                            <span>bKASH number copied ✓</span>
                           </>
                         ) : (
                           <>
                             <Copy className="w-3.5 h-3.5" />
-                            <span>Copy Number</span>
+                            <span>COPY NUMBER</span>
                           </>
                         )}
                       </button>
                     </div>
-                    <span className="text-[10px] text-slate-500 block mt-0.5">
-                      Type: Personal Send Money or Cash Out
+                    <span className="text-[10.5px] text-slate-500 block mt-1">
+                      Type: bKash Cash Out / Payment
                     </span>
                   </div>
 
-                  <div className="border-t sm:border-t-0 sm:border-l border-slate-100 pt-3 sm:pt-0 sm:pl-4 flex flex-col justify-center">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-                      Total Payable Amount:
+                  <div className="border-t sm:border-t-0 sm:border-l border-pink-200 pt-3 sm:pt-0 sm:pl-4 flex flex-col justify-center">
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
+                      Amount to Pay:
                     </span>
-                    <span className="text-xl sm:text-2xl font-black text-[#0084d6] mt-0.5">
-                      ৳{grandTotal.toLocaleString('en-BD')}
+                    <span className="text-2xl sm:text-3xl font-black text-[#0084d6] mt-0.5">
+                      ৳ {grandTotal.toLocaleString('en-BD')}
                     </span>
                     <span className="text-[10px] text-slate-500">
-                      Exact order total including delivery charge
+                      Exact order total (items + delivery fee)
                     </span>
                   </div>
                 </div>
 
-                {/* Step-by-Step Instructions */}
-                <div className="bg-pink-100/50 p-3.5 rounded-xl border border-pink-200/50 text-xs text-slate-700 space-y-1.5">
-                  <h4 className="font-bold text-slate-900 flex items-center gap-1.5">
-                    <span>Payment Instructions:</span>
+                {/* Step-by-Step Payment Instructions */}
+                <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-2">
+                  <h4 className="font-bold text-slate-900 flex items-center gap-1.5 text-xs uppercase tracking-wider">
+                    <span>HOW TO PAY WITH bKASH</span>
                   </h4>
-                  <ol className="list-decimal list-inside space-y-1 text-[11.5px] leading-relaxed text-slate-700">
+                  <ol className="list-decimal list-inside space-y-1.5 text-[11.5px] leading-relaxed text-slate-700">
+                    <li>Note the total amount shown above (<strong>৳ {grandTotal.toLocaleString('en-BD')}</strong>).</li>
                     <li>
-                      Send the required payment amount (<strong>৳{grandTotal.toLocaleString('en-BD')}</strong>) to the provided bKash number: <strong className="font-mono text-slate-900">01712556225</strong>.
+                      Complete the bKASH cash-out/payment transaction using the provided bKASH number:{' '}
+                      <strong className="font-mono text-slate-900">{business.payment.bkash}</strong>.
                     </li>
-                    <li>
-                      Complete the transaction in your bKash app / mobile menu.
-                    </li>
-                    <li>
-                      Copy the <strong>Transaction ID (TrxID)</strong> received from bKash SMS or app statement.
-                    </li>
-                    <li>
-                      Paste the Transaction ID into the field below and place your order.
-                    </li>
-                    <li>
-                      The Trust Computer accounts team will verify the payment before dispatching your product.
-                    </li>
+                    <li>Keep your bKASH transaction ID.</li>
+                    <li>Enter the bKASH number used for the transaction below.</li>
+                    <li>Enter the Transaction ID below.</li>
+                    <li>Submit your payment information.</li>
+                    <li>Trust Computer will verify the payment against our official records.</li>
                   </ol>
-                  <p className="text-[10.5px] text-pink-800 font-semibold pt-1 border-t border-pink-200/60">
-                    * Note: Payment will be verified manually by Trust Computer. Do not make multiple payments for the same order.
+                </div>
+
+                {/* Form Fields: Sender Number & Transaction ID */}
+                <div className="space-y-4 pt-1">
+                  <p className="text-xs font-semibold text-slate-700">
+                    After completing your bKASH payment, enter the payment information below:
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-900 mb-1.5">
+                        Sender bKASH Number *
+                      </label>
+                      <input
+                        type="tel"
+                        required={paymentMethod === 'BKASH'}
+                        inputMode="tel"
+                        placeholder="01XXXXXXXXX"
+                        value={senderNumber}
+                        onChange={(e) => setSenderNumber(e.target.value)}
+                        className="w-full text-xs sm:text-sm font-mono bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#0084d6] focus:bg-white focus:ring-2 focus:ring-blue-100 transition"
+                      />
+                      <span className="text-[10px] text-slate-500 mt-1 block">
+                        The 11-digit mobile number you sent money from
+                      </span>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-900 mb-1.5">
+                        Transaction ID *
+                      </label>
+                      <input
+                        type="text"
+                        required={paymentMethod === 'BKASH'}
+                        placeholder="XXXXXXXXXX"
+                        value={transactionId}
+                        onChange={(e) => setTransactionId(e.target.value.toUpperCase())}
+                        className="w-full text-xs sm:text-sm font-mono uppercase bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-pink-600 focus:bg-white focus:ring-2 focus:ring-pink-100 transition tracking-wider"
+                      />
+                      <span className="text-[10px] text-slate-500 mt-1 block">
+                        Received in bKash SMS or app transaction statement
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Verification Notice */}
+                <div className="p-3 bg-amber-50/80 rounded-xl border border-amber-200 text-[11px] text-amber-900 space-y-1">
+                  <p className="font-semibold">
+                    Payment verification requires manual confirmation by Trust Computer.
+                  </p>
+                  <p className="text-[10.5px] text-amber-800">
+                    Payment status will remain <strong>Verification Pending</strong> until an authorized administrator verifies the transaction against our official bKash merchant/cash-out records.
                   </p>
                 </div>
 
-                {/* Form Fields: Transaction ID & Sender Phone */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-900 mb-1.5">
-                      bKash Transaction ID (TrxID) *
-                    </label>
-                    <input
-                      type="text"
-                      required={paymentMethod === 'BKASH'}
-                      placeholder="e.g. 9K28X1Y9Z"
-                      value={transactionId}
-                      onChange={(e) => setTransactionId(e.target.value.toUpperCase())}
-                      className="w-full text-xs sm:text-sm font-mono uppercase bg-white border border-pink-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-pink-600 focus:ring-2 focus:ring-pink-100 transition tracking-wider"
-                    />
-                    <span className="text-[10px] text-slate-500 mt-1 block">
-                      Found in your bKash confirmation SMS or app receipt
-                    </span>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-900 mb-1.5">
-                      Your bKash Sender Number (Optional)
-                    </label>
-                    <input
-                      type="tel"
-                      inputMode="tel"
-                      placeholder="e.g. 01XXXXXXXXX"
-                      value={senderNumber}
-                      onChange={(e) => setSenderNumber(e.target.value)}
-                      className="w-full text-xs sm:text-sm font-mono bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#0084d6] transition"
-                    />
-                    <span className="text-[10px] text-slate-500 mt-1 block">
-                      Mobile number from which payment was sent
-                    </span>
+                {/* Support Helpline */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+                  <span>Having trouble with payment?</span>
+                  <div className="flex items-center gap-3">
+                    <a
+                      href={`tel:${business.sales.phone}`}
+                      className="font-bold text-[#0084d6] hover:underline"
+                    >
+                      Sales Care: {business.sales.phone}
+                    </a>
+                    <span>•</span>
+                    <a
+                      href={business.sales.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-emerald-600 hover:underline"
+                    >
+                      WhatsApp Support
+                    </a>
                   </div>
                 </div>
               </div>
@@ -914,14 +957,21 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 bg-[#0084d6] hover:bg-[#0074be] text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-blue-500/20 disabled:opacity-50"
+              className={`w-full flex items-center justify-center gap-2 font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg disabled:opacity-50 ${
+                paymentMethod === 'BKASH'
+                  ? 'bg-pink-600 hover:bg-pink-700 text-white shadow-pink-500/20'
+                  : 'bg-[#0084d6] hover:bg-[#0074be] text-white shadow-blue-500/20'
+              }`}
             >
               {isLoading ? (
-                <span>Processing Order...</span>
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{paymentMethod === 'BKASH' ? 'Submitting bKash Payment...' : 'Processing Order...'}</span>
+                </>
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  <span>Confirm Order</span>
+                  <span>{paymentMethod === 'BKASH' ? 'SUBMIT PAYMENT' : 'Confirm Order'}</span>
                 </>
               )}
             </button>
@@ -942,7 +992,7 @@ export default function CheckoutPage() {
             </div>
             <div className="pt-2 border-t border-slate-200 text-center">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                “Your Trust, Our Technology”
+                - Your Trust, Our Technology -
               </span>
             </div>
           </div>

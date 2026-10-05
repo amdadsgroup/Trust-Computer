@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Phone,
   Mail,
@@ -10,9 +10,6 @@ import {
   Clock,
   Wrench,
   ShoppingBag,
-  CreditCard,
-  Copy,
-  Check,
   ShieldCheck,
 } from 'lucide-react';
 import { business, getSalesWhatsAppLink, getServiceWhatsAppLink } from '@/lib/business';
@@ -23,50 +20,26 @@ export default function ContactPageClient() {
   const salesWhatsAppUrl = getSalesWhatsAppLink();
   const serviceWhatsAppUrl = getServiceWhatsAppLink();
   const { t, isBangla } = useLanguage();
-  const [copiedBkash, setCopiedBkash] = useState(false);
-
-  const handleCopyBkash = async () => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(business.payment.bkash);
-      } else {
-        const textArea = document.createElement('textarea');
-        textArea.value = business.payment.bkash;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        document.execCommand('copy');
-        textArea.remove();
-      }
-      setCopiedBkash(true);
-      setTimeout(() => setCopiedBkash(false), 2500);
-    } catch {
-      setCopiedBkash(true);
-      setTimeout(() => setCopiedBkash(false), 2500);
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-12 max-w-6xl space-y-12">
       {/* Title */}
       <div className="text-center space-y-2">
         <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#2A3B97] text-xs font-bold mb-1">
-          <span>“{t('brand.tagline', 'Your Trust, Our Technology')}”</span>
+          <span>{t('brand.tagline', '- Your Trust, Our Technology -')}</span>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           {t('contact.title', 'Contact & Showroom Location')}
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
-          Visit our Kusumbagh showroom directly or reach out through our dedicated Sales, Service, or bKash payment channels.
+          Visit our Kusumbagh showroom directly or reach out through our dedicated Sales or Service channels.
         </p>
       </div>
 
-      {/* 3 Dedicated Business Contact Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* 2 Dedicated Business Contact Cards: Sales & Service */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {/* 1. SALES & CUSTOMER CARE */}
-        <div className="bg-white p-6 rounded-3xl border-2 border-blue-100 hover:border-blue-300 shadow-sm transition space-y-4 flex flex-col justify-between">
+        <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-blue-100 hover:border-blue-300 shadow-sm transition space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider bg-blue-50 text-[#2A3B97] px-2.5 py-1 rounded-full border border-blue-200">
@@ -117,7 +90,7 @@ export default function ContactPageClient() {
         </div>
 
         {/* 2. SERVICE & TECHNICAL SUPPORT */}
-        <div className="bg-white p-6 rounded-3xl border-2 border-emerald-100 hover:border-emerald-300 shadow-sm transition space-y-4 flex flex-col justify-between">
+        <div className="bg-white p-6 sm:p-7 rounded-3xl border-2 border-emerald-100 hover:border-emerald-300 shadow-sm transition space-y-4 flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-200">
@@ -164,64 +137,6 @@ export default function ContactPageClient() {
               <MessageCircle className="w-3.5 h-3.5" />
               <span>Service WhatsApp</span>
             </a>
-          </div>
-        </div>
-
-        {/* 3. bKASH PAYMENT / CASH OUT */}
-        <div className="bg-white p-6 rounded-3xl border-2 border-pink-100 hover:border-pink-300 shadow-sm transition space-y-4 flex flex-col justify-between">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase tracking-wider bg-pink-50 text-pink-700 px-2.5 py-1 rounded-full border border-pink-200">
-                Official Payment
-              </span>
-              <div className="p-2.5 rounded-xl bg-pink-50 text-pink-600">
-                <CreditCard className="w-5 h-5" />
-              </div>
-            </div>
-
-            <h2 className="text-base font-extrabold text-slate-900">
-              {business.payment.title}
-            </h2>
-
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Official bKash number for web order checkout payments, send money & cash out verification.
-            </p>
-
-            <div className="pt-1">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                Official bKash Number:
-              </span>
-              <span className="text-xl font-black font-mono text-slate-900 tracking-wider">
-                {business.payment.bkash}
-              </span>
-            </div>
-          </div>
-
-          <div className="space-y-2 pt-3 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={handleCopyBkash}
-              className={`w-full flex items-center justify-center gap-2 font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-xs ${
-                copiedBkash
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-pink-600 hover:bg-pink-700 text-white'
-              }`}
-            >
-              {copiedBkash ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  <span>Number copied ✓</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  <span>Copy Number</span>
-                </>
-              )}
-            </button>
-            <p className="text-[10.5px] text-center text-slate-400">
-              Payment verified manually by Trust Computer
-            </p>
           </div>
         </div>
       </div>

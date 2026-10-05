@@ -160,15 +160,61 @@ export default async function CustomerOrderDetailsPage({
             <span>Payment Summary</span>
           </h3>
 
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2.5 text-xs">
             <div className="flex justify-between text-slate-600">
               <span>Payment Method:</span>
-              <span className="font-bold text-slate-800">{order.paymentMethod}</span>
+              <span className="font-bold text-slate-900">{order.paymentMethodDisplay}</span>
             </div>
+
             <div className="flex justify-between text-slate-600">
-              <span>Payment Status:</span>
-              <span className="font-bold text-emerald-700">{order.paymentStatus}</span>
+              <span>Payment Amount:</span>
+              <span className="font-bold text-slate-900">৳{order.paymentAmount.toLocaleString('en-BD')}</span>
             </div>
+
+            {order.transactionId && (
+              <div className="flex justify-between text-slate-600 items-center">
+                <span>Transaction ID:</span>
+                <span className="font-mono font-bold text-pink-700 bg-pink-50 px-2.5 py-0.5 rounded border border-pink-200">
+                  {order.transactionId}
+                </span>
+              </div>
+            )}
+
+            {order.senderNumber && (
+              <div className="flex justify-between text-slate-600">
+                <span>Sender bKASH Number:</span>
+                <span className="font-mono font-semibold text-slate-800">{order.senderNumber}</span>
+              </div>
+            )}
+
+            <div className="flex justify-between text-slate-600 items-center pt-1 border-t border-slate-200/60">
+              <span className="font-semibold text-slate-700">Payment Status:</span>
+              <span
+                className={`font-bold px-2.5 py-0.5 rounded-full text-[10.5px] ${
+                  order.paymentStatus === 'PAID'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : order.paymentStatus === 'FAILED'
+                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                    : 'bg-amber-100 text-amber-800 border border-amber-300'
+                }`}
+              >
+                {order.paymentStatusDisplay}
+              </span>
+            </div>
+
+            {/* Status-specific customer banner */}
+            <div
+              className={`p-3 rounded-xl text-[11px] leading-relaxed border ${
+                order.paymentStatus === 'PAID'
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : order.paymentStatus === 'FAILED'
+                  ? 'bg-rose-50 text-rose-800 border-rose-200'
+                  : 'bg-amber-50 text-amber-900 border-amber-200'
+              }`}
+            >
+              {order.customerPaymentMessage}
+            </div>
+
             <div className="border-t border-slate-200 pt-2 flex justify-between text-slate-600">
               <span>Subtotal:</span>
               <span className="font-semibold text-slate-800">

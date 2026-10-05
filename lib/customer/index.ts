@@ -388,6 +388,7 @@ export async function getCustomerOrderDetails(customerId: string, orderNumber: s
     },
     include: {
       items: true,
+      payments: true,
       statusHistory: {
         orderBy: { createdAt: 'asc' },
         select: {
@@ -405,6 +406,31 @@ export async function getCustomerOrderDetails(customerId: string, orderNumber: s
     return null;
   }
 
+  // Safely extract bKash payment metadata for customer without exposing admin notes
+  const paymentRecord = order.payments?.[0];
+  let meta: Record<string, any> = {};
+  try {
+    if (paymentRecord?.rawResponseJson) {
+      meta = JSON.parse(paymentRecord.rawResponseJson);
+    }
+  } catch {
+    meta = {};
+  }
+
+  const paymentStatusDisplay =
+    order.paymentStatus === 'PAID'
+      ? 'Verified'
+      : order.paymentStatus === 'FAILED'
+      ? 'Rejected'
+      : 'Verification Pending';
+
+  const customerPaymentMessage =
+    order.paymentStatus === 'PAID'
+      ? 'Your bKASH payment has been verified.'
+      : order.paymentStatus === 'FAILED'
+      ? 'Your bKASH payment could not be verified. Please contact Trust Computer Sales & Customer Care (01797854836).'
+      : 'Your payment information has been submitted and will be verified by Trust Computer.';
+
   // Ensure internal admin notes and sensitive fields are never exposed
   return {
     id: order.id,
@@ -421,7 +447,14 @@ export async function getCustomerOrderDetails(customerId: string, orderNumber: s
     total: Number(order.total),
     status: order.status,
     paymentStatus: order.paymentStatus,
+    paymentStatusDisplay,
     paymentMethod: order.paymentMethod,
+    paymentMethodDisplay: order.paymentMethod === 'BKASH' ? 'bKASH Cash Out' : order.paymentMethod,
+    paymentAmount: Number(order.total),
+    transactionId: paymentRecord?.transactionId || null,
+    senderNumber: meta.senderNumber || null,
+    receiverNumber: meta.receiverNumber || meta.paymentNumber || '01712556225',
+    customerPaymentMessage,
     trackingToken: order.trackingToken,
     createdAt: order.createdAt,
     updatedAt: order.updatedAt,

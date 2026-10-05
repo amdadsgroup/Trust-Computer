@@ -38,6 +38,8 @@ export default async function AdminPaymentsPage({ searchParams }: AdminPaymentsP
   if (searchQuery) {
     whereClause.OR = [
       { transactionId: { contains: searchQuery, mode: 'insensitive' } },
+      { rawResponseJson: { contains: searchQuery, mode: 'insensitive' } },
+      { notes: { contains: searchQuery, mode: 'insensitive' } },
       {
         order: {
           OR: [

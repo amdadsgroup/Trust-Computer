@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/db';
 import { updateStoreSettingsAction } from './actions';
-import { Settings, Save, Store, Truck, Phone, MapPin, Facebook, Palette } from 'lucide-react';
+import { Settings, Save, Store, Truck, Phone, MapPin, Facebook, Palette, CreditCard } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -166,23 +166,6 @@ export default async function AdminSettingsPage() {
                 </span>
               </div>
 
-              {/* bKash Payment Number */}
-              <div className="sm:col-span-2 p-4 rounded-2xl bg-pink-50/70 border border-pink-200/80">
-                <label className="block font-bold text-pink-900 mb-1">
-                  bKash Payment / Cash Out Number *
-                </label>
-                <input
-                  type="text"
-                  name="bkashNumber"
-                  defaultValue={current.bkashNumber || '01712556225'}
-                  required
-                  className="w-full bg-white border border-pink-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-pink-600 font-mono font-black text-slate-900"
-                />
-                <span className="text-[10.5px] text-pink-800 mt-1 block">
-                  Official bKash number provided to customers during checkout and on contact pages for manual payment / cash out.
-                </span>
-              </div>
-
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Official Email</label>
                 <input
@@ -214,6 +197,49 @@ export default async function AdminSettingsPage() {
                   required
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-brand"
                 />
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Settings */}
+          <div>
+            <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2 mb-4 flex items-center gap-2">
+              <CreditCard className="w-4 h-4 text-pink-600" />
+              <span>Payment Settings</span>
+            </h2>
+
+            <div className="p-5 rounded-2xl bg-white border-2 border-pink-200/90 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900 tracking-tight">
+                    bKASH CASH OUT
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Manual bKash cash-out & payment system for customer orders
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-300">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
+                    <span>Status: Enabled</span>
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  bKASH Receiver Number:
+                </label>
+                <input
+                  type="text"
+                  name="bkashNumber"
+                  defaultValue={current.bkashNumber || '01712556225'}
+                  required
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 outline-none focus:border-pink-600 focus:bg-white font-mono font-black text-slate-900 text-sm"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Centralized official bKash number (01712556225). Read by Checkout, Order Confirmation, Customer Dashboard, and Admin Verification.
+                </span>
               </div>
             </div>
           </div>

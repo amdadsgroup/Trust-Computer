@@ -89,7 +89,7 @@ function generatePasswordResetHtml({
                 ${storeName}
               </h1>
               <p style="margin: 6px 0 0 0; color: #e0f2fe; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-                “Your Trust, Our Technology”
+                - Your Trust, Our Technology -
               </p>
             </td>
           </tr>

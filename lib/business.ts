@@ -10,8 +10,10 @@ export const business = {
   name: 'Trust Computer',
   shortName: 'Trust Computer',
   officialFullName: 'Trust Computer-Moulvibazar',
-  tagline: 'Your Trust, Our Technology',
-  taglineBn: 'আপনার আস্থা, আমাদের প্রযুক্তি',
+  taglineText: 'Your Trust, Our Technology',
+  taglineTextBn: 'আপনার আস্থা, আমাদের প্রযুক্তি',
+  tagline: '- Your Trust, Our Technology -',
+  taglineBn: '- আপনার আস্থা, আমাদের প্রযুক্তি -',
   taglineDescription: 'মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️',
   
   productionUrl: 'https://trustcomputermb.com',
@@ -49,10 +51,12 @@ export const business = {
   // 3. bKASH PAYMENT / CASH OUT
   payment: {
     bkash: '01712556225',
+    bkashNumber: '01712556225',
     bkashFormatted: '01712-556225',
     method: 'bKash',
-    title: 'bKash Payment / Cash Out',
-    titleBn: 'বিকাশ পেমেন্ট / ক্যাশ আউট',
+    displayName: 'bKash Cash Out',
+    title: 'bKash Cash Out',
+    titleBn: 'বিকাশ ক্যাশ আউট',
     description: 'Manual bKash payment verification for web orders',
   },
 
@@ -142,4 +146,14 @@ export function getCartWhatsAppLink(
     ? `আসসালামু আলাইকুম Trust Computer,\nআমি নিম্নলিখিত পণ্যগুলো অর্ডার করতে চাচ্ছি:\n${itemsText}\nআনুমানিক সর্বমোট: ৳${total.toLocaleString('en-BD')}`
     : `Hello Trust Computer Moulvibazar,\nI would like to inquire about ordering these items:\n${itemsText}\nEstimated Subtotal: ৳${total.toLocaleString('en-BD')}`;
   return `https://wa.me/${business.sales.whatsapp}?text=${encodeURIComponent(text)}`;
+}
+
+/**
+ * Standardizes tagline with exactly ONE hyphen on each side: - TAGLINE -
+ */
+export function formatTagline(rawText?: string): string {
+  const base = (rawText || business.taglineText || 'Your Trust, Our Technology').trim();
+  // Strip any accidental leading or trailing hyphens, en-dashes, em-dashes, or quotes
+  const cleaned = base.replace(/^[\s\-—–“"'`]+|[\s\-—–”"'`]+$/g, '').trim();
+  return `- ${cleaned} -`;
 }

@@ -77,7 +77,7 @@ function RegisterForm() {
           />
         </Link>
         <p className="text-[11px] font-bold text-[#2A3B97] uppercase tracking-wider">
-          Your Trust, Our Technology
+          - Your Trust, Our Technology -
         </p>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
           Create Customer Account

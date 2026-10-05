@@ -92,7 +92,7 @@ export default function Footer() {
 
             <div>
               <p className="text-sm font-bold text-white tracking-wide">
-                “{t('brand.tagline', 'Your Trust, Our Technology')}”
+                {t('brand.tagline', '- Your Trust, Our Technology -')}
               </p>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
                 {t('brand.description', 'Your Trusted Destination for Quality Computers & CCTV Surveillance Systems in Moulvibazar.')}
@@ -288,19 +288,6 @@ export default function Footer() {
                     <MessageCircle className="w-3.5 h-3.5" />
                     <span>WhatsApp</span>
                   </a>
-                </div>
-              </div>
-
-              {/* 3. bKash Payment / Cash Out */}
-              <div className="p-2.5 rounded-xl bg-slate-900 border border-pink-900/40 space-y-1">
-                <span className="text-[10px] font-bold text-pink-400 uppercase tracking-wider block">
-                  bKash Payment / Cash Out:
-                </span>
-                <div className="flex items-center justify-between">
-                  <span className="text-pink-300 font-black font-mono text-sm">
-                    01712556225
-                  </span>
-                  <span className="text-[10px] text-slate-400">Order Payments</span>
                 </div>
               </div>
 

@@ -58,58 +58,28 @@ export class CashOnDeliveryProvider implements IPaymentProvider {
 }
 
 /**
- * bKash Payment Provider Abstraction
+ * bKash Payment Provider - Manual Payment System
+ * Trust Computer operates a manual bKash cash out / payment system to official number 01712556225.
+ * Automated verification or simulated demo callbacks are strictly prohibited.
  */
 export class BkashPaymentProvider implements IPaymentProvider {
-  private appKey = process.env.BKASH_APP_KEY;
-  private appSecret = process.env.BKASH_APP_SECRET;
-  private username = process.env.BKASH_USERNAME;
-  private password = process.env.BKASH_PASSWORD;
-  private baseUrl = process.env.BKASH_BASE_URL || 'https://tokenized.sandbox.bka.sh/v1.2.0-beta';
-
-  isConfigured(): boolean {
-    return Boolean(this.appKey && this.appSecret && this.username && this.password);
-  }
-
   async initiatePayment(request: PaymentInitiationRequest): Promise<PaymentInitiationResult> {
-    if (!this.isConfigured()) {
-      return {
-        provider: PaymentMethod.BKASH,
-        status: PaymentStatus.PENDING,
-        isManualOrCOD: true,
-        message:
-          'Trust Computer bKash Merchant Gateway is undergoing onboarding. Please proceed with manual bKash personal send-money or Cash on Delivery.',
-      };
-    }
-
-    // In a live environment with active merchant credentials:
-    // Call bKash grant token -> create payment API
     return {
       provider: PaymentMethod.BKASH,
       status: PaymentStatus.PENDING,
-      isManualOrCOD: false,
-      redirectUrl: `${request.callbackUrl}?status=success&paymentID=DEMO_BKASH_${request.orderNumber}`,
+      isManualOrCOD: true,
+      message:
+        'Trust Computer operates a manual bKash Cash Out payment system. Customer pays to 01712556225 and submits Transaction ID for admin verification.',
     };
   }
 
-  async verifyPayment(payload: Record<string, unknown>): Promise<PaymentVerificationResult> {
-    if (!this.isConfigured()) {
-      return {
-        isValid: false,
-        transactionId: '',
-        amount: 0,
-        status: PaymentStatus.FAILED,
-        errorMessage: 'bKash merchant credentials are not configured.',
-      };
-    }
-
-    const paymentID = String(payload.paymentID || '');
+  async verifyPayment(): Promise<PaymentVerificationResult> {
     return {
-      isValid: true,
-      transactionId: paymentID,
-      amount: Number(payload.amount || 0),
-      status: PaymentStatus.PAID,
-      providerRawResponse: payload,
+      isValid: false,
+      transactionId: '',
+      amount: 0,
+      status: PaymentStatus.PENDING,
+      errorMessage: 'bKash payments are verified manually by authorized Trust Computer administrators.',
     };
   }
 }

@@ -73,7 +73,15 @@ export async function submitCheckoutAction(data: unknown): Promise<CheckoutActio
   } catch (err: any) {
     console.error('Checkout processing error:', err);
     let errorMessage = err.message || 'An unexpected error occurred while processing your order. Please try again.';
-    if (errorMessage.includes('Transaction API error') || errorMessage.includes('Transaction not found')) {
+    if (
+      err.code === 'P2002' ||
+      errorMessage.includes('transaction ID has already been submitted') ||
+      errorMessage.includes('payments_transactionId_key') ||
+      errorMessage.includes('transactionId')
+    ) {
+      errorMessage =
+        'This transaction ID has already been submitted. Please contact Trust Computer if you believe this is an error.';
+    } else if (errorMessage.includes('Transaction API error') || errorMessage.includes('Transaction not found')) {
       errorMessage = 'Database transaction timed out. Your order has not been placed. Please try submitting again.';
     }
     return {

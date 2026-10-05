@@ -123,12 +123,39 @@ export default async function CustomerOrdersPage() {
                 </div>
 
                 {/* Delivery & Payment Badges */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 text-[11px] text-slate-500">
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="w-3.5 h-3.5 text-slate-400" />
-                    <span>Payment: <strong className="text-slate-700 font-semibold">{order.paymentMethod} ({order.paymentStatus})</strong></span>
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-1.5">
+                      <CreditCard className="w-3.5 h-3.5 text-slate-400" />
+                      <span className="font-semibold text-slate-800">
+                        {order.paymentMethod === 'BKASH' ? 'bKASH Cash Out' : order.paymentMethod}
+                      </span>
+                    </div>
+
+                    {order.payments?.[0]?.transactionId && (
+                      <div className="text-[11px] font-mono text-pink-700 bg-pink-50 px-2 py-0.5 rounded border border-pink-200">
+                        Trx: {order.payments[0].transactionId}
+                      </div>
+                    )}
+
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        order.paymentStatus === 'PAID'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : order.paymentStatus === 'FAILED'
+                          ? 'bg-rose-100 text-rose-800'
+                          : 'bg-amber-100 text-amber-800'
+                      }`}
+                    >
+                      Status: {order.paymentStatus === 'PAID'
+                        ? 'Verified'
+                        : order.paymentStatus === 'FAILED'
+                        ? 'Rejected'
+                        : 'Verification Pending'}
+                    </span>
                   </div>
-                  <div className="truncate max-w-md">
+
+                  <div className="truncate max-w-xs text-[11px] text-slate-500">
                     <span>Delivering to: <strong className="text-slate-700 font-semibold">{order.cityArea}</strong></span>
                   </div>
                 </div>

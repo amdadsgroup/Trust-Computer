@@ -37,11 +37,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'Trust Computer-Moulvibazar | Your Trust, Our Technology',
+    default: 'Trust Computer-Moulvibazar | - Your Trust, Our Technology -',
     template: '%s | Trust Computer-Moulvibazar',
   },
   description:
-    'Your Trust, Our Technology — Trust Computer-Moulvibazar is your trusted destination for quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01797854836.',
+    '- Your Trust, Our Technology - | Trust Computer-Moulvibazar is your trusted destination for quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01797854836.',
   keywords: [
     'Trust Computer Moulvibazar',
     'Computer shop in Moulvibazar',
@@ -70,9 +70,9 @@ export const metadata: Metadata = {
     apple: '/brand/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'Trust Computer-Moulvibazar | Your Trust, Our Technology',
+    title: 'Trust Computer-Moulvibazar | - Your Trust, Our Technology -',
     description:
-      'Your Trust, Our Technology — Quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar.',
+      '- Your Trust, Our Technology - | Quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar.',
     url: 'https://trustcomputermb.com',
     siteName: 'Trust Computer-Moulvibazar',
     images: [

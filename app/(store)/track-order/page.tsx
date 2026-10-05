@@ -102,7 +102,7 @@ export default async function TrackOrderPage({ searchParams }: TrackOrderPagePro
           Track Your Order
         </h1>
         <p className="text-xs font-semibold text-brand uppercase tracking-wider">
-          “Your Trust, Our Technology”
+          - Your Trust, Our Technology -
         </p>
         <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto">
           Enter your order number and the phone number used during checkout to check real-time progress.

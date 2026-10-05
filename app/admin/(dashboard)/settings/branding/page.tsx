@@ -66,7 +66,7 @@ export default async function AdminBrandingSettingsPage() {
             Official Brand Tagline & Motto
           </span>
           <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-            “{brand.tagline}”
+            {brand.tagline}
           </h2>
           <p className="text-xs text-blue-200 italic">
             বাংলা: {brand.taglineBn}

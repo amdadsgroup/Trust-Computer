@@ -25,8 +25,9 @@ The official Trust Computer logo is the authoritative, immutable brand asset for
 
 ## 1.1. Official Brand Tagline & Motto
 
-- **Authoritative Tagline (English)**: **“Your Trust, Our Technology”**
-- **Authoritative Tagline (Bengali)**: **“আপনার আস্থা, আমাদের প্রযুক্তি”**
+- **Authoritative Tagline (English)**: **`- Your Trust, Our Technology -`** (Raw text: `Your Trust, Our Technology`)
+- **Authoritative Tagline (Bengali)**: **`- আপনার আস্থা, আমাদের প্রযুক্তি -`** (Raw text: `আপনার আস্থা, আমাদের প্রযুক্তি`)
+- **Standard Formatting Rule**: The tagline MUST always be rendered with exactly ONE hyphen on each side (`- [TAGLINE] -`). Double hyphens (`--`), triple hyphens (`---`), curly quotes (`“ ”`), or bare taglines without hyphens are strictly forbidden across all touchpoints.
 - **Core Brand Mission**: Establishing trusted computer hardware, laptop sales, and precision CCTV security surveillance across Moulvibazar and Bangladesh.
 - **Application Touchpoints**:
   - Customer Header (beside logo on desktop, mobile menu drawer footer)

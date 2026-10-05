@@ -113,13 +113,26 @@ export const checkoutSchema = z
     (data) => {
       if (data.paymentMethod === 'BKASH') {
         const tid = (data.transactionId || '').trim();
-        return tid.length >= 4 && /^[A-Za-z0-9_-]+$/.test(tid);
+        return tid.length >= 4 && tid.length <= 40 && /^[A-Za-z0-9_-]+$/.test(tid);
       }
       return true;
     },
     {
       message: 'A valid bKash Transaction ID (minimum 4 alphanumeric characters) is required when bKash payment is selected.',
       path: ['transactionId'],
+    }
+  )
+  .refine(
+    (data) => {
+      if (data.paymentMethod === 'BKASH' && data.senderNumber && data.senderNumber.trim().length > 0) {
+        const cleanPhone = data.senderNumber.trim().replace(/[\s\-()]/g, '');
+        return bdPhoneRegex.test(cleanPhone);
+      }
+      return true;
+    },
+    {
+      message: 'Please enter a valid 11-digit Bangladesh bKash mobile number (e.g. 01XXXXXXXXX).',
+      path: ['senderNumber'],
     }
   );
 

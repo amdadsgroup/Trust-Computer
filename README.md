@@ -16,7 +16,7 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 - **Official Website:** `https://trustcomputermb.com`
 - **Facebook:** [Trust Computer Facebook Page](https://www.facebook.com/TrustComputerr/)
 - **Business Tagline:**  
-  *“Your Trust, Our Technology”*
+  *- Your Trust, Our Technology -* (বাংলা: *- আপনার আস্থা, আমাদের প্রযুক্তি -*)
 
 ---
 

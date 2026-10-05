@@ -47,7 +47,7 @@ export default function NotFound() {
           </a>
         </p>
         <p className="text-[11px] font-medium text-slate-500 italic">
-          Trust Computer — “Your Trust, Our Technology”
+          Trust Computer • - Your Trust, Our Technology -
         </p>
       </div>
     </div>

@@ -210,7 +210,7 @@ export default function Header() {
             </div>
             <div className="flex flex-col border-l border-slate-700/80 pl-2 sm:pl-3 justify-center">
               <span className="text-[9.5px] sm:text-[11px] font-semibold text-slate-300 tracking-tight sm:tracking-wide leading-tight">
-                {t('brand.tagline', 'Your Trust, Our Technology')}
+                {t('brand.tagline', '- Your Trust, Our Technology -')}
               </span>
             </div>
           </Link>
@@ -586,8 +586,8 @@ export default function Header() {
 
           {/* Mobile Drawer Tagline */}
           <div className="pt-2 text-center border-t border-slate-100">
-            <p className="text-[11px] font-semibold text-slate-500 italic">
-              “{t('brand.tagline', 'Your Trust, Our Technology')}”
+            <p className="text-[11px] font-semibold text-slate-500">
+              {t('brand.tagline', '- Your Trust, Our Technology -')}
             </p>
           </div>
         </div>

@@ -6,14 +6,17 @@
  * C:\Users\NEED ELECTRO\.gemini\antigravity-ide\brain\...\media_1790234960095.jpg
  */
 
-import { business } from './business';
+import { business, formatTagline } from './business';
 
 export const brand = {
   name: business.name,
   shortName: business.shortName,
   officialFullName: business.officialFullName,
-  tagline: business.tagline,
-  taglineBn: business.taglineBn,
+  taglineText: business.taglineText,
+  taglineTextBn: business.taglineTextBn,
+  tagline: business.tagline, // '- Your Trust, Our Technology -'
+  taglineBn: business.taglineBn, // '- আপনার আস্থা, আমাদের প্রযুক্তি -'
+  formatTagline,
   taglineDescription: business.taglineDescription,
   owner: 'Shiblu Ahmed',
   developer: business.developer,

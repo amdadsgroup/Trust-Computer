@@ -14,9 +14,18 @@ export interface PaymentActionResponse {
 /**
  * Admin action to manually verify a bKash or other pending payment
  */
-export async function verifyPaymentAction(paymentId: string): Promise<PaymentActionResponse> {
+/**
+ * Admin action to manually verify a bKash or other pending payment
+ */
+export async function verifyPaymentAction(
+  param: string | { paymentId: string; adminNote?: string },
+  adminNoteParam?: string
+): Promise<PaymentActionResponse> {
   try {
     const session = await requireAuth();
+
+    const paymentId = typeof param === 'string' ? param : param.paymentId;
+    const adminNote = (typeof param === 'object' ? param.adminNote : adminNoteParam) || '';
 
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
@@ -47,7 +56,12 @@ export async function verifyPaymentAction(paymentId: string): Promise<PaymentAct
       verifiedAt: verifiedAt.toISOString(),
       verifiedBy: session.name,
       verifiedByEmail: session.email,
+      adminNote: adminNote.trim() || existingMeta.adminNote || null,
     };
+
+    const notesSummary = adminNote.trim()
+      ? `Verified by ${session.name} (${session.email}) on ${verifiedAt.toLocaleDateString('en-BD')}. Note: ${adminNote.trim()}`
+      : `Verified by ${session.name} (${session.email}) on ${verifiedAt.toLocaleDateString('en-BD')}`;
 
     // Transactionally update payment and order status
     await prisma.$transaction([
@@ -57,7 +71,7 @@ export async function verifyPaymentAction(paymentId: string): Promise<PaymentAct
           status: PaymentStatus.PAID,
           paidAt: verifiedAt,
           rawResponseJson: JSON.stringify(updatedMeta),
-          notes: `Verified by ${session.name} (${session.email}) on ${verifiedAt.toLocaleDateString('en-BD')}`,
+          notes: notesSummary,
         },
       }),
       prisma.order.update({
@@ -78,10 +92,12 @@ export async function verifyPaymentAction(paymentId: string): Promise<PaymentAct
         amount: Number(payment.amount),
         transactionId: payment.transactionId,
         verifiedBy: session.name,
+        adminNote: adminNote.trim() || undefined,
       },
     });
 
     revalidatePath('/admin/payments');
+    revalidatePath(`/admin/payments/${paymentId}`);
     revalidatePath(`/admin/orders/${payment.orderId}`);
     return { success: true, message: `Payment for order #${payment.order.orderNumber} successfully verified.` };
   } catch (err: any) {
@@ -94,13 +110,18 @@ export async function verifyPaymentAction(paymentId: string): Promise<PaymentAct
  * Admin action to reject a fraudulent or unverified bKash payment
  */
 export async function rejectPaymentAction(
-  paymentId: string,
-  reason: string
+  param: string | { paymentId: string; rejectionReason?: string; adminNote?: string },
+  reasonParam?: string,
+  adminNoteParam?: string
 ): Promise<PaymentActionResponse> {
   try {
     const session = await requireAuth();
 
-    const cleanReason = (reason || 'Transaction could not be verified').trim();
+    const paymentId = typeof param === 'string' ? param : param.paymentId;
+    const cleanReason = (
+      (typeof param === 'object' ? param.rejectionReason : reasonParam) || 'Transaction could not be verified'
+    ).trim();
+    const adminNote = (typeof param === 'object' ? param.adminNote : adminNoteParam) || '';
 
     const payment = await prisma.payment.findUnique({
       where: { id: paymentId },
@@ -131,7 +152,12 @@ export async function rejectPaymentAction(
       rejectedAt: rejectedAt.toISOString(),
       rejectedBy: session.name,
       rejectionReason: cleanReason,
+      adminNote: adminNote.trim() || existingMeta.adminNote || null,
     };
+
+    const notesSummary = adminNote.trim()
+      ? `Rejected: ${cleanReason} (by ${session.name} on ${rejectedAt.toLocaleDateString('en-BD')}). Note: ${adminNote.trim()}`
+      : `Rejected: ${cleanReason} (by ${session.name} on ${rejectedAt.toLocaleDateString('en-BD')})`;
 
     // Transactionally update payment and order status without deleting transaction records
     await prisma.$transaction([
@@ -140,7 +166,7 @@ export async function rejectPaymentAction(
         data: {
           status: PaymentStatus.FAILED,
           rawResponseJson: JSON.stringify(updatedMeta),
-          notes: `Rejected: ${cleanReason} (by ${session.name} on ${rejectedAt.toLocaleDateString('en-BD')})`,
+          notes: notesSummary,
         },
       }),
       prisma.order.update({
@@ -162,10 +188,12 @@ export async function rejectPaymentAction(
         transactionId: payment.transactionId,
         rejectionReason: cleanReason,
         rejectedBy: session.name,
+        adminNote: adminNote.trim() || undefined,
       },
     });
 
     revalidatePath('/admin/payments');
+    revalidatePath(`/admin/payments/${paymentId}`);
     revalidatePath(`/admin/orders/${payment.orderId}`);
     return { success: true, message: `Payment for order #${payment.order.orderNumber} rejected.` };
   } catch (err: any) {

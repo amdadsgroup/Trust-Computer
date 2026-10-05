@@ -9,8 +9,11 @@ import {
   MessageCircle,
   AlertTriangle,
   ArrowRight,
+  Clock,
+  CreditCard,
 } from 'lucide-react';
 import { getOrderInquiryWhatsAppLink } from '@/lib/whatsapp';
+import { business } from '@/lib/business';
 
 export const dynamic = 'force-dynamic';
 
@@ -69,8 +72,8 @@ export default async function OrderConfirmationPage({
           Thank you for shopping with Trust Computer Moulvibazar. Our customer service team will contact you shortly by phone to verify your order dispatch.
         </p>
 
-        <p className="text-xs font-semibold text-brand italic">
-          “Your Trust, Our Technology”
+        <p className="text-xs font-semibold text-brand">
+          - Your Trust, Our Technology -
         </p>
 
         <div className="inline-flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-xl text-xs font-mono font-bold text-slate-800">
@@ -140,45 +143,117 @@ export default async function OrderConfirmationPage({
           <div className="flex justify-between text-[11px] text-slate-500 pt-1">
             <span>Payment Method:</span>
             <span className="font-semibold uppercase">
-              {order.paymentMethod === 'BKASH' ? 'bKash Payment / Cash Out' : order.paymentMethod}
+              {order.paymentMethod === 'BKASH' ? 'bKASH Cash Out' : order.paymentMethod}
             </span>
           </div>
 
-          {order.paymentMethod === 'BKASH' && (
-            <div className="mt-2 pt-2 border-t border-slate-200/80 space-y-1.5 text-[11px]">
-              <div className="flex justify-between">
-                <span className="text-slate-600">bKash Number:</span>
-                <span className="font-mono font-bold text-slate-800">01712556225</span>
-              </div>
-              {order.payments && order.payments[0]?.transactionId && (
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Transaction ID (TrxID):</span>
-                  <span className="font-mono font-bold text-pink-700 bg-pink-50 px-2 py-0.5 rounded border border-pink-200">
-                    {order.payments[0].transactionId}
-                  </span>
+          {order.paymentMethod === 'BKASH' && (() => {
+            const paymentRecord = order.payments?.[0];
+            let meta: Record<string, any> = {};
+            try {
+              if (paymentRecord?.rawResponseJson) {
+                meta = JSON.parse(paymentRecord.rawResponseJson);
+              }
+            } catch {
+              meta = {};
+            }
+
+            const isVerified = order.paymentStatus === 'PAID';
+            const isRejected = order.paymentStatus === 'FAILED';
+            const isPending = !isVerified && !isRejected;
+
+            return (
+              <div className="mt-3 pt-3 border-t border-slate-200/80 space-y-2 text-xs">
+                <div className="bg-white p-3.5 rounded-xl border border-pink-200/70 space-y-2">
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-slate-500">Payment Receiver:</span>
+                    <span className="font-mono font-bold text-slate-800">{business.payment.bkash}</span>
+                  </div>
+
+                  {meta.senderNumber && (
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-slate-500">Sender bKASH Number:</span>
+                      <span className="font-mono font-bold text-slate-800">{meta.senderNumber}</span>
+                    </div>
+                  )}
+
+                  {paymentRecord?.transactionId && (
+                    <div className="flex justify-between items-center text-[11px]">
+                      <span className="text-slate-500">Transaction ID:</span>
+                      <span className="font-mono font-bold text-pink-700 bg-pink-50 px-2.5 py-0.5 rounded border border-pink-200 tracking-wider">
+                        {paymentRecord.transactionId}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center text-[11px]">
+                    <span className="text-slate-500">Payment Amount:</span>
+                    <span className="font-bold text-slate-900">৳ {Number(order.total).toLocaleString('en-BD')}</span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-1 border-t border-slate-100">
+                    <span className="text-slate-600 font-bold">Payment Status:</span>
+                    <span
+                      className={`font-bold px-2.5 py-1 rounded-full text-[10.5px] inline-flex items-center gap-1 ${
+                        isVerified
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                          : isRejected
+                          ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                          : 'bg-amber-100 text-amber-800 border border-amber-300'
+                      }`}
+                    >
+                      {isVerified ? (
+                        <>
+                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                          <span>Verified</span>
+                        </>
+                      ) : isRejected ? (
+                        <>
+                          <AlertTriangle className="w-3 h-3 text-rose-600" />
+                          <span>Rejected</span>
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="w-3 h-3 text-amber-600" />
+                          <span>Verification Pending</span>
+                        </>
+                      )}
+                    </span>
+                  </div>
                 </div>
-              )}
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-slate-600">Payment Status:</span>
-                <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${
-                  order.paymentStatus === 'PAID'
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                    : order.paymentStatus === 'FAILED'
-                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                    : 'bg-amber-100 text-amber-800 border border-amber-300'
-                }`}>
-                  {order.paymentStatus === 'PAID'
-                    ? 'Payment Verified ✓'
-                    : order.paymentStatus === 'FAILED'
-                    ? 'Payment Rejected'
-                    : 'Verification Pending'}
-                </span>
+
+                {/* Status Message */}
+                <div
+                  className={`p-3 rounded-xl text-[11px] leading-relaxed border ${
+                    isVerified
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : isRejected
+                      ? 'bg-rose-50 text-rose-800 border-rose-200'
+                      : 'bg-amber-50 text-amber-900 border-amber-200'
+                  }`}
+                >
+                  {isVerified ? (
+                    <p className="font-semibold">Your bKASH payment has been verified.</p>
+                  ) : isRejected ? (
+                    <p className="font-semibold">
+                      Your bKASH payment could not be verified. Please contact Trust Computer Sales & Customer Care at{' '}
+                      <a href={`tel:${business.sales.phone}`} className="underline font-bold">
+                        {business.sales.phone}
+                      </a>{' '}
+                      or via{' '}
+                      <a href={business.sales.whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline font-bold">
+                        WhatsApp
+                      </a>.
+                    </p>
+                  ) : (
+                    <p className="font-medium">
+                      Your payment information has been submitted and will be verified by Trust Computer.
+                    </p>
+                  )}
+                </div>
               </div>
-              <p className="text-[10px] text-slate-500 italic pt-1">
-                * Payment will be verified by the Trust Computer accounts team.
-              </p>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* Customer & Address if token matches */}
