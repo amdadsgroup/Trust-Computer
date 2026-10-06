@@ -5,6 +5,8 @@ import { notFound } from 'next/navigation';
 import prisma from '@/lib/db';
 import ProductCard from '@/components/products/ProductCard';
 import ProductDetailActions from './ProductDetailActions';
+import ReviewsSection from '@/components/products/ReviewsSection';
+import { getProductReviewStats } from '@/lib/reviews';
 import {
   ShieldCheck,
   Truck,
@@ -13,6 +15,7 @@ import {
   Home,
   MessageCircle,
   HelpCircle,
+  Star,
 } from 'lucide-react';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
@@ -112,6 +115,18 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   let product: any = null;
   let relatedProducts: any[] = [];
+  let reviewStats: any = {
+    averageRating: 0,
+    totalReviews: 0,
+    recommendedPercentage: 100,
+    breakdown: {
+      5: { count: 0, percentage: 0 },
+      4: { count: 0, percentage: 0 },
+      3: { count: 0, percentage: 0 },
+      2: { count: 0, percentage: 0 },
+      1: { count: 0, percentage: 0 },
+    },
+  };
 
   try {
     product = await getProductBySlug(params.slug);
@@ -123,10 +138,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     if (product.categoryId) {
       relatedProducts = await getRelatedProducts(product.categoryId, product.id);
     }
+
+    reviewStats = await getProductReviewStats(product.id);
   } catch (e) {
     console.error('Error fetching product detail:', e);
   }
-
 
   if (!product) {
     notFound();
@@ -147,7 +163,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   });
 
   // Schema.org JSON-LD Structured Data
-  const jsonLd = {
+  const jsonLd: any = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
@@ -166,6 +182,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       },
     },
   };
+
+  if (reviewStats.totalReviews > 0) {
+    jsonLd.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: reviewStats.averageRating.toFixed(1),
+      reviewCount: reviewStats.totalReviews,
+      bestRating: '5',
+      worstRating: '1',
+    };
+  }
 
   return (
     <div className="container mx-auto px-4 py-6 sm:py-8 space-y-10 sm:space-y-12 pb-28 md:pb-12">
@@ -261,6 +287,34 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
               {product.name}
             </h1>
+
+            {/* Reviews Rating Quick Link */}
+            <a
+              href="#customer-reviews"
+              className="inline-flex items-center gap-2 text-xs group cursor-pointer w-fit py-0.5"
+            >
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`w-3.5 h-3.5 ${
+                      star <= Math.round(reviewStats.averageRating || 5)
+                        ? 'text-amber-400 fill-amber-400'
+                        : 'text-slate-200'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="font-bold text-slate-800 group-hover:text-brand-600 transition">
+                {reviewStats.totalReviews > 0 ? reviewStats.averageRating.toFixed(1) : '5.0'}
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-slate-500 group-hover:text-brand-600 group-hover:underline transition">
+                {reviewStats.totalReviews > 0
+                  ? `(${reviewStats.totalReviews} customer review${reviewStats.totalReviews === 1 ? '' : 's'})`
+                  : 'Write first review'}
+              </span>
+            </a>
 
             {/* SKU & Stock Availability */}
             <div className="flex flex-wrap items-center gap-4 text-xs">
@@ -371,6 +425,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
         )}
       </div>
+
+      {/* Customer Reviews Section */}
+      <ReviewsSection
+        productId={product.id}
+        productName={product.name}
+        initialStats={reviewStats}
+      />
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (

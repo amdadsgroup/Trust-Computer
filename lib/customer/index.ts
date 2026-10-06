@@ -370,7 +370,15 @@ export async function getCustomerOrders(customerId: string) {
   return await prisma.order.findMany({
     where: { customerId },
     include: {
-      items: true,
+      items: {
+        include: {
+          product: {
+            select: {
+              slug: true,
+            },
+          },
+        },
+      },
       payments: true,
     },
     orderBy: { createdAt: 'desc' },

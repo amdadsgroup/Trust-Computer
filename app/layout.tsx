@@ -89,12 +89,20 @@ export const metadata: Metadata = {
 };
 
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
+import { getCachedCategoryCounts } from '@/lib/categories';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let categoryCounts;
+  try {
+    categoryCounts = await getCachedCategoryCounts();
+  } catch (error) {
+    console.error('Failed to prefetch category counts in layout:', error);
+  }
+
   return (
     <html lang="en" className={inter.variable}>
       <body className={`${inter.className} antialiased min-h-screen flex flex-col bg-slate-50 text-slate-900 touch-manipulation`}>
@@ -103,7 +111,7 @@ export default function RootLayout({
             <WishlistProvider>
               <CartProvider>
                 <NavigationProgress />
-                <Header />
+                <Header initialCategoryCounts={categoryCounts} />
                 <main className="flex-1 pb-16 md:pb-0">{children}</main>
                 <Footer />
                 <CartDrawer />

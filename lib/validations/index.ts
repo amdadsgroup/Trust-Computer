@@ -305,3 +305,16 @@ export const siteSettingsSchema = z.object({
 });
 
 export type SiteSettingsInput = z.infer<typeof siteSettingsSchema>;
+
+export const createReviewSchema = z.object({
+  productId: z.string().min(1, 'Product ID is required'),
+  rating: z.number().int().min(1, 'Rating must be at least 1 star').max(5, 'Rating cannot exceed 5 stars'),
+  reviewerName: z.string().min(2, 'Name must be at least 2 characters').max(60, 'Name cannot exceed 60 characters'),
+  reviewerEmail: z.string().email('Please enter a valid email address').optional().or(z.literal('')),
+  reviewerPhone: z.string().optional().or(z.literal('')),
+  title: z.string().max(100, 'Title cannot exceed 100 characters').optional().or(z.literal('')),
+  body: z.string().min(5, 'Review details must be at least 5 characters').max(2000, 'Review cannot exceed 2000 characters'),
+  imageUrls: z.array(z.string().url('Invalid image URL')).max(5, 'You can upload up to 5 images').optional().default([]),
+});
+
+export type CreateReviewFormData = z.infer<typeof createReviewSchema>;

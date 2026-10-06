@@ -1,34 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/db';
-import { unstable_cache } from 'next/cache';
-
-export const revalidate = 300;
-
-const getCachedCategoryCounts = unstable_cache(
-  async () => {
-    const [total, categories] = await Promise.all([
-      prisma.product.count({ where: { isActive: true } }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: {
-          slug: true,
-          _count: {
-            select: { products: { where: { isActive: true } } },
-          },
-        },
-      }),
-    ]);
-
-    const counts: Record<string, number> = {};
-    categories.forEach((c) => {
-      counts[c.slug] = c._count.products;
-    });
-
-    return { total, counts };
-  },
-  ['api-category-counts-v1'],
-  { revalidate: 300, tags: ['category-counts', 'categories', 'products'] }
-);
+import { getCachedCategoryCounts } from '@/lib/categories';
 
 export async function GET() {
   try {

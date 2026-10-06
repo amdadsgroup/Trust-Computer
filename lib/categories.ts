@@ -4,6 +4,31 @@ import { unstable_cache } from 'next/cache';
 
 export * from './categories-data';
 
+export const getCachedCategoryCounts = unstable_cache(
+  async () => {
+    const [total, categories] = await Promise.all([
+      prisma.product.count({ where: { isActive: true } }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        select: {
+          slug: true,
+          _count: {
+            select: { products: { where: { isActive: true } } },
+          },
+        },
+      }),
+    ]);
+
+    const counts: Record<string, number> = {};
+    categories.forEach((c) => {
+      counts[c.slug] = c._count.products;
+    });
+
+    return { total, counts };
+  },
+  ['api-category-counts-v1'],
+  { revalidate: 300, tags: ['category-counts', 'categories', 'products'] }
+);
 /**
  * Returns active categories for admin forms and listings.
  * Prioritizes the 7 official store categories in proper sortOrder,

@@ -264,6 +264,7 @@ export default async function HomePage() {
                 <div className="hidden lg:grid lg:col-span-4 grid-cols-1 gap-4 h-full">
                   <Link
                     href={sideBanner1.buttonUrl || '/contact'}
+                    prefetch={true}
                     className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
                     title={sideBanner1.title}
                   >
@@ -279,6 +280,7 @@ export default async function HomePage() {
 
                   <Link
                     href={sideBanner2.buttonUrl || '/categories/cctv-surveillance'}
+                    prefetch={true}
                     className="relative rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 group h-[210px] block border border-slate-200"
                     title={sideBanner2.title}
                   >
@@ -323,6 +325,7 @@ export default async function HomePage() {
 
               <Link
                 href="/products?offer=true"
+                prefetch={true}
                 className="text-xs font-bold text-[#0084d6] hover:underline flex items-center gap-1"
               >
                 <span>View All Offers</span>
@@ -382,6 +385,7 @@ export default async function HomePage() {
 
                     <Link
                       href={offer.buttonUrl || (offer.product ? `/products/${offer.product.slug}` : '/products')}
+                      prefetch={true}
                       className="inline-flex items-center gap-1.5 bg-[#0084d6] hover:bg-[#0074be] text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition shadow-sm"
                     >
                       <span>{offer.buttonText || 'View Offer'}</span>
@@ -442,6 +446,7 @@ export default async function HomePage() {
                 <div className="text-center pt-2">
                   <Link
                     href="/products"
+                    prefetch={true}
                     className="inline-flex items-center gap-2 bg-[#0084d6] hover:bg-[#0074be] text-white font-bold px-8 py-3 rounded-xl text-sm transition shadow-md hover:shadow-lg"
                   >
                     <span>View All Products in Catalog</span>

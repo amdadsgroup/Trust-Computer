@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { requireCustomer, getCustomerOrders } from '@/lib/customer';
-import { ShoppingBag, ArrowRight, Package, Calendar, CreditCard } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Package, Calendar, CreditCard, Star } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -114,9 +114,20 @@ export default async function CustomerOrdersPage() {
                             (Qty: {item.quantity})
                           </span>
                         </div>
-                        <span className="font-bold text-slate-900 flex-shrink-0">
-                          ৳{Number(item.subtotal).toLocaleString('en-BD')}
-                        </span>
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          {order.status === 'DELIVERED' && (item as any).product?.slug && (
+                            <Link
+                              href={`/products/${(item as any).product.slug}#customer-reviews`}
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2.5 py-1 rounded-lg transition"
+                            >
+                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                              <span>Review Product</span>
+                            </Link>
+                          )}
+                          <span className="font-bold text-slate-900">
+                            ৳{Number(item.subtotal).toLocaleString('en-BD')}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>

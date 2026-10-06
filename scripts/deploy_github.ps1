@@ -1,8 +1,11 @@
 # Automated GitHub & Vercel Update Script for Trust Computer
 
-$gitCmd = "C:\Users\NEED ELECTRO\bin\git\cmd\git.exe"
+$gitCmd = "C:\Program Files\Git\cmd\git.exe"
 if (-not (Test-Path $gitCmd)) {
-    $gitCmd = "git"
+    $gitCmd = "C:\Users\NEED ELECTRO\bin\git\cmd\git.exe"
+    if (-not (Test-Path $gitCmd)) {
+        $gitCmd = "git"
+    }
 }
 
 $commitMsg = if ($args.Count -gt 0) { $args -join " " } else { "update: production configuration and sync" }

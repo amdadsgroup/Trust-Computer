@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ShoppingBag, Check, Heart, ShieldCheck, Laptop } from 'lucide-react';
+import { ShoppingBag, Check, Heart, ShieldCheck, Laptop, Star } from 'lucide-react';
 import { useCart } from '../cart/CartContext';
 import { useWishlist } from '../wishlist/WishlistContext';
 import { useToast } from '@/components/ui/toast';
@@ -24,6 +24,8 @@ export interface ProductCardProps {
     brand?: { name: string } | null;
     warrantyInfo?: string | null;
     specs?: string[] | null;
+    rating?: number;
+    reviewCount?: number;
   };
 }
 
@@ -135,7 +137,7 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
       </div>
 
       {/* Product Image Area (Compact 4:3) */}
-      <Link href={`/products/${product.slug}`} className="block relative w-full aspect-[4/3] bg-slate-50/80 overflow-hidden">
+      <Link href={`/products/${product.slug}`} prefetch={true} className="block relative w-full aspect-[4/3] bg-slate-50/80 overflow-hidden">
         {primaryImage ? (
           <Image
             src={primaryImage}
@@ -179,11 +181,22 @@ const ProductCard = React.memo(function ProductCard({ product }: ProductCardProp
           </div>
 
           {/* Product Title */}
-          <Link href={`/products/${product.slug}`}>
+          <Link href={`/products/${product.slug}`} prefetch={true}>
             <h3 className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-2 group-hover:text-brand-700 transition leading-snug">
               {product.name}
             </h3>
           </Link>
+
+          {/* Rating Display if available */}
+          {product.rating !== undefined && product.rating > 0 && (
+            <div className="flex items-center gap-1 mt-1 text-[11px] font-bold text-slate-700">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <span>{product.rating.toFixed(1)}</span>
+              {product.reviewCount !== undefined && (
+                <span className="text-slate-400 font-normal">({product.reviewCount})</span>
+              )}
+            </div>
+          )}
 
           {/* Warranty Info if available */}
           {product.warrantyInfo && (

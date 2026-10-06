@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: '0 */6 * * *'
   workflow_dispatch:
+    inputs:
+      app_url:
+        description: 'Target Application URL to ping'
+        required: false
+        default: 'https://trustcomputermb.com'
 
 jobs:
   keepalive:
@@ -17,7 +22,7 @@ jobs:
     steps:
       - name: Ping Application Keep-Alive Endpoint
         env:
-          APP_URL: ${{ secrets.APP_URL || 'https://trustcomputer.vercel.app' }}
+          APP_URL: ${{ inputs.app_url || 'https://trustcomputermb.com' }}
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           echo "Pinging application keep-alive at $APP_URL/api/cron/keepalive..."
@@ -43,19 +48,22 @@ jobs:
             echo "Application keepalive ping completed successfully."
           fi
 
-      - name: Direct Supabase Gateway Fallback Ping (Optional)
-        if: ${{ env.SUPABASE_URL != '' && env.SUPABASE_ANON_KEY != '' }}
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          echo "Executing direct Supabase REST API activity ping..."
-          REST_ENDPOINT="${SUPABASE_URL%/}/rest/v1/site_settings?select=id&limit=1"
-
-          SUPA_RESPONSE=$(curl -s -w "\n%{http_code}" -m 15 \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Accept: application/json" \
-            "$REST_ENDPOINT" || true)
-
-          SUPA_CODE=$(echo "$SUPA_RESPONSE" | tail -n1)
-          echo "Supabase REST Status: $SUPA_CODE"
+      # Optional: Direct Supabase Gateway Fallback Ping
+      # If you configure SUPABASE_URL and SUPABASE_ANON_KEY in GitHub Actions Secrets,
+      # you can uncomment this step to enable secondary direct REST pinging:
+      # - name: Direct Supabase Gateway Fallback Ping (Optional)
+      #   if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_ANON_KEY != '' }}
+      #   env:
+      #     SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      #     SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      #   run: |
+      #     echo "Executing direct Supabase REST API activity ping..."
+      #     REST_ENDPOINT="${SUPABASE_URL%/}/rest/v1/site_settings?select=id&limit=1"
+      #
+      #     SUPA_RESPONSE=$(curl -s -w "\n%{http_code}" -m 15 \
+      #       -H "apikey: $SUPABASE_ANON_KEY" \
+      #       -H "Accept: application/json" \
+      #       "$REST_ENDPOINT" || true)
+      #
+      #     SUPA_CODE=$(echo "$SUPA_RESPONSE" | tail -n1)
+      #     echo "Supabase REST Status: $SUPA_CODE"

@@ -50,19 +50,19 @@ enum InventoryMovementType {
 }
 
 model User {
-  id           String      @id @default(uuid())
-  email        String      @unique
+  id           String   @id @default(uuid())
+  email        String   @unique
   passwordHash String
   name         String
-  role         UserRole    @default(STAFF)
+  role         UserRole @default(STAFF)
   phone        String?
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  auditLogs    AdminAuditLog[]
-  movements    InventoryMovement[]
-  statusLogs   OrderStatusHistory[]
+  auditLogs  AdminAuditLog[]
+  movements  InventoryMovement[]
+  statusLogs OrderStatusHistory[]
 
   @@map("users")
 }
@@ -81,8 +81,8 @@ model Category {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  products    Product[]
-  offers      Offer[]
+  products Product[]
+  offers   Offer[]
 
   @@index([slug])
   @@index([isActive, sortOrder])
@@ -90,44 +90,44 @@ model Category {
 }
 
 model Brand {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
-  slug        String    @unique
+  slug        String   @unique
   description String?
   logo        String?
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  products    Product[]
+  products Product[]
 
   @@index([slug])
   @@map("brands")
 }
 
 model Product {
-  id                 String                 @id @default(uuid())
-  name               String
-  slug               String                 @unique
-  sku                String                 @unique
-  barcode            String?
-  description        String
-  sellingPrice       Decimal                @db.Decimal(10, 2)
-  compareAtPrice     Decimal?               @db.Decimal(10, 2)
-  costPrice          Decimal?               @db.Decimal(10, 2)
-  stock              Int                    @default(0)
-  lowStockThreshold  Int                    @default(3)
-  isFeatured         Boolean                @default(false)
-  isNewArrival       Boolean                @default(false)
-  isBestSeller       Boolean                @default(false)
-  isActive           Boolean                @default(true)
-  warrantyInfo       String?
-  categoryId         String
-  category           Category               @relation(fields: [categoryId], references: [id])
-  brandId            String?
-  brand              Brand?                 @relation(fields: [brandId], references: [id])
-  createdAt          DateTime               @default(now())
-  updatedAt          DateTime               @updatedAt
+  id                String   @id @default(uuid())
+  name              String
+  slug              String   @unique
+  sku               String   @unique
+  barcode           String?
+  description       String
+  sellingPrice      Decimal  @db.Decimal(10, 2)
+  compareAtPrice    Decimal? @db.Decimal(10, 2)
+  costPrice         Decimal? @db.Decimal(10, 2)
+  stock             Int      @default(0)
+  lowStockThreshold Int      @default(3)
+  isFeatured        Boolean  @default(false)
+  isNewArrival      Boolean  @default(false)
+  isBestSeller      Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  warrantyInfo      String?
+  categoryId        String
+  category          Category @relation(fields: [categoryId], references: [id])
+  brandId           String?
+  brand             Brand?   @relation(fields: [brandId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 
   images             ProductImage[]
   specifications     ProductSpecification[]
@@ -150,7 +150,7 @@ model Product {
   @@index([isActive, sellingPrice])
   @@index([isActive, categoryId])
   @@index([isActive, brandId])
-  @@index([isActive, stock])          // For low-stock dashboard queries
+  @@index([isActive, stock]) // For low-stock dashboard queries
   @@index([isActive, categoryId, createdAt]) // For filtered + sorted admin table
   @@map("products")
 }
@@ -170,13 +170,13 @@ model ProductImage {
 }
 
 model ProductSpecification {
-  id        String   @id @default(uuid())
+  id        String  @id @default(uuid())
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  group     String   @default("General")
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  group     String  @default("General")
   key       String
   value     String
-  sortOrder Int      @default(0)
+  sortOrder Int     @default(0)
 
   @@index([productId])
   @@map("product_specifications")
@@ -190,7 +190,7 @@ model ProductVariant {
   sku            String   @unique
   price          Decimal  @db.Decimal(10, 2)
   stock          Int      @default(0)
-  attributesJson String?  // JSON string e.g. {"color": "Black", "storage": "512GB"}
+  attributesJson String? // JSON string e.g. {"color": "Black", "storage": "512GB"}
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -205,28 +205,28 @@ model Order {
   customerPhone   String
   customerEmail   String?
   deliveryAddress String
-  cityArea        String        // e.g., "Moulvibazar Sadar", "Outside Moulvibazar"
+  cityArea        String // e.g., "Moulvibazar Sadar", "Outside Moulvibazar"
   notes           String?
   deliveryMethod  String        @default("STANDARD")
-  deliveryFee     Decimal       @db.Decimal(10, 2) @default(0)
+  deliveryFee     Decimal       @default(0) @db.Decimal(10, 2)
   subtotal        Decimal       @db.Decimal(10, 2)
-  discount        Decimal       @db.Decimal(10, 2) @default(0)
-  couponCode      String?       // Applied coupon code snapshot
-  couponDiscount  Decimal       @db.Decimal(10, 2) @default(0)
+  discount        Decimal       @default(0) @db.Decimal(10, 2)
+  couponCode      String? // Applied coupon code snapshot
+  couponDiscount  Decimal       @default(0) @db.Decimal(10, 2)
   total           Decimal       @db.Decimal(10, 2)
   status          OrderStatus   @default(PENDING)
   paymentStatus   PaymentStatus @default(PENDING)
   paymentMethod   PaymentMethod @default(COD)
-  trackingToken   String        // Secure token for customer lookups
+  trackingToken   String // Secure token for customer lookups
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  customerId      String?
-  customer        CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerId String?
+  customer   CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
 
-  items           OrderItem[]
-  payments        Payment[]
-  statusHistory   OrderStatusHistory[]
+  items         OrderItem[]
+  payments      Payment[]
+  statusHistory OrderStatusHistory[]
 
   @@index([customerId])
   @@index([orderNumber])
@@ -261,19 +261,19 @@ model OrderItem {
 }
 
 model Payment {
-  id               String        @id @default(uuid())
-  orderId          String
-  order            Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  transactionId    String?       @unique
-  provider         PaymentMethod
-  amount           Decimal       @db.Decimal(10, 2)
-  currency         String        @default("BDT")
-  status           PaymentStatus @default(PENDING)
-  rawResponseJson  String?
-  notes            String?
-  paidAt           DateTime?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id              String        @id @default(uuid())
+  orderId         String
+  order           Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  transactionId   String?       @unique
+  provider        PaymentMethod
+  amount          Decimal       @db.Decimal(10, 2)
+  currency        String        @default("BDT")
+  status          PaymentStatus @default(PENDING)
+  rawResponseJson String?
+  notes           String?
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   @@index([orderId])
   @@index([transactionId])
@@ -283,13 +283,13 @@ model Payment {
 }
 
 model PaymentWebhookEvent {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   provider    String
   eventType   String
   payloadJson String
-  status      String   @default("RECEIVED")
+  status      String    @default("RECEIVED")
   processedAt DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   @@map("payment_webhook_events")
 }
@@ -299,11 +299,11 @@ model InventoryMovement {
   productId       String
   product         Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
   type            InventoryMovementType
-  quantity        Int                   // positive for additions, negative for reductions
+  quantity        Int // positive for additions, negative for reductions
   previousStock   Int
   newStock        Int
   reason          String
-  referenceId     String?               // e.g. orderId or supplier invoice #
+  referenceId     String? // e.g. orderId or supplier invoice #
   createdByUserId String?
   user            User?                 @relation(fields: [createdByUserId], references: [id], onDelete: SetNull)
   createdAt       DateTime              @default(now())
@@ -345,19 +345,19 @@ enum DiscountType {
 }
 
 model CustomerProfile {
-  id           String            @id // Matches Supabase Auth user ID (UUID)
-  email        String            @unique
+  id           String   @id // Matches Supabase Auth user ID (UUID)
+  email        String   @unique
   passwordHash String?
   fullName     String
   phone        String?
   avatarUrl    String?
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  addresses   CustomerAddress[]
-  orders      Order[]
-  wishlist    Wishlist?
-  reviews     Review[]
+  addresses    CustomerAddress[]
+  orders       Order[]
+  wishlist     Wishlist?
+  reviews      Review[]
   couponUsages CouponUsage[]
 
   @@index([email])
@@ -387,21 +387,21 @@ model CustomerAddress {
 }
 
 model Banner {
-  id              String      @id @default(uuid())
+  id              String     @id @default(uuid())
   title           String
   subtitle        String?
   description     String?
   desktopImageUrl String
   mobileImageUrl  String?
-  buttonText      String?     @default("Shop Now")
+  buttonText      String?    @default("Shop Now")
   buttonUrl       String?
-  type            BannerType  @default(PROMOTIONAL)
-  priority        Int         @default(0)
+  type            BannerType @default(PROMOTIONAL)
+  priority        Int        @default(0)
   startAt         DateTime?
   endAt           DateTime?
-  isActive        Boolean     @default(true)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  isActive        Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
   @@index([isActive, priority])
   @@index([startAt, endAt])
@@ -409,25 +409,25 @@ model Banner {
 }
 
 model Offer {
-  id            String        @id @default(uuid())
+  id            String       @id @default(uuid())
   title         String
   description   String?
   imageUrl      String?
   badge         String?
-  discountType  DiscountType  @default(PROMOTIONAL_ONLY)
-  discountValue Decimal?      @db.Decimal(10, 2)
+  discountType  DiscountType @default(PROMOTIONAL_ONLY)
+  discountValue Decimal?     @db.Decimal(10, 2)
   productId     String?
-  product       Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+  product       Product?     @relation(fields: [productId], references: [id], onDelete: SetNull)
   categoryId    String?
-  category      Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  buttonText    String?       @default("View Offer")
+  category      Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  buttonText    String?      @default("View Offer")
   buttonUrl     String?
-  priority      Int           @default(0)
+  priority      Int          @default(0)
   startAt       DateTime?
   endAt         DateTime?
-  isActive      Boolean       @default(true)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 
   @@index([isActive, priority])
   @@index([productId])
@@ -436,56 +436,56 @@ model Offer {
 }
 
 model HomepageSection {
-  id          String                @id @default(uuid())
-  sectionKey  String                @unique
-  title       String
-  subtitle    String?
-  sortOrder   Int                   @default(0)
-  isVisible   Boolean               @default(true)
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @updatedAt
-  items       HomepageSectionItem[]
+  id         String                @id @default(uuid())
+  sectionKey String                @unique
+  title      String
+  subtitle   String?
+  sortOrder  Int                   @default(0)
+  isVisible  Boolean               @default(true)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  items      HomepageSectionItem[]
 
   @@map("homepage_sections")
 }
 
 model HomepageSectionItem {
-  id          String          @id @default(uuid())
-  sectionId   String
-  section     HomepageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  itemType    String
-  itemId      String?
-  title       String?
-  subtitle    String?
-  imageUrl    String?
-  linkUrl     String?
-  sortOrder   Int             @default(0)
-  isActive    Boolean         @default(true)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id        String          @id @default(uuid())
+  sectionId String
+  section   HomepageSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  itemType  String
+  itemId    String?
+  title     String?
+  subtitle  String?
+  imageUrl  String?
+  linkUrl   String?
+  sortOrder Int             @default(0)
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
 
   @@index([sectionId])
   @@map("homepage_section_items")
 }
 
 model SiteSettings {
-  id                           String   @id @default("default")
-  storeName                    String   @default("Trust Computer-Moulvibazar")
-  ownerName                    String   @default("Shiblu Ahmed")
-  phone                        String   @default("01797854836")
-  email                        String   @default("trustcomputermb@gmail.com")
-  address                      String   @default("T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh")
-  facebookUrl                  String   @default("https://www.facebook.com/TrustComputerr/")
-  whatsappNumber               String   @default("+8801797854836")
-  servicePhone                 String   @default("01608346407")
-  serviceWhatsapp              String   @default("+8801608346407")
-  bkashNumber                  String   @default("01712556225")
-  storeDescription             String   @default("মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️")
-  deliveryFeeInsideMoulvibazar  Decimal  @db.Decimal(10, 2) @default(60.00)
-  deliveryFeeOutsideMoulvibazar Decimal  @db.Decimal(10, 2) @default(120.00)
-  freeDeliveryThreshold        Decimal? @db.Decimal(10, 2)
-  isMaintenanceMode            Boolean  @default(false)
-  updatedAt                    DateTime @updatedAt
+  id                            String   @id @default("default")
+  storeName                     String   @default("Trust Computer-Moulvibazar")
+  ownerName                     String   @default("Shiblu Ahmed")
+  phone                         String   @default("01797854836")
+  email                         String   @default("trustcomputermb@gmail.com")
+  address                       String   @default("T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh")
+  facebookUrl                   String   @default("https://www.facebook.com/TrustComputerr/")
+  whatsappNumber                String   @default("+8801797854836")
+  servicePhone                  String   @default("01608346407")
+  serviceWhatsapp               String   @default("+8801608346407")
+  bkashNumber                   String   @default("01712556225")
+  storeDescription              String   @default("মানসম্মত কম্পিউটার ও সিসি ক্যামেরা জগতে মৌলভীবাজারের একটি বিশ্বস্ত প্রতিষ্ঠান।❤️")
+  deliveryFeeInsideMoulvibazar  Decimal  @default(60.00) @db.Decimal(10, 2)
+  deliveryFeeOutsideMoulvibazar Decimal  @default(120.00) @db.Decimal(10, 2)
+  freeDeliveryThreshold         Decimal? @db.Decimal(10, 2)
+  isMaintenanceMode             Boolean  @default(false)
+  updatedAt                     DateTime @updatedAt
 
   @@map("site_settings")
 }
@@ -494,8 +494,8 @@ model AdminAuditLog {
   id          String   @id @default(uuid())
   userId      String?
   user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-  action      String   // e.g. "PRODUCT_CREATE", "PRICE_UPDATE", "ORDER_STATUS_UPDATE"
-  entityType  String   // "Product", "Order", "Category", "Payment"
+  action      String // e.g. "PRODUCT_CREATE", "PRICE_UPDATE", "ORDER_STATUS_UPDATE"
+  entityType  String // "Product", "Order", "Category", "Payment"
   entityId    String?
   detailsJson String?
   ipAddress   String?
@@ -508,14 +508,14 @@ model AdminAuditLog {
 }
 
 model ContentPage {
-  id          String   @id @default(uuid())
-  slug        String   @unique // "privacy", "terms", "delivery", "returns", "warranty"
-  title       String
-  content     String   @db.Text
-  isDraft     Boolean  @default(false)
-  updatedBy   String?
-  updatedAt   DateTime @updatedAt
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  slug      String   @unique // "privacy", "terms", "delivery", "returns", "warranty"
+  title     String
+  content   String   @db.Text
+  isDraft   Boolean  @default(false)
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 
   @@index([slug])
   @@map("content_pages")
@@ -526,13 +526,13 @@ model ContentPage {
 // ============================================================
 
 model Wishlist {
-  id         String         @id @default(uuid())
-  customerId String         @unique
+  id         String          @id @default(uuid())
+  customerId String          @unique
   customer   CustomerProfile @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
 
-  items      WishlistItem[]
+  items WishlistItem[]
 
   @@map("wishlists")
 }
@@ -563,22 +563,22 @@ enum ReviewStatus {
 }
 
 model Review {
-  id               String        @id @default(uuid())
-  productId        String
-  product          Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
-  customerId       String?
-  customer         CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
-  reviewerName     String        // Snapshot of reviewer name
-  rating           Int           // 1-5
-  title            String?
-  body             String
-  isVerifiedPurchase Boolean     @default(false)
-  status           ReviewStatus  @default(PENDING)
-  moderatorNote    String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id                 String           @id @default(uuid())
+  productId          String
+  product            Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerId         String?
+  customer           CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  reviewerName       String // Snapshot of reviewer name
+  rating             Int // 1-5
+  title              String?
+  body               String
+  isVerifiedPurchase Boolean          @default(false)
+  status             ReviewStatus     @default(PENDING)
+  moderatorNote      String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
 
-  images           ReviewImage[]
+  images ReviewImage[]
 
   @@index([productId])
   @@index([customerId])
@@ -611,23 +611,23 @@ enum CouponType {
 }
 
 model Coupon {
-  id                String      @id @default(uuid())
-  code              String      @unique
+  id                String     @id @default(uuid())
+  code              String     @unique
   description       String?
-  type              CouponType  @default(PERCENTAGE)
-  value             Decimal     @db.Decimal(10, 2) // Percentage or fixed amount
-  minimumOrderValue Decimal?    @db.Decimal(10, 2)
-  maximumDiscount   Decimal?    @db.Decimal(10, 2) // Cap for percentage discounts
-  usageLimit        Int?        // Total times the coupon can be used across all customers
-  usageLimitPerUser Int         @default(1)
-  usedCount         Int         @default(0)
-  isActive          Boolean     @default(true)
+  type              CouponType @default(PERCENTAGE)
+  value             Decimal    @db.Decimal(10, 2) // Percentage or fixed amount
+  minimumOrderValue Decimal?   @db.Decimal(10, 2)
+  maximumDiscount   Decimal?   @db.Decimal(10, 2) // Cap for percentage discounts
+  usageLimit        Int? // Total times the coupon can be used across all customers
+  usageLimitPerUser Int        @default(1)
+  usedCount         Int        @default(0)
+  isActive          Boolean    @default(true)
   startAt           DateTime?
   endAt             DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
-  usages            CouponUsage[]
+  usages CouponUsage[]
 
   @@index([code])
   @@index([isActive])
@@ -635,13 +635,13 @@ model Coupon {
 }
 
 model CouponUsage {
-  id         String          @id @default(uuid())
+  id         String           @id @default(uuid())
   couponId   String
-  coupon     Coupon          @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  coupon     Coupon           @relation(fields: [couponId], references: [id], onDelete: Cascade)
   customerId String?
   customer   CustomerProfile? @relation(fields: [customerId], references: [id], onDelete: SetNull)
   orderId    String?
-  usedAt     DateTime        @default(now())
+  usedAt     DateTime         @default(now())
 
   @@index([couponId])
   @@index([customerId])
@@ -665,9 +665,9 @@ model StockReservation {
   productId   String
   product     Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity    Int
-  sessionKey  String            // checkout session or cart session ID
+  sessionKey  String // checkout session or cart session ID
   status      ReservationStatus @default(ACTIVE)
-  expiresAt   DateTime          // e.g. 15 minutes from creation
+  expiresAt   DateTime // e.g. 15 minutes from creation
   confirmedAt DateTime?
   releasedAt  DateTime?
   createdAt   DateTime          @default(now())

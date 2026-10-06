@@ -34,7 +34,7 @@ import { business, getSalesWhatsAppLink, getServiceWhatsAppLink } from '@/lib/bu
 // In-memory client cache for category counts across route changes
 let clientCategoryCountsCache: { total: number; counts: Record<string, number> } | null = null;
 
-export default function Header() {
+export default function Header({ initialCategoryCounts }: { initialCategoryCounts?: { total: number; counts: Record<string, number> } }) {
   const pathname = usePathname();
   const { totalItems, setIsOpen } = useCart();
   const { wishlistCount } = useWishlist();
@@ -56,7 +56,7 @@ export default function Header() {
   };
 
   const [catCounts, setCatCounts] = useState<{ total: number; counts: Record<string, number> }>(
-    () => clientCategoryCountsCache || {
+    () => initialCategoryCounts || clientCategoryCountsCache || {
       total: 1,
       counts: {
         'laptop-computer': 1,
@@ -80,6 +80,12 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
+    if (initialCategoryCounts) {
+      clientCategoryCountsCache = initialCategoryCounts;
+      setCatCounts(initialCategoryCounts);
+      return;
+    }
+
     if (clientCategoryCountsCache) {
       setCatCounts(clientCategoryCountsCache);
       return;
@@ -94,7 +100,7 @@ export default function Header() {
         }
       })
       .catch(() => { });
-  }, []);
+  }, [initialCategoryCounts]);
 
 
   const isPillActive = (catSlug: string | null) => {
@@ -197,7 +203,7 @@ export default function Header() {
       <div className="bg-[#081621] text-white py-2.5 px-4 border-b border-slate-800">
         <div className="container mx-auto flex items-center justify-between gap-4">
           {/* Left: Official Brand Logo & Tagline */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 py-0.5">
+          <Link href="/" prefetch={true} className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 py-0.5">
             <div className="relative h-8 sm:h-11 w-auto group-hover:opacity-95 transition shrink-0">
               <Image
                 src="/brand/trust-computer-logo.png"
@@ -241,6 +247,7 @@ export default function Header() {
             {/* Wishlist */}
             <Link
               href="/wishlist"
+              prefetch={true}
               className="hidden lg:flex items-center gap-2 group text-left relative"
             >
               <div className="text-accent-400 group-hover:text-accent-300 transition relative">
@@ -284,6 +291,7 @@ export default function Header() {
             {/* Customer Account */}
             <Link
               href="/account"
+              prefetch={true}
               className="hidden sm:flex items-center gap-2.5 group text-left"
             >
               <div className="text-slate-300 group-hover:text-white transition">
@@ -319,6 +327,7 @@ export default function Header() {
             {/* Track Order CTA Button */}
             <Link
               href="/track-order"
+              prefetch={true}
               className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md"
             >
               <PackageSearch className="w-4 h-4 flex-shrink-0" />

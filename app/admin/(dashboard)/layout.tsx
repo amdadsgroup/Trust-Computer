@@ -23,6 +23,7 @@ import {
   Users,
   Shield,
   FileText,
+  Star,
 } from 'lucide-react';
 
 export default async function AdminDashboardLayout({
@@ -43,6 +44,7 @@ export default async function AdminDashboardLayout({
     { label: 'Brands', href: '/admin/brands', icon: <Tag className="w-4 h-4" /> },
     { label: 'Order Management', href: '/admin/orders', icon: <ShoppingBag className="w-4 h-4" /> },
     { label: 'Customers', href: '/admin/customers', icon: <Users className="w-4 h-4" /> },
+    { label: 'Customer Reviews', href: '/admin/reviews', icon: <Star className="w-4 h-4" /> },
     { label: 'Homepage Banners', href: '/admin/banners', icon: <ImageIcon className="w-4 h-4" /> },
     { label: 'Promotional Offers', href: '/admin/offers', icon: <Gift className="w-4 h-4" /> },
     { label: 'Coupons', href: '/admin/coupons', icon: <Tag className="w-4 h-4" /> },
@@ -90,6 +92,7 @@ export default async function AdminDashboardLayout({
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/80 transition"
               >
                 <span className="text-slate-400">{item.icon}</span>

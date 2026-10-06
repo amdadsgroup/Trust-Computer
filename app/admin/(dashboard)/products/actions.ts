@@ -141,8 +141,6 @@ export async function createProductAction(formData: FormData) {
       details: { name: product.name, sku: product.sku, price: sellingPrice, stock },
     });
 
-    revalidatePath('/');
-    revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
     revalidateTag('products');
@@ -172,8 +170,6 @@ export async function toggleProductActiveAction(productId: string, currentState:
       details: { newState: updated.isActive },
     });
 
-    revalidatePath('/');
-    revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
     revalidateTag('products');
@@ -202,8 +198,6 @@ export async function toggleProductFeaturedAction(productId: string, currentStat
       details: { newState: updated.isFeatured },
     });
 
-    revalidatePath('/');
-    revalidatePath('/products');
     revalidatePath('/admin/products');
     revalidatePath('/admin');
     revalidateTag('products');
@@ -378,8 +372,6 @@ export async function updateProductAction(productId: string, formData: FormData)
       details: { name, sku, price: sellingPrice, stock: newStockVal },
     });
 
-    revalidatePath('/');
-    revalidatePath('/products');
     revalidatePath(`/products/${slug}`);
     if (current.slug !== slug) {
       revalidatePath(`/products/${current.slug}`);
@@ -469,8 +461,6 @@ export async function deleteProductAction(productId: string) {
       details: { name: product.name, sku: product.sku },
     });
 
-    revalidatePath('/');
-    revalidatePath('/products');
     revalidatePath(`/products/${product.slug}`);
     revalidatePath('/admin/products');
     revalidatePath('/admin');
