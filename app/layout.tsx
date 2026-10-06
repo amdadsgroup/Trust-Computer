@@ -90,6 +90,8 @@ export const metadata: Metadata = {
 
 import { LanguageProvider } from '@/lib/i18n/LanguageContext';
 import { getCachedCategoryCounts } from '@/lib/categories';
+import { getLocalBusinessSchema, getOrganizationSchema, getWebSiteSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 export default async function RootLayout({
   children,
@@ -103,8 +105,17 @@ export default async function RootLayout({
     console.error('Failed to prefetch category counts in layout:', error);
   }
 
+  const globalSchemas = [
+    getLocalBusinessSchema(),
+    getOrganizationSchema(),
+    getWebSiteSchema(),
+  ];
+
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <JsonLd data={globalSchemas} />
+      </head>
       <body className={`${inter.className} antialiased min-h-screen flex flex-col bg-slate-50 text-slate-900 touch-manipulation`}>
         <LanguageProvider>
           <ToastProvider>

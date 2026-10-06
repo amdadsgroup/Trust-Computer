@@ -59,7 +59,7 @@ export async function createCategoryAction(formData: FormData) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/categories');
+    revalidateTag('categories');
     revalidateTag('categories');
     revalidateTag('homepage');
     revalidateTag('category-counts');
@@ -114,8 +114,7 @@ export async function createBrandAction(formData: FormData) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin/brands');
+    revalidateTag('categories');
     revalidateTag('brands');
     return { success: true, brand };
   } catch (e: any) {
@@ -157,7 +156,7 @@ export async function deleteCategoryAction(categoryId: string) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/categories');
+    revalidateTag('categories');
     revalidateTag('categories');
     revalidateTag('homepage');
     revalidateTag('category-counts');
@@ -201,8 +200,7 @@ export async function deleteBrandAction(brandId: string) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/categories');
-    revalidatePath('/admin/brands');
+    revalidateTag('categories');
     revalidateTag('brands');
     return { success: true };
   } catch (e: any) {

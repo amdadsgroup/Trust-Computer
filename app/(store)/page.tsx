@@ -19,10 +19,20 @@ import {
 import ShowroomInfoSection from '@/components/home/ShowroomInfoSection';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
+import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 
 export const revalidate = 60;
 export const maxDuration = 30;
+
+export const metadata: Metadata = {
+  title: 'Trust Computer-Moulvibazar | Computer, Laptop & CCTV Shop in Moulvibazar',
+  description:
+    'Trust Computer-Moulvibazar: Trusted destination for laptops, desktop computers, components, and CCTV camera systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh. Hotline: 01797854836.',
+  alternates: {
+    canonical: 'https://trustcomputermb.com',
+  },
+};
 
 const homeProductSelect = {
   id: true,

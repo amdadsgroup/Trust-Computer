@@ -29,6 +29,9 @@ export const metadata: Metadata = {
     'PC maintenance Moulvibazar',
     'Trust Computer service',
   ],
+  alternates: {
+    canonical: 'https://trustcomputermb.com/services',
+  },
 };
 
 export default function ServicesPage() {
@@ -226,7 +229,13 @@ export default function ServicesPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <Link
+            href="/moulvibazar"
+            className="flex-1 md:flex-none text-center bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold py-3 px-5 rounded-xl text-xs transition"
+          >
+            Moulvibazar Showroom
+          </Link>
           <Link
             href="/contact"
             className="flex-1 md:flex-none text-center bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-6 rounded-xl text-xs transition"

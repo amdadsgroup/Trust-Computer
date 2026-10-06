@@ -75,12 +75,21 @@ interface CategoryPageProps {
   };
 }
 
-const SLUG_ALIASES: Record<string, { canonical: string; name: string }> = {
-  'desktop-components': { canonical: 'laptop-computer', name: 'Laptop & Computer' },
-  'laptops-notebooks': { canonical: 'laptop-computer', name: 'Laptop & Computer' },
-  'cctv-surveillance': { canonical: 'cctv-security', name: 'CCTV & Security' },
-  'networking-equipment': { canonical: 'networking', name: 'Networking' },
-  'printers-scanners': { canonical: 'computer-accessories', name: 'Computer Accessories' },
+const SLUG_ALIASES: Record<string, { canonical: string; name: string; seoTitle?: string }> = {
+  'desktop-components': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Desktop PC & Components Price in Moulvibazar | Trust Computer' },
+  'laptops-notebooks': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
+  'laptops': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
+  'laptop': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
+  'cctv-surveillance': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
+  'cctv-camera': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
+  'cctv': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
+  'networking-equipment': { canonical: 'networking', name: 'Networking', seoTitle: 'Router & Networking Price in Moulvibazar | Trust Computer' },
+  'routers': { canonical: 'networking', name: 'Networking', seoTitle: 'Router & Networking Price in Moulvibazar | Trust Computer' },
+  'router': { canonical: 'networking', name: 'Networking', seoTitle: 'Router & Networking Price in Moulvibazar | Trust Computer' },
+  'printers-scanners': { canonical: 'computer-accessories', name: 'Computer Accessories', seoTitle: 'Printer & Accessories Price in Moulvibazar | Trust Computer' },
+  'printers': { canonical: 'computer-accessories', name: 'Computer Accessories', seoTitle: 'Printer Price in Moulvibazar | Trust Computer' },
+  'printer': { canonical: 'computer-accessories', name: 'Computer Accessories', seoTitle: 'Printer Price in Moulvibazar | Trust Computer' },
+  'monitors': { canonical: 'monitor', name: 'Monitor', seoTitle: 'Monitor Price in Moulvibazar | Trust Computer' },
 };
 
 const DEFAULT_CATEGORY_SLUGS = [
@@ -93,7 +102,9 @@ const DEFAULT_CATEGORY_SLUGS = [
   'power-electronics',
   'desktop-components',
   'laptops-notebooks',
+  'laptops',
   'cctv-surveillance',
+  'cctv-camera',
   'networking-equipment',
   'printers-scanners',
 ];
@@ -115,14 +126,45 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: CategoryPageProps) {
-  const alias = SLUG_ALIASES[params.slug.toLowerCase()];
+  const slugLower = params.slug.toLowerCase();
+  const alias = SLUG_ALIASES[slugLower];
+
   const title = alias?.name || params.slug
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
+
+  let seoTitle = alias?.seoTitle;
+  if (!seoTitle) {
+    if (slugLower === 'laptop-computer') {
+      seoTitle = 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer';
+    } else if (slugLower === 'cctv-security') {
+      seoTitle = 'CCTV Camera Price in Moulvibazar | Trust Computer';
+    } else if (slugLower === 'computer-accessories') {
+      seoTitle = 'Computer Accessories in Moulvibazar | Trust Computer';
+    } else if (slugLower === 'monitor') {
+      seoTitle = 'Monitor Price in Moulvibazar | Trust Computer';
+    } else if (slugLower === 'networking') {
+      seoTitle = 'Router & Networking Price in Moulvibazar | Trust Computer';
+    } else if (slugLower === 'gaming') {
+      seoTitle = 'Gaming PC & Accessories Price in Moulvibazar | Trust Computer';
+    } else if (slugLower === 'power-electronics') {
+      seoTitle = 'UPS & Power Electronics in Moulvibazar | Trust Computer';
+    } else {
+      seoTitle = `${title} Price in Moulvibazar | Trust Computer`;
+    }
+  }
+
   return {
-    title: `${title} | Trust Computer-Moulvibazar`,
-    description: `Shop authentic ${title} in Moulvibazar at Trust Computer. Genuine products with official warranty.`,
+    title: seoTitle,
+    description: `Shop authentic ${title} in Moulvibazar at Trust Computer. Genuine brand warranty, best local prices. Showroom at T.S Plaza (2nd Floor), Kusumbagh. Hotline: 01797854836.`,
+    alternates: {
+      canonical: `https://trustcomputermb.com/categories/${alias?.canonical || params.slug}`,
+    },
+    openGraph: {
+      title: seoTitle,
+      description: `Explore authentic ${title} with official warranty at Trust Computer-Moulvibazar showroom at Kusumbagh Point.`,
+    },
   };
 }
 
@@ -416,12 +458,21 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
             Trust Computer — T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01797854836
           </span>
         </div>
-        <Link
-          href="/contact"
-          className="text-brand-600 font-semibold hover:underline shrink-0"
-        >
-          Showroom Location & Contact ➔
-        </Link>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/moulvibazar"
+            className="text-blue-700 font-bold hover:underline shrink-0"
+          >
+            Moulvibazar Tech Guide
+          </Link>
+          <span className="text-slate-300">•</span>
+          <Link
+            href="/contact"
+            className="text-slate-700 font-semibold hover:underline shrink-0"
+          >
+            Showroom Map & Contact ➔
+          </Link>
+        </div>
       </div>
     </div>
   );

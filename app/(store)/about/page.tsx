@@ -4,7 +4,10 @@ import AboutPageClient from '@/components/about/AboutPageClient';
 export const metadata = {
   title: 'About Us | Trust Computer-Moulvibazar',
   description:
-    'Your trusted technology partner for genuine computers, laptops, and CCTV security systems in Moulvibazar, Bangladesh.',
+    'Trust Computer-Moulvibazar: Your trusted technology partner for genuine computers, laptops, and CCTV security systems at Kusumbagh, Moulvibazar, Bangladesh.',
+  alternates: {
+    canonical: 'https://trustcomputermb.com/about',
+  },
 };
 
 export default function AboutPage() {

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
 import { brandSchema } from '@/lib/validations';
@@ -60,8 +60,7 @@ export async function createBrandAction(formData: FormData) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/brands');
-    revalidatePath('/admin/categories');
+    revalidateTag('brands');
     return { success: true, brand };
   } catch (e: any) {
     console.error('Error creating brand:', e);
@@ -91,7 +90,7 @@ export async function toggleBrandStatusAction(brandId: string) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/brands');
+    revalidateTag('brands');
     return { success: true };
   } catch (e: any) {
     return { error: e.message || 'Failed to update brand status.' };
@@ -126,8 +125,7 @@ export async function deleteBrandAction(brandId: string) {
       });
     } catch (_) {}
 
-    revalidatePath('/admin/brands');
-    revalidatePath('/admin/categories');
+    revalidateTag('brands');
     return { success: true };
   } catch (e: any) {
     return { error: e.message || 'Failed to delete brand.' };

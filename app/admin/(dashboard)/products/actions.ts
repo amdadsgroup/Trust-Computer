@@ -141,8 +141,6 @@ export async function createProductAction(formData: FormData) {
       details: { name: product.name, sku: product.sku, price: sellingPrice, stock },
     });
 
-    revalidatePath('/admin/products');
-    revalidatePath('/admin');
     revalidateTag('products');
     revalidateTag('homepage');
     revalidateTag('category-counts');
@@ -170,8 +168,6 @@ export async function toggleProductActiveAction(productId: string, currentState:
       details: { newState: updated.isActive },
     });
 
-    revalidatePath('/admin/products');
-    revalidatePath('/admin');
     revalidateTag('products');
     revalidateTag('homepage');
     revalidateTag('category-counts');
@@ -198,8 +194,6 @@ export async function toggleProductFeaturedAction(productId: string, currentStat
       details: { newState: updated.isFeatured },
     });
 
-    revalidatePath('/admin/products');
-    revalidatePath('/admin');
     revalidateTag('products');
     revalidateTag('homepage');
     return { success: true, isFeatured: updated.isFeatured };
@@ -372,14 +366,6 @@ export async function updateProductAction(productId: string, formData: FormData)
       details: { name, sku, price: sellingPrice, stock: newStockVal },
     });
 
-    revalidatePath(`/products/${slug}`);
-    if (current.slug !== slug) {
-      revalidatePath(`/products/${current.slug}`);
-    }
-    revalidatePath('/admin/products');
-    revalidatePath(`/admin/products/${productId}/edit`);
-    revalidatePath('/admin');
-    revalidatePath('/admin/inventory');
     revalidateTag('products');
     revalidateTag('homepage');
     revalidateTag('category-counts');
@@ -461,10 +447,6 @@ export async function deleteProductAction(productId: string) {
       details: { name: product.name, sku: product.sku },
     });
 
-    revalidatePath(`/products/${product.slug}`);
-    revalidatePath('/admin/products');
-    revalidatePath('/admin');
-    revalidatePath('/admin/inventory');
     revalidateTag('products');
     revalidateTag('homepage');
     revalidateTag('category-counts');
