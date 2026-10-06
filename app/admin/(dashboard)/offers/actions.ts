@@ -26,7 +26,7 @@ export async function createOfferAction(data: unknown) {
     });
 
     revalidatePath('/admin/offers');
-    revalidatePath('/');
+    revalidateTag('offers');
     revalidateTag('offers');
     revalidateTag('homepage');
     return { success: true, offerId: offer.id };
@@ -54,7 +54,7 @@ export async function updateOfferAction(id: string, data: unknown) {
     });
 
     revalidatePath('/admin/offers');
-    revalidatePath('/');
+    revalidateTag('offers');
     revalidateTag('offers');
     revalidateTag('homepage');
     return { success: true };
@@ -79,7 +79,7 @@ export async function deleteOfferAction(id: string) {
     });
 
     revalidatePath('/admin/offers');
-    revalidatePath('/');
+    revalidateTag('offers');
     revalidateTag('offers');
     revalidateTag('homepage');
     return { success: true };
@@ -102,7 +102,7 @@ export async function toggleOfferActiveAction(id: string, isActive: boolean) {
     });
 
     revalidatePath('/admin/offers');
-    revalidatePath('/');
+    revalidateTag('offers');
     revalidateTag('offers');
     revalidateTag('homepage');
     return { success: true };

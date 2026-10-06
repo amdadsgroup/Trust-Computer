@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
 
@@ -69,11 +69,7 @@ export async function updateStoreSettingsAction(formData: FormData) {
       },
     });
 
-    revalidatePath('/');
-    revalidatePath('/contact');
-    revalidatePath('/services');
-    revalidatePath('/about');
-    revalidatePath('/checkout');
+    revalidateTag('settings');
     revalidatePath('/admin/settings');
     return { success: true };
   } catch (error: any) {
