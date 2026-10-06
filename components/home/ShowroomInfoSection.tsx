@@ -71,6 +71,12 @@ export default function ShowroomInfoSection({ whatsappUrl }: { whatsappUrl: stri
             <span>Sales Hotline: {business.sales.phone}</span>
           </a>
           <Link
+            href="/moulvibazar"
+            className="flex items-center justify-center gap-2 bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold py-2.5 px-4 rounded-xl text-xs shadow-xs transition"
+          >
+            <span>Moulvibazar Shop Guide</span>
+          </Link>
+          <Link
             href="/contact"
             className="flex items-center justify-center gap-2 bg-white hover:bg-slate-100 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs border border-slate-300 transition"
           >

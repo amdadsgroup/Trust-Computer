@@ -28,6 +28,7 @@ import {
   Phone,
   MessageCircle,
   Wrench,
+  MapPin,
 } from 'lucide-react';
 import { business, getSalesWhatsAppLink, getServiceWhatsAppLink } from '@/lib/business';
 
@@ -324,6 +325,26 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
               </div>
             </a>
 
+            {/* Moulvibazar Showroom Hub Link */}
+            <Link
+              href="/moulvibazar"
+              prefetch={true}
+              className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group"
+              title="Computer Shop in Moulvibazar"
+            >
+              <div className="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                <MapPin className="w-3.5 h-3.5 text-rose-400" />
+              </div>
+              <div>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block leading-tight">
+                  Showroom
+                </span>
+                <span className="text-xs font-bold text-white group-hover:text-sky-300 transition block">
+                  Moulvibazar
+                </span>
+              </div>
+            </Link>
+
             {/* Track Order CTA Button */}
             <Link
               href="/track-order"
@@ -513,6 +534,19 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
           </div>
 
           <div className="pt-3 border-t border-slate-200 flex flex-col gap-2 text-xs font-semibold">
+            <Link
+              href="/moulvibazar"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-950 font-bold transition flex items-center justify-between"
+            >
+              <span className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-rose-500" />
+                <span>Computer Shop Moulvibazar</span>
+              </span>
+              <span className="text-[10px] bg-[#2A3B97] text-white px-2 py-0.5 rounded-full font-semibold">
+                Showroom
+              </span>
+            </Link>
             <Link
               href="/track-order"
               onClick={() => setMobileMenuOpen(false)}

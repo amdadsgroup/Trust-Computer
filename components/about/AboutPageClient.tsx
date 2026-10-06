@@ -100,10 +100,16 @@ export default function AboutPageClient() {
         </div>
 
         {/* CTA */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-100">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
+          <Link
+            href="/moulvibazar"
+            className="flex-1 text-center bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow"
+          >
+            Moulvibazar Showroom Guide
+          </Link>
           <Link
             href="/contact"
-            className="flex-1 text-center bg-brand hover:bg-brand-700 text-white font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition shadow"
+            className="flex-1 text-center bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow"
           >
             {t('about.contact_btn', 'Get in Touch / Showroom Map')}
           </Link>
@@ -111,7 +117,7 @@ export default function AboutPageClient() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition shadow"
+            className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow"
           >
             <MessageCircle className="w-4 h-4" />
             <span>{t('about.whatsapp_btn', 'Instant WhatsApp Consultation')}</span>

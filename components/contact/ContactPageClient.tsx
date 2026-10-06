@@ -228,7 +228,7 @@ export default function ContactPageClient() {
             <ContactForm />
           </div>
 
-          <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-slate-100">
             <a
               href={salesWhatsAppUrl}
               target="_blank"
@@ -238,6 +238,72 @@ export default function ContactPageClient() {
               <MessageCircle className="w-5 h-5" />
               <span>{t('contact.whatsapp_reply_btn', 'Get Instant Reply on WhatsApp')}</span>
             </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Google Maps & Showroom Location Section */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+              Interactive Google Maps Location
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500">
+              T.S Plaza (2nd Floor), Kusumbagh Point, Moulvibazar
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <a
+              href={business.googleMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-[#2A3B97] hover:bg-[#212F7A] text-white font-bold text-xs py-2 px-3.5 rounded-xl transition shadow-xs"
+            >
+              <span>Get Directions</span>
+            </a>
+            <a
+              href={business.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2 px-3.5 rounded-xl transition"
+            >
+              <span>Review on Google</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Embedded Google Map */}
+        <div className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm">
+          <div className="relative w-full h-[360px] sm:h-[420px] bg-slate-100">
+            <iframe
+              title="Trust Computer Moulvibazar Showroom Google Maps"
+              src={business.googleMapsEmbedUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-full"
+            />
+          </div>
+          <div className="p-4 sm:p-5 bg-white border-t border-slate-100 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
+            <div>
+              <span className="font-bold text-slate-900 block">Exact Address:</span>
+              <span>T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar</span>
+            </div>
+            <div>
+              <span className="font-bold text-slate-900 block">Landmark:</span>
+              <span>Opposite Kusumbagh Point circle, central commercial zone</span>
+            </div>
+            <div>
+              <span className="font-bold text-slate-900 block">Assistance Hotline:</span>
+              <a href={business.sales.tel} className="text-blue-600 font-bold hover:underline">
+                Call {business.sales.phone}
+              </a>
+            </div>
           </div>
         </div>
       </div>
