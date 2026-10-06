@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createProductAction } from '@/app/admin/(dashboard)/products/actions';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { DEFAULT_CATEGORIES } from '@/lib/categories-data';
 
 interface NewProductFormProps {
@@ -15,6 +15,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
   const router = useRouter();
   const availableCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
@@ -32,6 +33,7 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
+    setSuccess(null);
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
@@ -41,7 +43,11 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
       setError(result.error);
       setLoading(false);
     } else {
-      router.push('/admin/products');
+      setSuccess('Product created successfully!');
+      setLoading(false);
+      setTimeout(() => {
+        router.push('/admin/products');
+      }, 700);
     }
   };
 
@@ -51,6 +57,13 @@ export default function NewProductForm({ categories, brands }: NewProductFormPro
         <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 flex items-center gap-2">
           <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-600" />
           <span>{error}</span>
+        </div>
+      )}
+
+      {success && (
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-emerald-600" />
+          <span className="font-semibold">{success}</span>
         </div>
       )}
 
