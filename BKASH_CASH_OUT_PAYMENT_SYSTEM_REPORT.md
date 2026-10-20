@@ -226,7 +226,7 @@ Comprehensive automated test suites were written and executed using Vitest:
 |---|---|---|
 | `tests/bkash-cash-out-system.test.ts` | 15 | **PASSED** |
 | `tests/business-contacts-bkash.test.ts` | 13 | **PASSED** |
-| `tests/health-keepalive.test.ts` | 16 | **PASSED** |
+| `tests/health.test.ts` | 3 | **PASSED** |
 | `tests/order-service-resilience.test.ts` | 18 | **PASSED** |
 | `tests/payment-service-resilience.test.ts` | 15 | **PASSED** |
 | `tests/product-cache-invalidation.test.ts` | 14 | **PASSED** |
