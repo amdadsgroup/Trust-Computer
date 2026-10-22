@@ -65,7 +65,7 @@ A full-stack, production-oriented e-commerce web application engineered for **Tr
 │   │   │   ├── payments/        # Payment records, verification & reconciliation
 │   │   │   ├── reports/         # Sales and inventory analytics
 │   │   │   └── settings/        # Store settings & staff management
-│   ├── api/                     # Route handlers (webhooks, health checks, uploads)
+│   ├── api/                     # Route handlers (webhooks, uploads, authentication)
 │   ├── layout.tsx               # Root layout with SEO metadata & global styles
 │   └── globals.css              # Global styles & design tokens
 ├── components/
