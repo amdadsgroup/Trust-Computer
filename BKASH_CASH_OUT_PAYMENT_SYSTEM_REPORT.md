@@ -226,13 +226,12 @@ Comprehensive automated test suites were written and executed using Vitest:
 |---|---|---|
 | `tests/bkash-cash-out-system.test.ts` | 15 | **PASSED** |
 | `tests/business-contacts-bkash.test.ts` | 13 | **PASSED** |
-| `tests/health.test.ts` | 3 | **PASSED** |
 | `tests/order-service-resilience.test.ts` | 18 | **PASSED** |
 | `tests/payment-service-resilience.test.ts` | 15 | **PASSED** |
 | `tests/product-cache-invalidation.test.ts` | 14 | **PASSED** |
 | `tests/search-service-resilience.test.ts` | 17 | **PASSED** |
 | All other test suites | 71 | **PASSED** |
-| **Total Test Count** | **164** | **100% PASSED (0 Failures)** |
+| **Total Test Count** | **161** | **100% PASSED (0 Failures)** |
 
 Key test scenarios covered in `bkash-cash-out-system.test.ts`:
 - Business configuration exports correct bKash receiver (`01712556225`) and support contacts.
