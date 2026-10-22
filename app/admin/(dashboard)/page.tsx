@@ -104,7 +104,7 @@ export default async function AdminDashboardPage() {
             Dashboard Overview
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Real-time sales, order volume, and inventory health for Trust Computer.
+            Real-time sales, order volume, and inventory status for Trust Computer.
           </p>
         </div>
 
