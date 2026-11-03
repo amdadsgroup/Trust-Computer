@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "build:worker": "node scripts/patch-opennext.js && opennextjs-cloudflare build",
+    "preview:worker": "wrangler dev",
+    "deploy:worker": "wrangler deploy",
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
@@ -34,6 +37,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^0.6.6",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.16.5",
     "@types/nodemailer": "^8.0.2",
@@ -44,6 +48,7 @@
     "prisma": "^5.20.0",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.1",
+    "wrangler": "^4.157.0"
   }
 }
