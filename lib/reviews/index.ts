@@ -5,6 +5,7 @@
 
 import prisma from '@/lib/db';
 import { ReviewStatus } from '@prisma/client';
+import { unstable_cache } from 'next/cache';
 
 export interface CreateReviewInput {
   productId: string;
@@ -305,6 +306,28 @@ export async function getProductReviewStats(productId: string) {
     breakdown,
   };
 }
+
+/**
+ * Cached version of getProductReviewStats (300s edge TTL, invalidated by 'reviews' tag)
+ */
+export const getCachedProductReviewStats = unstable_cache(
+  async (productId: string) => {
+    return getProductReviewStats(productId);
+  },
+  ['product-review-stats'],
+  { revalidate: 300, tags: ['reviews'] }
+);
+
+/**
+ * Cached version of initial 10 reviews (300s edge TTL, invalidated by 'reviews' tag)
+ */
+export const getCachedInitialProductReviews = unstable_cache(
+  async (productId: string) => {
+    return getProductReviews({ productId, limit: 10 });
+  },
+  ['product-initial-reviews'],
+  { revalidate: 300, tags: ['reviews'] }
+);
 
 /**
  * Admin: Get reviews with search, filtering, and stats.

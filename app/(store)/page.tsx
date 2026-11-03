@@ -22,7 +22,7 @@ import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 import type { Metadata } from 'next';
 import { unstable_cache } from 'next/cache';
 
-export const revalidate = 60;
+export const revalidate = 300;
 export const maxDuration = 30;
 
 export const metadata: Metadata = {
@@ -148,7 +148,7 @@ const getCachedHomePageData = unstable_cache(
   },
   ['homepage-full-data-v3'],
   {
-    revalidate: 60,
+    revalidate: 300,
     tags: ['homepage', 'products', 'categories', 'banners', 'offers', 'homepage-sections'],
   }
 );

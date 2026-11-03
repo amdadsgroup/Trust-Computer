@@ -84,17 +84,20 @@ export default function ReviewsSection({
   // Local state for helpful votes
   const [votedReviews, setVotedReviews] = useState<Record<string, boolean>>({});
 
-  // Auto-fetch customer profile if logged in
+  // Load customer profile ONLY when user opens review form modal
   useEffect(() => {
+    if (!isFormOpen) return;
+    if (reviewerName) return;
+
     async function fetchMe() {
       try {
         const res = await fetch('/api/account/me');
         if (res.ok) {
           const data = await res.json();
-          if (data?.customer) {
-            setReviewerName(data.customer.fullName || '');
-            setReviewerEmail(data.customer.email || '');
-            if (data.customer.phone) setReviewerPhone(data.customer.phone);
+          if (data) {
+            if (data.fullName) setReviewerName(data.fullName);
+            if (data.email) setReviewerEmail(data.email);
+            if (data.phone) setReviewerPhone(data.phone);
           }
         }
       } catch {
@@ -102,7 +105,9 @@ export default function ReviewsSection({
       }
     }
     fetchMe();
-  }, []);
+  }, [isFormOpen, reviewerName]);
+
+  const hasMountedReviewsRef = React.useRef(false);
 
   // Fetch reviews based on active filters
   const fetchReviewsData = useCallback(async () => {
@@ -139,8 +144,14 @@ export default function ReviewsSection({
   }, [productId, page, selectedRating, verifiedOnly, sortBy]);
 
   useEffect(() => {
+    if (!hasMountedReviewsRef.current) {
+      hasMountedReviewsRef.current = true;
+      if (initialReviews && initialReviews.length > 0) {
+        return;
+      }
+    }
     fetchReviewsData();
-  }, [fetchReviewsData]);
+  }, [fetchReviewsData, initialReviews]);
 
   // Handle image upload from file input
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import prisma from '@/lib/db';
+import { unstable_cache } from 'next/cache';
 import { business, getSalesWhatsAppLink, getServiceWhatsAppLink } from '@/lib/business';
 import { getLocalBusinessSchema, getBreadcrumbSchema, getFAQSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
@@ -33,7 +34,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Computer Shop in Moulvibazar | Laptop, CCTV & Computer Products | Trust Computer',

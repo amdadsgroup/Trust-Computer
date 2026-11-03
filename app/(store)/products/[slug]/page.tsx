@@ -6,7 +6,7 @@ import prisma from '@/lib/db';
 import ProductCard from '@/components/products/ProductCard';
 import ProductDetailActions from './ProductDetailActions';
 import ReviewsSection from '@/components/products/ReviewsSection';
-import { getProductReviewStats } from '@/lib/reviews';
+import { getCachedProductReviewStats, getCachedInitialProductReviews } from '@/lib/reviews';
 import {
   ShieldCheck,
   Truck,
@@ -23,7 +23,7 @@ import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
 import { unstable_cache } from 'next/cache';
 
-export const revalidate = 60;
+export const revalidate = 1800;
 
 interface ProductDetailPageProps {
   params: {
@@ -45,7 +45,7 @@ const getProductBySlug = unstable_cache(
     });
   },
   ['product-detail-data'],
-  { revalidate: 60, tags: ['products'] }
+  { revalidate: 1800, tags: ['products'] }
 );
 
 const getRelatedProducts = unstable_cache(
@@ -78,7 +78,7 @@ const getRelatedProducts = unstable_cache(
     });
   },
   ['related-products-data'],
-  { revalidate: 120, tags: ['products'] }
+  { revalidate: 1800, tags: ['products'] }
 );
 
 export async function generateStaticParams() {
@@ -118,6 +118,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   let product: any = null;
   let relatedProducts: any[] = [];
+  let initialReviews: any[] = [];
   let reviewStats: any = {
     averageRating: 0,
     totalReviews: 0,
@@ -142,7 +143,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       relatedProducts = await getRelatedProducts(product.categoryId, product.id);
     }
 
-    reviewStats = await getProductReviewStats(product.id);
+    const [cachedStats, cachedReviews] = await Promise.all([
+      getCachedProductReviewStats(product.id),
+      getCachedInitialProductReviews(product.id),
+    ]);
+    reviewStats = cachedStats;
+    initialReviews = cachedReviews.reviews || [];
   } catch (e) {
     console.error('Error fetching product detail:', e);
   }
@@ -479,6 +485,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         productId={product.id}
         productName={product.name}
         initialStats={reviewStats}
+        initialReviews={initialReviews}
       />
 
       {/* Related Products */}

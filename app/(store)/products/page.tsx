@@ -11,7 +11,7 @@ import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, Packag
 
 import { unstable_cache } from 'next/cache';
 
-export const revalidate = 60;
+export const revalidate = 300;
 export const maxDuration = 30;
 
 interface ProductsPageProps {
@@ -98,7 +98,7 @@ const getCachedDefaultProducts = unstable_cache(
     return { products, totalCount };
   },
   ['catalog-default-page-1'],
-  { revalidate: 60, tags: ['products'] }
+  { revalidate: 300, tags: ['products'] }
 );
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * GET /api/reviews?productId=...&rating=...&sort=...&page=...
- * Fetch reviews and stats for a product.
+ * Fetch reviews and stats for a product with Edge CDN caching.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -41,15 +41,22 @@ export async function GET(req: NextRequest) {
       getProductReviewStats(productId),
     ]);
 
-    return NextResponse.json({
-      success: true,
-      reviews,
-      totalCount,
-      page,
-      limit,
-      totalPages: Math.ceil(totalCount / limit) || 1,
-      stats,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        reviews,
+        totalCount,
+        page,
+        limit,
+        totalPages: Math.ceil(totalCount / limit) || 1,
+        stats,
+      },
+      {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('Error fetching reviews:', error);
     return NextResponse.json(
@@ -98,12 +105,12 @@ export async function POST(req: NextRequest) {
 
     // Zod validation errors
     if (error?.errors && Array.isArray(error.errors)) {
-      const message = error.errors.map((e: any) => e.message).join(', ');
-      return NextResponse.json({ error: message }, { status: 400 });
+      const messages = error.errors.map((e: any) => e.message).join(', ');
+      return NextResponse.json({ error: messages }, { status: 400 });
     }
 
     return NextResponse.json(
-      { error: error.message || 'Failed to submit review.' },
+      { error: error.message || 'Failed to submit review. Please try again.' },
       { status: 400 }
     );
   }

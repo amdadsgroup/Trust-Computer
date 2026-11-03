@@ -17,6 +17,7 @@ export async function moderateReviewAction(
 
     revalidatePath('/admin/reviews');
     revalidateTag('products');
+    revalidateTag('reviews');
     return { success: true };
   } catch (error: any) {
     console.error('Error moderating review:', error);
@@ -32,6 +33,7 @@ export async function deleteReviewAction(reviewId: string) {
 
     revalidatePath('/admin/reviews');
     revalidateTag('products');
+    revalidateTag('reviews');
     return { success: true };
   } catch (error: any) {
     console.error('Error deleting review:', error);
@@ -52,6 +54,7 @@ export async function batchModerateReviewAction(
 
     revalidatePath('/admin/reviews');
     revalidateTag('products');
+    revalidateTag('reviews');
     return { success: true };
   } catch (error: any) {
     console.error('Error batch moderating reviews:', error);

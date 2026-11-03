@@ -17,8 +17,9 @@ function getDatabaseUrl(): string | undefined {
   }
 
   // Ensure connection limit and timeouts are configured for serverless functions
+  // connection_limit=1 is critical on Vercel serverless functions to prevent pool saturation
   if (!url.includes('connection_limit')) {
-    url += (url.includes('?') ? '&' : '?') + 'connection_limit=10&connect_timeout=30&pool_timeout=30';
+    url += (url.includes('?') ? '&' : '?') + 'connection_limit=1&connect_timeout=30&pool_timeout=30';
   }
 
   return url;
@@ -42,4 +43,3 @@ if (!globalForPrisma.prisma) {
 }
 
 export default prisma;
-

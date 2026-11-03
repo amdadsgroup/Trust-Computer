@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import prisma from '@/lib/db';
 
+export const revalidate = 86400; // Cache sitemap at Vercel Edge for 24 hours
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.APP_URL || 'https://trustcomputermb.com';
 

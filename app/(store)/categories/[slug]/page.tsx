@@ -5,10 +5,11 @@ import prisma from '@/lib/db';
 import ProductCard from '@/components/products/ProductCard';
 import { PackageOpen, ChevronRight, Home, Filter, SlidersHorizontal, Check, ShieldCheck } from 'lucide-react';
 import { Prisma } from '@prisma/client';
+import { DEFAULT_CATEGORIES } from '@/lib/categories';
 
 import { unstable_cache } from 'next/cache';
 
-export const revalidate = 60;
+export const revalidate = 900;
 export const maxDuration = 30;
 
 const getCachedCategoryData = unstable_cache(
@@ -58,7 +59,7 @@ const getCachedCategoryData = unstable_cache(
     });
   },
   ['category-page-data-v3'],
-  { revalidate: 60, tags: ['categories', 'products'] }
+  { revalidate: 900, tags: ['categories', 'products'] }
 );
 
 interface CategoryPageProps {
