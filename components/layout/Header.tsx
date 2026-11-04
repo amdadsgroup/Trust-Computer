@@ -306,45 +306,6 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
               </div>
             </Link>
 
-            {/* Sales Hotline */}
-            <a
-              href={`tel:${business.sales.phone}`}
-              className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group"
-              title="Call Sales & Customer Care"
-            >
-              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                <Phone className="w-3.5 h-3.5" />
-              </div>
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block leading-tight">
-                  Sales Hotline
-                </span>
-                <span className="text-xs font-bold text-white group-hover:text-emerald-300 transition block">
-                  {business.sales.phone}
-                </span>
-              </div>
-            </a>
-
-            {/* Moulvibazar Showroom Hub Link */}
-            <Link
-              href="/moulvibazar"
-              prefetch={true}
-              className="hidden lg:flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/80 text-left transition group"
-              title="Computer Shop in Moulvibazar"
-            >
-              <div className="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-                <MapPin className="w-3.5 h-3.5 text-rose-400" />
-              </div>
-              <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 block leading-tight">
-                  Showroom
-                </span>
-                <span className="text-xs font-bold text-white group-hover:text-sky-300 transition block">
-                  Moulvibazar
-                </span>
-              </div>
-            </Link>
-
             {/* Track Order CTA Button */}
             <Link
               href="/track-order"
