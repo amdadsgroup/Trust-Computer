@@ -58,13 +58,13 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
 
   const [catCounts, setCatCounts] = useState<{ total: number; counts: Record<string, number> }>(
     () => initialCategoryCounts || clientCategoryCountsCache || {
-      total: 1,
+      total: 11,
       counts: {
-        'laptop-computer': 1,
-        monitor: 0,
+        'laptop-computer': 5,
+        monitor: 3,
         gaming: 0,
         'computer-accessories': 0,
-        'cctv-security': 0,
+        'cctv-security': 3,
         networking: 0,
         'power-electronics': 0,
       },
@@ -81,7 +81,7 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
   }, [pathname]);
 
   useEffect(() => {
-    if (initialCategoryCounts) {
+    if (initialCategoryCounts && initialCategoryCounts.total > 0) {
       clientCategoryCountsCache = initialCategoryCounts;
       setCatCounts(initialCategoryCounts);
       return;

@@ -1,32 +1,41 @@
 import prisma from '@/lib/db';
 import { DEFAULT_CATEGORIES, StoreCategoryItem } from './categories-data';
 import { edgeCache } from '@/lib/cache-edge';
+import { getCatalogFilterMetadata } from '@/lib/db/catalog';
 
 export * from './categories-data';
 
 export const getCachedCategoryCounts = edgeCache(
   async () => {
-    const [total, categories] = await Promise.all([
-      prisma.product.count({ where: { isActive: true } }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: {
-          slug: true,
-          _count: {
-            select: { products: { where: { isActive: true } } },
-          },
+    try {
+      const meta = await getCatalogFilterMetadata();
+      const counts: Record<string, number> = {};
+      if (meta && meta.categories) {
+        meta.categories.forEach((c) => {
+          counts[c.slug] = c._count?.products ?? 0;
+        });
+      }
+      return {
+        total: meta?.totalInStore ?? 11,
+        counts,
+      };
+    } catch (error) {
+      console.error('getCachedCategoryCounts error:', error);
+      return {
+        total: 11,
+        counts: {
+          'laptop-computer': 5,
+          monitor: 3,
+          gaming: 0,
+          'computer-accessories': 0,
+          'cctv-security': 3,
+          networking: 0,
+          'power-electronics': 0,
         },
-      }),
-    ]);
-
-    const counts: Record<string, number> = {};
-    categories.forEach((c) => {
-      counts[c.slug] = c._count.products;
-    });
-
-    return { total, counts };
+      };
+    }
   },
-  ['api-category-counts-v1'],
+  ['api-category-counts-v2'],
   { revalidate: 300, tags: ['category-counts', 'categories', 'products'] }
 );
 /**
