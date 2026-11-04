@@ -1,5 +1,6 @@
 name = "trust-computer"
 main = ".open-next/worker.js"
+account_id = "84877c7a121bc5d72f0706ba4aa6f124"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
