@@ -114,7 +114,7 @@ describe('Trust Computer - Moulvibazar Local SEO Module', () => {
     it('should verify category page generates Moulvibazar specific SEO titles', async () => {
       const categoryPagePath = path.join(process.cwd(), 'app', '(store)', 'categories', '[slug]', 'page.tsx');
       const content = fs.readFileSync(categoryPagePath, 'utf-8');
-      expect(content).toContain('Laptop Price in Moulvibazar');
+      expect(content).toContain('Laptops & Computers | Trust Computer Moulvibazar');
       expect(content).toContain('CCTV Camera Price in Moulvibazar');
       expect(content).toContain('Computer Accessories in Moulvibazar');
       expect(content).toContain('Monitor Price in Moulvibazar');

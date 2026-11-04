@@ -48,9 +48,9 @@ export const metadata: Metadata = {
     'computer accessories Moulvibazar',
     'CCTV camera Moulvibazar',
     'CCTV shop Moulvibazar',
-    'laptop price Moulvibazar',
-    'computer price Moulvibazar',
-    'desktop price Moulvibazar',
+    'laptop collection Moulvibazar',
+    'desktop computer Moulvibazar',
+    'computer parts Moulvibazar',
     'monitor price Moulvibazar',
     'router price Moulvibazar',
     'SSD price Moulvibazar',
@@ -378,7 +378,7 @@ export default async function MoulvibazarLandingPage() {
               </p>
             </div>
             <div className="text-xs font-bold text-blue-600 flex items-center gap-1 group-hover:underline pt-2">
-              <span>View Laptop Prices</span>
+              <span>Explore Laptops</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </div>
           </Link>

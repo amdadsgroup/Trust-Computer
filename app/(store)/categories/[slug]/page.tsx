@@ -77,10 +77,10 @@ interface CategoryPageProps {
 }
 
 const SLUG_ALIASES: Record<string, { canonical: string; name: string; seoTitle?: string }> = {
-  'desktop-components': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Desktop PC & Components Price in Moulvibazar | Trust Computer' },
-  'laptops-notebooks': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
-  'laptops': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
-  'laptop': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer' },
+  'desktop-components': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Desktop PC & Components | Trust Computer Moulvibazar' },
+  'laptops-notebooks': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptops & Notebooks | Trust Computer Moulvibazar' },
+  'laptops': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptops & Notebooks | Trust Computer Moulvibazar' },
+  'laptop': { canonical: 'laptop-computer', name: 'Laptop & Computer', seoTitle: 'Laptops & Notebooks | Trust Computer Moulvibazar' },
   'cctv-surveillance': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
   'cctv-camera': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
   'cctv': { canonical: 'cctv-security', name: 'CCTV & Security', seoTitle: 'CCTV Camera Price in Moulvibazar | Trust Computer' },
@@ -138,7 +138,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
   let seoTitle = alias?.seoTitle;
   if (!seoTitle) {
     if (slugLower === 'laptop-computer') {
-      seoTitle = 'Laptop Price in Moulvibazar, Bangladesh | Trust Computer';
+      seoTitle = 'Laptops & Computers | Trust Computer Moulvibazar';
     } else if (slugLower === 'cctv-security') {
       seoTitle = 'CCTV Camera Price in Moulvibazar | Trust Computer';
     } else if (slugLower === 'computer-accessories') {

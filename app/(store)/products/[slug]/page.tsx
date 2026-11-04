@@ -102,10 +102,10 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 
     const formattedPrice = Number(product.sellingPrice).toLocaleString('en-BD');
     return {
-      title: `${product.name} Price in Moulvibazar | Trust Computer`,
+      title: ((product.category?.slug || '').toLowerCase().includes('laptop') || (product.category?.slug || '').toLowerCase().includes('computer') || (product.name || '').toLowerCase().includes('laptop') || (product.name || '').toLowerCase().includes('computer')) ? `${product.name} | Trust Computer Moulvibazar` : `${product.name} Price in Moulvibazar | Trust Computer`,
       description: `Customers looking for ${product.name} in Moulvibazar can check current price (৳${formattedPrice}) and availability at Trust Computer. 100% genuine with official warranty. Kusumbagh Showroom. Hotline: 01797854836.`,
       openGraph: {
-        title: `${product.name} Price in Moulvibazar | Trust Computer`,
+        title: ((product.category?.slug || '').toLowerCase().includes('laptop') || (product.category?.slug || '').toLowerCase().includes('computer') || (product.name || '').toLowerCase().includes('laptop') || (product.name || '').toLowerCase().includes('computer')) ? `${product.name} | Trust Computer Moulvibazar` : `${product.name} Price in Moulvibazar | Trust Computer`,
         description: `Buy ${product.name} in Moulvibazar at Trust Computer. Genuine product, official warranty. Showroom at T.S Plaza, Kusumbagh.`,
         images: product.images[0]?.url ? [{ url: product.images[0].url }] : [],
       },
