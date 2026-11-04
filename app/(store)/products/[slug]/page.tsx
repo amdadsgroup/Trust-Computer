@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { getProductInquiryWhatsAppLink } from '@/lib/whatsapp';
 
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export const revalidate = 1800;
 
@@ -31,7 +31,7 @@ interface ProductDetailPageProps {
   };
 }
 
-const getProductBySlug = unstable_cache(
+const getProductBySlug = edgeCache(
   async (slug: string) => {
     return await prisma.product.findUnique({
       where: { slug },
@@ -48,7 +48,7 @@ const getProductBySlug = unstable_cache(
   { revalidate: 1800, tags: ['products'] }
 );
 
-const getRelatedProducts = unstable_cache(
+const getRelatedProducts = edgeCache(
   async (categoryId: string, productId: string) => {
     return await prisma.product.findMany({
       where: {

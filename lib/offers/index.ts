@@ -30,12 +30,13 @@ export interface ActiveOffer {
   } | null;
 }
 
-import { unstable_cache, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 /**
  * Returns currently active, non-expired promotional offers
  */
-export const getActiveOffers = unstable_cache(
+export const getActiveOffers = edgeCache(
   async (): Promise<ActiveOffer[]> => {
     try {
       const now = new Date();

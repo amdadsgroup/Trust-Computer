@@ -18,9 +18,10 @@ const DEFAULT_SECTIONS = [
   { sectionKey: 'SHOWROOM_INFO', title: 'Showroom & Verified Trust', subtitle: 'Visit Our Physical Outlet in Kusumbagh, Moulvibazar', sortOrder: 6, isVisible: true },
 ];
 
-import { unstable_cache, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
-export const getHomepageSections = unstable_cache(
+export const getHomepageSections = edgeCache(
   async (): Promise<HomepageSectionConfig[]> => {
     try {
       const existing = await prisma.homepageSection.findMany({

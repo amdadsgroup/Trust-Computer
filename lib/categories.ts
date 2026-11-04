@@ -1,10 +1,10 @@
 import prisma from '@/lib/db';
 import { DEFAULT_CATEGORIES, StoreCategoryItem } from './categories-data';
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export * from './categories-data';
 
-export const getCachedCategoryCounts = unstable_cache(
+export const getCachedCategoryCounts = edgeCache(
   async () => {
     const [total, categories] = await Promise.all([
       prisma.product.count({ where: { isActive: true } }),
@@ -34,7 +34,7 @@ export const getCachedCategoryCounts = unstable_cache(
  * Prioritizes the 7 official store categories in proper sortOrder,
  * and guarantees never returning an empty list.
  */
-export const getAdminCategories = unstable_cache(
+export const getAdminCategories = edgeCache(
   async (): Promise<Array<{ id: string; name: string; slug?: string }>> => {
     try {
       const dbCategories = await prisma.category.findMany({

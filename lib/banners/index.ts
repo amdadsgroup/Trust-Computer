@@ -15,12 +15,13 @@ export interface ActiveBanner {
   priority: number;
 }
 
-import { unstable_cache, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 /**
  * Returns currently active, non-expired banners ordered by priority
  */
-export const getActiveBanners = unstable_cache(
+export const getActiveBanners = edgeCache(
   async (): Promise<ActiveBanner[]> => {
     try {
       const now = new Date();

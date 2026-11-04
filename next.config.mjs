@@ -24,6 +24,7 @@ const nextConfig = {
     ],
   },
   experimental: {
+    serverComponentsExternalPackages: ['@prisma/client', '.prisma/client', '@prisma/adapter-pg', 'pg'],
     optimizePackageImports: ['lucide-react', 'recharts'],
   },
 

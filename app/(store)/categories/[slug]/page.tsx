@@ -7,12 +7,12 @@ import { PackageOpen, ChevronRight, Home, Filter, SlidersHorizontal, Check, Shie
 import { Prisma } from '@prisma/client';
 import { DEFAULT_CATEGORIES } from '@/lib/categories';
 
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export const revalidate = 900;
 export const maxDuration = 30;
 
-const getCachedCategoryData = unstable_cache(
+const getCachedCategoryData = edgeCache(
   async (primarySlug: string, fallbackSlug?: string) => {
     const searchSlugs = [primarySlug.toLowerCase()];
     if (fallbackSlug) {

@@ -1,25 +1,32 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 
-function getDatabaseUrl(): string | undefined {
+export function getDatabaseUrl(): string | undefined {
   let url = process.env.DATABASE_URL;
+
+  // In Cloudflare Workers runtime, secrets are exposed via getCloudflareContext().env
+  if (!url) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { getCloudflareContext } = require('@opennextjs/cloudflare');
+      const cfContext = getCloudflareContext();
+      if (cfContext?.env?.DATABASE_URL) {
+        url = cfContext.env.DATABASE_URL as string;
+      }
+    } catch {}
+  }
+
   if (!url) return undefined;
 
-  // Supabase pooler on port 5432 is Session mode, which fails on serverless environments like Vercel.
-  // Switch to Transaction pooler on port 6543 and ensure pgbouncer=true.
+  // Supabase pooler on port 5432 is Session mode; switch to port 6543 (transaction mode)
   if (url.includes('pooler.supabase.com:5432')) {
     url = url.replace('pooler.supabase.com:5432', 'pooler.supabase.com:6543');
   }
 
-  // Also catch direct connections to db.[project-ref].supabase.co:5432 if IPv4 is not supported
-  // and convert port 6543 pooler URLs to include pgbouncer=true
+  // Ensure pgbouncer=true for PgBouncer pooler connections
   if (url.includes(':6543') && !url.includes('pgbouncer=true')) {
     url += (url.includes('?') ? '&' : '?') + 'pgbouncer=true';
-  }
-
-  // Ensure connection limit and timeouts are configured for serverless functions
-  // connection_limit=1 is critical on Vercel serverless functions to prevent pool saturation
-  if (!url.includes('connection_limit')) {
-    url += (url.includes('?') ? '&' : '?') + 'connection_limit=1&connect_timeout=30&pool_timeout=30';
   }
 
   return url;
@@ -27,19 +34,55 @@ function getDatabaseUrl(): string | undefined {
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
+  pool: Pool | undefined;
 };
 
-const resolvedUrl = getDatabaseUrl();
+function createPrismaClient(): PrismaClient {
+  const connectionString = getDatabaseUrl();
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    datasources: resolvedUrl ? { db: { url: resolvedUrl } } : undefined,
+  if (!connectionString) {
+    throw new Error('DATABASE_URL is not defined in runtime environment or Cloudflare context.');
+  }
+
+  const pool =
+    globalForPrisma.pool ??
+    new Pool({
+      connectionString,
+      max: 5,
+      connectionTimeoutMillis: 10000,
+      idleTimeoutMillis: 30000,
+    });
+  globalForPrisma.pool = pool;
+
+  const adapter = new PrismaPg(pool);
+  return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
-
-if (!globalForPrisma.prisma) {
-  globalForPrisma.prisma = prisma;
 }
+
+// Lazy proxy to ensure Cloudflare Worker secrets are available on request handling
+let cachedClient: PrismaClient | null = globalForPrisma.prisma ?? null;
+
+function getClient(): PrismaClient {
+  if (!cachedClient) {
+    cachedClient = createPrismaClient();
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = cachedClient;
+    }
+  }
+  return cachedClient;
+}
+
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    const client = getClient();
+    const value = Reflect.get(client, prop, receiver);
+    if (typeof value === 'function') {
+      return value.bind(client);
+    }
+    return value;
+  },
+});
 
 export default prisma;

@@ -5,7 +5,7 @@
 
 import prisma from '@/lib/db';
 import { ReviewStatus } from '@prisma/client';
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export interface CreateReviewInput {
   productId: string;
@@ -212,69 +212,58 @@ export async function getProductReviews(options: ReviewListOptions) {
     sortBy = 'newest',
   } = options;
 
-  const whereClause: any = {
-    productId,
-    status,
-  };
+  try {
+    const whereClause: any = {
+      productId,
+      status,
+    };
 
-  if (rating && rating >= 1 && rating <= 5) {
-    whereClause.rating = rating;
-  }
+    if (rating && rating >= 1 && rating <= 5) {
+      whereClause.rating = rating;
+    }
 
-  if (isVerifiedOnly) {
-    whereClause.isVerifiedPurchase = true;
-  }
+    if (isVerifiedOnly) {
+      whereClause.isVerifiedPurchase = true;
+    }
 
-  let orderBy: any = [{ createdAt: 'desc' }];
-  if (sortBy === 'highest') {
-    orderBy = [{ rating: 'desc' }, { createdAt: 'desc' }];
-  } else if (sortBy === 'lowest') {
-    orderBy = [{ rating: 'asc' }, { createdAt: 'desc' }];
-  }
+    let orderBy: any = [{ createdAt: 'desc' }];
+    if (sortBy === 'highest') {
+      orderBy = [{ rating: 'desc' }, { createdAt: 'desc' }];
+    } else if (sortBy === 'lowest') {
+      orderBy = [{ rating: 'asc' }, { createdAt: 'desc' }];
+    }
 
-  const [reviews, totalCount] = await Promise.all([
-    prisma.review.findMany({
-      where: whereClause,
-      include: {
-        images: true,
-        customer: {
-          select: {
-            fullName: true,
-            avatarUrl: true,
+    const [reviews, totalCount] = await Promise.all([
+      prisma.review.findMany({
+        where: whereClause,
+        include: {
+          images: true,
+          customer: {
+            select: {
+              fullName: true,
+              avatarUrl: true,
+            },
           },
         },
-      },
-      orderBy,
-      take: limit,
-      skip: offset,
-    }),
-    prisma.review.count({ where: whereClause }),
-  ]);
+        orderBy,
+        take: limit,
+        skip: offset,
+      }),
+      prisma.review.count({ where: whereClause }),
+    ]);
 
-  return { reviews, totalCount, limit, offset };
+    return { reviews, totalCount, limit, offset };
+  } catch (error) {
+    console.error('Failed to get product reviews:', error);
+    return { reviews: [], totalCount: 0, limit, offset };
+  }
 }
 
 /**
  * Get aggregate review stats for a product.
  */
 export async function getProductReviewStats(productId: string) {
-  const stats = await prisma.review.aggregate({
-    where: { productId, status: ReviewStatus.APPROVED },
-    _avg: { rating: true },
-    _count: { rating: true },
-  });
-
-  const breakdownCounts = await prisma.review.groupBy({
-    by: ['rating'],
-    where: { productId, status: ReviewStatus.APPROVED },
-    _count: { rating: true },
-  });
-
-  const totalReviews = stats._count.rating || 0;
-  const averageRating = Number((stats._avg.rating ?? 0).toFixed(1));
-
-  // Build 1-5 breakdown with counts and percentages
-  const breakdown: Record<number, { count: number; percentage: number }> = {
+  const defaultBreakdown: Record<number, { count: number; percentage: number }> = {
     5: { count: 0, percentage: 0 },
     4: { count: 0, percentage: 0 },
     3: { count: 0, percentage: 0 },
@@ -282,35 +271,62 @@ export async function getProductReviewStats(productId: string) {
     1: { count: 0, percentage: 0 },
   };
 
-  let positiveCount = 0; // 4 and 5 stars
-  for (const b of breakdownCounts) {
-    const star = b.rating;
-    const count = b._count.rating;
-    if (breakdown[star]) {
-      breakdown[star].count = count;
-      breakdown[star].percentage =
-        totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+  try {
+    const stats = await prisma.review.aggregate({
+      where: { productId, status: ReviewStatus.APPROVED },
+      _avg: { rating: true },
+      _count: { rating: true },
+    });
+
+    const breakdownCounts = await prisma.review.groupBy({
+      by: ['rating'],
+      where: { productId, status: ReviewStatus.APPROVED },
+      _count: { rating: true },
+    });
+
+    const totalReviews = stats._count.rating || 0;
+    const averageRating = Number((stats._avg.rating ?? 0).toFixed(1));
+
+    const breakdown = { ...defaultBreakdown };
+
+    let positiveCount = 0; // 4 and 5 stars
+    for (const b of breakdownCounts) {
+      const star = b.rating;
+      const count = b._count.rating;
+      if (breakdown[star]) {
+        breakdown[star].count = count;
+        breakdown[star].percentage =
+          totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+      }
+      if (star >= 4) {
+        positiveCount += count;
+      }
     }
-    if (star >= 4) {
-      positiveCount += count;
-    }
+
+    const recommendedPercentage =
+      totalReviews > 0 ? Math.round((positiveCount / totalReviews) * 100) : 100;
+
+    return {
+      averageRating,
+      totalReviews,
+      recommendedPercentage,
+      breakdown,
+    };
+  } catch (error) {
+    console.error('Failed to get product review stats:', error);
+    return {
+      averageRating: 0,
+      totalReviews: 0,
+      recommendedPercentage: 100,
+      breakdown: defaultBreakdown,
+    };
   }
-
-  const recommendedPercentage =
-    totalReviews > 0 ? Math.round((positiveCount / totalReviews) * 100) : 100;
-
-  return {
-    averageRating,
-    totalReviews,
-    recommendedPercentage,
-    breakdown,
-  };
 }
 
 /**
  * Cached version of getProductReviewStats (300s edge TTL, invalidated by 'reviews' tag)
  */
-export const getCachedProductReviewStats = unstable_cache(
+export const getCachedProductReviewStats = edgeCache(
   async (productId: string) => {
     return getProductReviewStats(productId);
   },
@@ -321,7 +337,7 @@ export const getCachedProductReviewStats = unstable_cache(
 /**
  * Cached version of initial 10 reviews (300s edge TTL, invalidated by 'reviews' tag)
  */
-export const getCachedInitialProductReviews = unstable_cache(
+export const getCachedInitialProductReviews = edgeCache(
   async (productId: string) => {
     return getProductReviews({ productId, limit: 10 });
   },

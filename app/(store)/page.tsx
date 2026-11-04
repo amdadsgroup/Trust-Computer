@@ -20,7 +20,7 @@ import ShowroomInfoSection from '@/components/home/ShowroomInfoSection';
 import { getGeneralWhatsAppLink } from '@/lib/whatsapp';
 
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export const revalidate = 300;
 export const maxDuration = 30;
@@ -57,7 +57,7 @@ const homeProductSelect = {
   },
 };
 
-const getCachedHomePageData = unstable_cache(
+const getCachedHomePageData = edgeCache(
   async () => {
     try {
       const [

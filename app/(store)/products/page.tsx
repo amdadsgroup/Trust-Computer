@@ -9,7 +9,7 @@ import BudgetPriceFilter from '@/components/products/BudgetPriceFilter';
 import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
 
-import { unstable_cache } from 'next/cache';
+import { edgeCache } from '@/lib/cache-edge';
 
 export const revalidate = 300;
 export const maxDuration = 30;
@@ -50,7 +50,7 @@ const productSelect = {
   },
 };
 
-const getCachedFilterMetadata = unstable_cache(
+const getCachedFilterMetadata = edgeCache(
   async () => {
     const [categories, brands, totalInStore] = await Promise.all([
       prisma.category.findMany({
@@ -84,7 +84,7 @@ const getCachedFilterMetadata = unstable_cache(
   { revalidate: 120, tags: ['categories', 'brands', 'products'] }
 );
 
-const getCachedDefaultProducts = unstable_cache(
+const getCachedDefaultProducts = edgeCache(
   async () => {
     const [products, totalCount] = await Promise.all([
       prisma.product.findMany({
