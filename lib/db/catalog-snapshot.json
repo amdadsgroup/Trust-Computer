@@ -1,0 +1,1413 @@
+{
+  "generatedAt": "2026-11-04T07:35:17.236Z",
+  "totalInStore": 11,
+  "categories": [
+    {
+      "id": "ec86a8cd-d08a-4098-839d-12495356ac77",
+      "name": "Connector",
+      "slug": "connector",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "cc86ac76-b457-4a1a-8b68-db8f31752b4f",
+      "name": "Switch",
+      "slug": "switch",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "f6bac4d2-15d1-41a1-9af5-a15ab828b978",
+      "name": "Toner",
+      "slug": "toner",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "34d58d3e-59db-48cb-bcee-5ea64c96500b",
+      "name": "Keyboard",
+      "slug": "keyboard",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "7b0eef35-82b3-4b76-84cf-a63ee6907704",
+      "name": "Mousepad",
+      "slug": "mousepad",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "4fc224d6-c634-42ff-a93b-eb26cd1fbbc7",
+      "name": "Upper Sticker",
+      "slug": "upper-sticker",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "22b8ce1f-d002-40a8-8c7e-b92506a2fdf7",
+      "name": "CAT 6",
+      "slug": "cat-6",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "e12cdb3d-ffe9-4759-9fd3-c34a0c30543d",
+      "name": "Conor",
+      "slug": "conor",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "bdad4b94-106f-4c00-8583-623c6406837c",
+      "name": "Powerbank",
+      "slug": "powerbank",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "c82fb101-0278-4d8d-b4eb-3bf19b951ea0",
+      "name": "Powersupply",
+      "slug": "powersupply",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "867acc63-915e-4e74-9694-78a2918c96c3",
+      "name": "Sd card",
+      "slug": "sd-card",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "474ce8d1-e989-4bf9-9dc2-82e6645e5362",
+      "name": "ONU",
+      "slug": "onu",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "75f1244d-754d-4942-aa01-8bae78ceac6e",
+      "name": "UPS",
+      "slug": "ups",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "d7f53c42-e5d9-46f8-b917-977195464520",
+      "name": "Mini Ups",
+      "slug": "mini-ups",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "5f7bd945-6275-40b2-9c81-7997b29f07eb",
+      "name": "Router",
+      "slug": "router",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "821fbc3a-263e-4c00-9aea-4a5ddb25b579",
+      "name": "casing",
+      "slug": "casing",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "86795327-cb61-48ad-a710-dfc92928ce96",
+      "name": "Mouse",
+      "slug": "mouse",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "861dce01-4cef-49f4-b08d-324a0891193c",
+      "name": "Processor",
+      "slug": "processor",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "bf28a96f-931f-41fd-b8a6-e22291d90eaa",
+      "name": "Motherboard",
+      "slug": "motherboard",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "264f0e67-db66-4776-a780-8b21596e629e",
+      "name": "RAM",
+      "slug": "ram",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "a23ed1c0-9230-4a1b-93cc-85229f878fd5",
+      "name": "SSD",
+      "slug": "ssd",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "7601de89-8271-485a-bfc3-b902ca03dd21",
+      "name": "HDMI",
+      "slug": "hdmi",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "e7986b04-010d-4794-a6cd-2811baf76464",
+      "name": "VGA",
+      "slug": "vga",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "e1efae48-2335-4c82-babf-51fd8336e741",
+      "name": "Adapter",
+      "slug": "adapter",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "bee696a3-1502-4367-8a64-265bd4ae257a",
+      "name": "Power Cable",
+      "slug": "power-cable",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "2f930f88-1deb-4b6e-b4b1-9cfab2d8d963",
+      "name": "TV Card",
+      "slug": "tv-card",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "470619b6-a3e7-4a1e-9124-2358eef9f4cd",
+      "name": "Pendrive",
+      "slug": "pendrive",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "85fe3794-5753-4a07-afd3-a4b71d372309",
+      "name": "BIOS Battery",
+      "slug": "bios-battery",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "435ea531-0d40-4199-8b8d-9b3dc3d1278d",
+      "name": "Speaker",
+      "slug": "speaker",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "6f90b577-76ec-4a15-b87d-18d05b053dda",
+      "name": "Bluetooth Speaker",
+      "slug": "bluetooth-speaker",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "538a354b-6d17-4025-9ed4-4d9fbb325c69",
+      "name": "Earbuds",
+      "slug": "earbuds",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "70f0ac25-dda3-4b8a-92bb-a20658e1431d",
+      "name": "Nickband",
+      "slug": "nickband",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "2e6c1a04-3c83-4425-8eee-a40fb4ee3923",
+      "name": "HDD Encloser",
+      "slug": "hdd-encloser",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "1122898d-e2ca-4406-8ebf-94b954447a39",
+      "name": "Dongle",
+      "slug": "dongle",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "32e0072a-f2ad-4d10-96b6-ef30173029ff",
+      "name": "Pocket Router",
+      "slug": "pocket-router",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "240441dc-2028-4b1f-9fbf-2951701c4ae1",
+      "name": "Headphone",
+      "slug": "headphone",
+      "description": null,
+      "sortOrder": 0,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "name": "Laptop & Computer",
+      "slug": "laptop-computer",
+      "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+      "sortOrder": 1,
+      "_count": {
+        "products": 5
+      }
+    },
+    {
+      "id": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+      "name": "Monitor",
+      "slug": "monitor",
+      "description": "Full HD, 2K and 4K monitors with Eye Care technology, gaming displays and office screens with HDMI/VGA connectivity.",
+      "sortOrder": 2,
+      "_count": {
+        "products": 3
+      }
+    },
+    {
+      "id": "e595cce4-c779-4c3d-b4e8-32c2e6dcaf2b",
+      "name": "Gaming",
+      "slug": "gaming",
+      "description": "Gaming PCs, gaming laptops, graphics cards, RGB peripherals, gaming chairs and high-performance gaming gear.",
+      "sortOrder": 3,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "deb336f8-ff2f-4ee1-8648-18a1728ee2c3",
+      "name": "Computer Accessories",
+      "slug": "computer-accessories",
+      "description": "Keyboards, mouse, headphones, webcams, USB hubs, cables, cooling pads and essential computer accessories.",
+      "sortOrder": 4,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+      "name": "CCTV & Security",
+      "slug": "cctv-security",
+      "description": "IP cameras, HD analog cameras, DVRs, NVRs, surveillance hard drives and complete CCTV security systems.",
+      "sortOrder": 5,
+      "_count": {
+        "products": 3
+      }
+    },
+    {
+      "id": "e5ff0328-2fbf-42f3-9f3e-82acbc395dd4",
+      "name": "Networking",
+      "slug": "networking",
+      "description": "Wi-Fi routers, network switches, access points, Cat6 cables, fiber connectors and networking infrastructure.",
+      "sortOrder": 6,
+      "_count": {
+        "products": 0
+      }
+    },
+    {
+      "id": "5838cdd3-90b5-4783-885c-3d0e9298024c",
+      "name": "Power & Electronics",
+      "slug": "power-electronics",
+      "description": "UPS, IPS, voltage stabilizers, power strips, solar solutions and electronic components.",
+      "sortOrder": 7,
+      "_count": {
+        "products": 0
+      }
+    }
+  ],
+  "brands": [
+    {
+      "id": "d070e17b-75b3-4e3e-8b2d-78c0d5ae8fe6",
+      "name": "A4Tech",
+      "slug": "a4tech"
+    },
+    {
+      "id": "ee1a2363-5cea-4117-a326-3ede9b4e66ca",
+      "name": "Acefast",
+      "slug": "acefast"
+    },
+    {
+      "id": "83e56f2f-1e9b-441d-836f-218c0a4f9bce",
+      "name": "Acer",
+      "slug": "acer"
+    },
+    {
+      "id": "66361158-7db6-4fa9-b020-e79f645fdc95",
+      "name": "Adata",
+      "slug": "adata"
+    },
+    {
+      "id": "8e026181-f2ce-4daa-96b3-c20bc21855e2",
+      "name": "AMD",
+      "slug": "amd"
+    },
+    {
+      "id": "c1459e84-4a7d-4f14-8c8b-fcc72cadb240",
+      "name": "Anker",
+      "slug": "anker"
+    },
+    {
+      "id": "734364b3-e076-4f83-805c-23e16a7c17d1",
+      "name": "Apacer",
+      "slug": "apacer"
+    },
+    {
+      "id": "ba2ac8c9-990e-4377-b408-7b3fd437b559",
+      "name": "Asus",
+      "slug": "asus"
+    },
+    {
+      "id": "7d1ea1da-9540-44f9-9255-0907ef2997db",
+      "name": "BENQ",
+      "slug": "benq"
+    },
+    {
+      "id": "9fa1b0d4-5866-4f42-95fa-2cac88e79d4b",
+      "name": "BIDICOM",
+      "slug": "bidicom"
+    },
+    {
+      "id": "1f06c4ba-4500-4605-9d4b-ac031044bd29",
+      "name": "C-Data",
+      "slug": "c-data"
+    },
+    {
+      "id": "1484d0fb-dc9c-4844-947e-2d228ba37d6c",
+      "name": "Champion",
+      "slug": "champion"
+    },
+    {
+      "id": "db3b7cd1-34cc-499b-8f54-84d9a2020747",
+      "name": "Corsair",
+      "slug": "corsair"
+    },
+    {
+      "id": "f8286b68-e5f0-4898-8956-20c59fe276af",
+      "name": "cudy",
+      "slug": "cudy"
+    },
+    {
+      "id": "ff494b99-e294-4cbc-b762-8a0ab01b3a97",
+      "name": "Dahua",
+      "slug": "dahua"
+    },
+    {
+      "id": "4b98d94c-8556-4618-ac11-47ed5495928c",
+      "name": "DBC",
+      "slug": "dbc"
+    },
+    {
+      "id": "ea4805c6-5538-435d-92b6-c6bd056a9de2",
+      "name": "Dell",
+      "slug": "dell"
+    },
+    {
+      "id": "741e5100-fc74-4f08-bd70-82c6bfc30d16",
+      "name": "Enter",
+      "slug": "enter"
+    },
+    {
+      "id": "fb8f94c2-0578-4436-a94f-e0e4bdf5799a",
+      "name": "Epson",
+      "slug": "epson"
+    },
+    {
+      "id": "7d7276f9-549b-4f9a-b3d4-3978ec71f46f",
+      "name": "Esonic",
+      "slug": "esonic"
+    },
+    {
+      "id": "fe60f509-eb43-4f4b-ba34-fb59f344bc5c",
+      "name": "Eurovision",
+      "slug": "eurovision"
+    },
+    {
+      "id": "9ad9d0b8-b554-4015-a622-8e66f920f2a7",
+      "name": "Ezviz",
+      "slug": "ezviz"
+    },
+    {
+      "id": "909e986e-474b-483b-ac30-fa02d46b5359",
+      "name": "Fantech",
+      "slug": "fantech"
+    },
+    {
+      "id": "bb140849-36e4-4ce3-99d8-9a289b2c11bc",
+      "name": "Gigabyte",
+      "slug": "gigabyte"
+    },
+    {
+      "id": "6599c145-0f35-41c1-a6ed-7f4fea554046",
+      "name": "GVtech",
+      "slug": "gvtech"
+    },
+    {
+      "id": "dc98e81d-e0c1-4801-98c7-a36b77ca2bb3",
+      "name": "Havit",
+      "slug": "havit"
+    },
+    {
+      "id": "3ebdc772-c44e-4119-8712-40a300ea2309",
+      "name": "Hikvision",
+      "slug": "hikvision"
+    },
+    {
+      "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "name": "HP",
+      "slug": "hp"
+    },
+    {
+      "id": "a5dce7a3-501d-42f0-9475-c9f9f4dc35e6",
+      "name": "Imou",
+      "slug": "imou"
+    },
+    {
+      "id": "3da5d289-e359-4818-96a4-e01342f21a75",
+      "name": "Intel",
+      "slug": "intel"
+    },
+    {
+      "id": "2424cfac-b2e7-420f-a246-052db3fdc637",
+      "name": "Jedel",
+      "slug": "jedel"
+    },
+    {
+      "id": "56eaf573-7dbf-49b4-9dd4-25c0e83a5c86",
+      "name": "Jovision",
+      "slug": "jovision"
+    },
+    {
+      "id": "57ec72d5-6fee-4e38-8035-944883cf8d4f",
+      "name": "Kingfast",
+      "slug": "kingfast"
+    },
+    {
+      "id": "ad21380a-10db-4841-afd7-76a311ecf9ca",
+      "name": "Kingspec",
+      "slug": "kingspec"
+    },
+    {
+      "id": "20481439-71b9-4c44-97ce-27de0b1ab31e",
+      "name": "Kingston",
+      "slug": "kingston"
+    },
+    {
+      "id": "a4e55a5b-f4e2-4b71-94bc-66181acfb1bf",
+      "name": "Kisonli",
+      "slug": "kisonli"
+    },
+    {
+      "id": "7181e230-80de-4d0f-aaa1-2bac4f880bf5",
+      "name": "kstar",
+      "slug": "kstar"
+    },
+    {
+      "id": "b5e9a125-7d2f-4034-a65d-c1028246c6ef",
+      "name": "Lenovo",
+      "slug": "lenovo"
+    },
+    {
+      "id": "640257a2-7a43-4d8e-a37a-7aefa009350c",
+      "name": "Lexar",
+      "slug": "lexar"
+    },
+    {
+      "id": "b4b5aa53-4778-48dd-8463-ca7fff6af69d",
+      "name": "Logitech",
+      "slug": "logitech"
+    },
+    {
+      "id": "fb1a93d4-d88e-443a-933a-6a7068535d44",
+      "name": "MARSRIVA",
+      "slug": "marsriva"
+    },
+    {
+      "id": "e3fd7073-3f14-482f-8963-7bbcd4600d43",
+      "name": "Mercusys",
+      "slug": "mercusys"
+    },
+    {
+      "id": "ff891e6e-0ac6-4fc1-b085-5eb31994dd10",
+      "name": "Microlink",
+      "slug": "microlink"
+    },
+    {
+      "id": "7ecc3584-e929-4eaf-9de6-43e9a52f652f",
+      "name": "Micropack",
+      "slug": "micropack"
+    },
+    {
+      "id": "e5edc6c5-a671-470f-8ae4-e4d859c93aea",
+      "name": "MSI",
+      "slug": "msi"
+    },
+    {
+      "id": "98e7c394-4ca0-4222-9993-3da1d6f8ab2a",
+      "name": "Neo Forza",
+      "slug": "neo-forza"
+    },
+    {
+      "id": "9f5755ec-8381-4123-acbc-2e074064bc49",
+      "name": "Onten",
+      "slug": "onten"
+    },
+    {
+      "id": "b08048b0-2c80-49f3-8fbd-d3ac9e80dfe4",
+      "name": "Oraimo",
+      "slug": "oraimo"
+    },
+    {
+      "id": "79467864-2ec6-41ef-95eb-5c6ca4b5b469",
+      "name": "OVO",
+      "slug": "ovo"
+    },
+    {
+      "id": "a5e46948-d14d-410b-89b0-3545ffd2974c",
+      "name": "PC POWER",
+      "slug": "pc-power"
+    },
+    {
+      "id": "aadc2e2e-8f53-4d30-b8b7-dfa595e2055c",
+      "name": "Powerguard",
+      "slug": "powerguard"
+    },
+    {
+      "id": "5b4547cf-ae80-4be7-855e-ba1b1bda2ced",
+      "name": "Prolink",
+      "slug": "prolink"
+    },
+    {
+      "id": "42c388b3-d287-4d74-ae50-838020f32963",
+      "name": "Proton",
+      "slug": "proton"
+    },
+    {
+      "id": "09c7970d-7822-4380-8d76-950d39f7c996",
+      "name": "Samsung",
+      "slug": "samsung"
+    },
+    {
+      "id": "93d55ad6-de05-430e-b5bc-e9a53331c916",
+      "name": "smart",
+      "slug": "smart"
+    },
+    {
+      "id": "b5466e62-9b32-4cbe-89c4-7b99d4012829",
+      "name": "Super Jet",
+      "slug": "super-jet"
+    },
+    {
+      "id": "ea38e7c1-d06b-4009-ae8b-bd31af2fbb5e",
+      "name": "Tech Bond",
+      "slug": "tech-bond"
+    },
+    {
+      "id": "fbaabef1-c34b-4c14-8fc1-ec9b37631f83",
+      "name": "Tenda",
+      "slug": "tenda"
+    },
+    {
+      "id": "ea5f686e-ea47-42bf-8f25-2a00cc4b282b",
+      "name": "Toshiba",
+      "slug": "toshiba"
+    },
+    {
+      "id": "69325e36-cab1-4166-8a4d-64984d50cf7d",
+      "name": "TP-Link",
+      "slug": "tp-link"
+    },
+    {
+      "id": "96ea1c35-c8d8-4c4d-ae19-91329a225f6b",
+      "name": "Twin mox",
+      "slug": "twin-mox"
+    },
+    {
+      "id": "812691b9-9ff4-4e0e-bd40-b68979beee85",
+      "name": "TWINMOS",
+      "slug": "twinmos"
+    },
+    {
+      "id": "dff6fa70-5afb-433b-ae04-903b9b5c3289",
+      "name": "UNIKA",
+      "slug": "unika"
+    },
+    {
+      "id": "dc7d89f1-16cf-44b1-b3e8-40ac7e9b1327",
+      "name": "Unit",
+      "slug": "unit"
+    },
+    {
+      "id": "2020e060-ee57-47df-ad85-e6ce923eee4f",
+      "name": "Uniview",
+      "slug": "uniview"
+    },
+    {
+      "id": "04a185ad-8d49-4ed7-aaa5-05eb0f27b63a",
+      "name": "V-SOL",
+      "slug": "v-sol"
+    },
+    {
+      "id": "b7437fa6-8f6d-43ab-a6ae-c158b6ae336e",
+      "name": "V380",
+      "slug": "v380"
+    },
+    {
+      "id": "d1bdedef-6d63-4f07-a1f7-d50525061551",
+      "name": "Value-Top",
+      "slug": "value-top"
+    },
+    {
+      "id": "4572eecf-bc78-4bad-a86f-300d023c48d1",
+      "name": "WD",
+      "slug": "wd"
+    },
+    {
+      "id": "5aaaf3bb-36a6-426a-9d0d-84630747447f",
+      "name": "Western Digital",
+      "slug": "western-digital"
+    },
+    {
+      "id": "3206ab5d-2bb7-4692-a411-5a4df38e7e43",
+      "name": "WGP",
+      "slug": "wgp"
+    }
+  ],
+  "products": [
+    {
+      "id": "87b2a6a6-071b-4b1a-8703-28e8fd6548dd",
+      "name": "Dahua HAC-T1A21P-U-IL-A is a 2MP Smart Dual Light HDCVI Eyeball Camera",
+      "slug": "dahua-hac-t1a21p-u-il-a-is-a-2mp-smart-dual-light-hdcvi-eyeball-camera",
+      "sku": "Dahua HAC-T1A21P-U-IL-A is a 2MP Smart Dual Light HDCVI Eyeball Camera",
+      "barcode": null,
+      "description": "The Dahua HAC-T1A21P-U-IL-A is a 2MP Smart Dual Light HDCVI Eyeball Camera designed for reliable security surveillance in homes, shops, offices, restaurants, warehouses, and commercial properties. It delivers Full HD 1080p video and combines infrared and warm-light illumination to provide clearer monitoring in both daytime and nighttime conditions.\r\n\r\nThe camera uses Dahua HDCVI technology, making it suitable for existing coaxial-cable CCTV systems. Its compact eyeball design provides a clean and professional appearance while allowing flexible positioning during installation.\r\n\r\n### Key Specifications\r\n\r\n* Brand: Dahua\r\n* Model: HAC-T1A21P-U-IL-A\r\n* Camera Type: HDCVI Eyeball Camera\r\n* Resolution: 2MP\r\n* Maximum Resolution: 1920 × 1080\r\n* Video: Full HD 1080p\r\n* Light Technology: Smart Dual Light\r\n* Lens Type: Fixed-Focal\r\n* Lens Options: 2.8mm / 3.6mm / 6mm, depending on variant\r\n* IR Illumination: Up to 30 meters\r\n* Warm Light Illumination: Up to 20 meters\r\n* Video System: HDCVI / TVI / AHD / CVBS\r\n* WDR: DWDR\r\n* Noise Reduction: 2DNR\r\n* Protection: IP67\r\n* Power Supply: 12V DC\r\n* Camera Design: Eyeball\r\n* Application: Indoor / Outdoor CCTV Surveillance\r\n\r\nThe Smart Dual Light technology provides intelligent nighttime illumination by combining infrared and warm light. This helps the camera maintain useful visibility in low-light and dark environments while providing an effective solution for day-and-night security monitoring.\r\n\r\nThe Dahua HAC-T1A21P-U-IL-A is suitable for monitoring entrances, shops, offices, homes, warehouses, parking areas, restaurants, commercial buildings, and other important locations. Its IP67 protection makes it suitable for outdoor installations where protection against dust and water is required.\r\n\r\nTrust Computer, Moulvibazar offers Dahua CCTV cameras, computer products, networking equipment, and technology solutions with customer support and product assistance. Customers searching for Dahua HAC-T1A21P-U-IL-A in Moulvibazar can contact Trust Computer for the current price, stock availability, warranty information, CCTV installation, and delivery options.\r\n\r\nWhether you are installing a new CCTV system or upgrading an existing HDCVI surveillance setup, the Dahua HAC-T1A21P-U-IL-A 2MP Smart Dual Light HDCVI Eyeball Camera is a practical choice for reliable security monitoring.\r\n",
+      "sellingPrice": 1450,
+      "compareAtPrice": 1750,
+      "costPrice": null,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": false,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+      "brandId": "ff494b99-e294-4cbc-b762-8a0ab01b3a97",
+      "createdAt": "2026-10-06T23:08:00.773Z",
+      "updatedAt": "2026-10-06T23:08:00.773Z",
+      "images": [
+        {
+          "id": "e6548dea-b218-42a1-9b32-80cc03c09741",
+          "productId": "87b2a6a6-071b-4b1a-8703-28e8fd6548dd",
+          "url": "https://www.startech.com.bd/image/cache/catalog/cc-camera/dahua/hac-t1a21p-u-il/hac-t1a21p-u-il-02-500x500.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T23:08:00.773Z"
+        }
+      ],
+      "category": {
+        "id": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+        "name": "CCTV & Security",
+        "slug": "cctv-security",
+        "description": "IP cameras, HD analog cameras, DVRs, NVRs, surveillance hard drives and complete CCTV security systems.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 5,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:07.900Z",
+        "updatedAt": "2026-09-26T18:10:07.900Z"
+      },
+      "brand": {
+        "id": "ff494b99-e294-4cbc-b762-8a0ab01b3a97",
+        "name": "Dahua",
+        "slug": "dahua",
+        "description": "World-leading video-centric smart IoT solutions and WizSense AI recorders.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:08.439Z",
+        "updatedAt": "2026-09-25T07:58:08.439Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "e6067515-a50e-4eb4-b938-330993595615",
+      "name": "Dahua HAC-B1A21P-U-IL-A 2MP Smart Dual Light HDCVI Bullet CC Camera",
+      "slug": "dahua-hac-b1a21p-u-il-a-2mp-smart-dual-light-hdcvi-bullet-cc-camera",
+      "sku": "Dahua HAC-B1A21P-U-IL-A 2MP Smart Dual Light HDCVI Bullet CC Camera",
+      "barcode": null,
+      "description": "Dahua HAC-B1A21P-U-IL-A 2MP Smart Dual Light HDCVI Bullet CC Camera",
+      "sellingPrice": 1600,
+      "compareAtPrice": 1750,
+      "costPrice": null,
+      "stock": 9,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": true,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": null,
+      "categoryId": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+      "brandId": "ff494b99-e294-4cbc-b762-8a0ab01b3a97",
+      "createdAt": "2026-10-06T22:54:53.903Z",
+      "updatedAt": "2026-10-23T10:58:32.092Z",
+      "images": [
+        {
+          "id": "567505bc-f938-496b-9a69-9cdb4a2733b2",
+          "productId": "e6067515-a50e-4eb4-b938-330993595615",
+          "url": "https://www.startech.com.bd/image/cache/catalog/cc-camera/dahua/hac-b1a21-u-il/hac-b1a21-u-il-02-500x500.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T22:55:22.704Z"
+        }
+      ],
+      "category": {
+        "id": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+        "name": "CCTV & Security",
+        "slug": "cctv-security",
+        "description": "IP cameras, HD analog cameras, DVRs, NVRs, surveillance hard drives and complete CCTV security systems.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 5,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:07.900Z",
+        "updatedAt": "2026-09-26T18:10:07.900Z"
+      },
+      "brand": {
+        "id": "ff494b99-e294-4cbc-b762-8a0ab01b3a97",
+        "name": "Dahua",
+        "slug": "dahua",
+        "description": "World-leading video-centric smart IoT solutions and WizSense AI recorders.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:08.439Z",
+        "updatedAt": "2026-09-25T07:58:08.439Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "cdb3dd53-10f0-4273-b2c2-89f089cb13f2",
+      "name": "Hikvision DS-2CE76D0T-LPFS 2MP Dual Light Audio Fixed Turret Camera",
+      "slug": "hikvision-ds-2ce76d0t-lpfs-2mp-dual-light-audio-fixed-turret-camera",
+      "sku": "Hikvision DS-2CE76D0T-LPFS 2MP Dual Light Audio Fixed Turret Camera",
+      "barcode": null,
+      "description": "The Hikvision DS-2CE76D0T-LPFS is a 2MP Dual Light Audio Fixed Turret Camera designed for reliable security monitoring in homes, offices, shops, businesses, and other properties. It combines high-quality Full HD video surveillance with dual-light technology and built-in audio functionality, providing a practical security solution for day and night monitoring.\r\n\r\nThe camera is designed to deliver clear 2MP video and enhanced visibility in low-light conditions. Its fixed turret design provides a clean and professional installation, making it suitable for both residential and commercial CCTV systems.\r\n\r\n### Key Specifications\r\n\r\n* Brand: Hikvision\r\n* Model: DS-2CE76D0T-LPFS\r\n* Resolution: 2MP\r\n* Camera Type: Fixed Turret\r\n* Light Technology: Dual Light\r\n* Audio: Built-in Audio\r\n* Video Resolution: Full HD\r\n* Application: CCTV Security Surveillance\r\n* Installation: Indoor / Outdoor, depending on installation environment\r\n* Condition: New / Used, depending on product listing\r\n\r\nThe Hikvision DS-2CE76D0T-LPFS is suitable for monitoring entrances, shops, offices, homes, warehouses, commercial spaces, and other important areas. Its dual-light technology helps provide improved visibility in different lighting conditions, while the audio feature adds an additional layer of monitoring capability where supported by the connected CCTV system.\r\n\r\nThe fixed turret design allows the camera to be positioned for effective coverage of the required area and provides a professional appearance after installation. It is a practical option for customers looking for a reliable Hikvision CCTV camera for their security system.\r\n\r\nTrust Computer, Moulvibazar offers CCTV cameras, computer products, networking equipment, and technology solutions with customer support and product assistance. Customers from Moulvibazar and other parts of Bangladesh can contact Trust Computer for current price, stock availability, warranty information, CCTV installation, and delivery options.\r\n\r\nWhether you need CCTV security for your home, office, shop, business, warehouse, or commercial property, the Hikvision DS-2CE76D0T-LPFS 2MP Dual Light Audio Fixed Turret Camera is a practical choice for reliable video surveillance.\r\n",
+      "sellingPrice": 1650,
+      "compareAtPrice": 1800,
+      "costPrice": null,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+      "brandId": "3ebdc772-c44e-4119-8712-40a300ea2309",
+      "createdAt": "2026-10-06T22:51:14.131Z",
+      "updatedAt": "2026-10-06T22:51:14.131Z",
+      "images": [
+        {
+          "id": "56b7b405-b95e-4e27-9c5a-ea96a3ec6c13",
+          "productId": "cdb3dd53-10f0-4273-b2c2-89f089cb13f2",
+          "url": "https://www.startech.com.bd/image/cache/catalog/cc-camera/hikvision/ds-2ce76d0t-lpfs/ds-2ce76d0t-lpfs-01-500x500.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T22:51:14.131Z"
+        }
+      ],
+      "category": {
+        "id": "51fe1370-3699-4ea9-96e4-529f6d5937df",
+        "name": "CCTV & Security",
+        "slug": "cctv-security",
+        "description": "IP cameras, HD analog cameras, DVRs, NVRs, surveillance hard drives and complete CCTV security systems.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 5,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:07.900Z",
+        "updatedAt": "2026-09-26T18:10:07.900Z"
+      },
+      "brand": {
+        "id": "3ebdc772-c44e-4119-8712-40a300ea2309",
+        "name": "Hikvision",
+        "slug": "hikvision",
+        "description": "Global leader in smart video surveillance and ColorVu security systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:07.695Z",
+        "updatedAt": "2026-09-25T07:58:07.695Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "e9c044b6-a21c-4e52-b473-577738c49ca0",
+      "name": "BenQ GW2283 21.5\" IPS FHD Eye-Care Monitor",
+      "slug": "benq-gw2283-215-ips-fhd-eye-care-monitor",
+      "sku": "BenQ GW2283 21.5\" IPS FHD Eye-Care Monitor",
+      "barcode": null,
+      "description": "The BenQ GW2283 is a 21.5-inch Full HD IPS monitor designed for home, office, education, browsing, entertainment, and everyday computing. Featuring an IPS panel and Full HD 1920 × 1080 resolution, it delivers clear and detailed visuals with wide viewing angles, making it a practical choice for work and multimedia use.\r\n\r\nWith BenQ's eye-care features and a clean, modern design, the GW2283 is a suitable option for customers looking for a comfortable and reliable monitor in Moulvibazar.\r\n\r\n### Key Specifications\r\n\r\n* Brand: BenQ\r\n* Model: GW2283\r\n* Screen Size: 21.5-inch\r\n* Resolution: Full HD 1920 × 1080\r\n* Panel Type: IPS\r\n* Display Type: LED\r\n* Aspect Ratio: 16:9\r\n* Eye-Care Technology: Yes\r\n* Connectivity: HDMI, D-Sub\r\n* Usage: Home, Office, Education and Entertainment\r\n* Condition: New / Used, depending on product listing\r\n\r\nThe BenQ GW2283 provides sharp Full HD visuals and wide viewing angles through its IPS panel. Its eye-care features are designed to provide a more comfortable viewing experience during extended computer use, making it suitable for students, office professionals, freelancers, and home users.\r\n\r\nThe 21.5-inch screen provides enough workspace for everyday applications such as Microsoft Office, web browsing, online classes, document editing, programming, multimedia, and general productivity.\r\n\r\nThe BenQ GW2283 is suitable for students, teachers, office employees, freelancers, business users, home users, and anyone looking for a dependable Full HD monitor for everyday computing.\r\n\r\nTrust Computer, Moulvibazar offers quality computer and technology products with customer support and product assistance. Customers from Moulvibazar and other parts of Bangladesh can contact Trust Computer for current price, stock availability, warranty information, and delivery options.\r\n\r\nWhether you need a monitor for office work, online classes, studying, freelancing, browsing, entertainment, or a home computer setup, the BenQ GW2283 21.5-inch IPS Full HD Eye-Care Monitor is a practical and comfortable choice.\r\n",
+      "sellingPrice": 12500,
+      "compareAtPrice": 12900,
+      "costPrice": null,
+      "stock": 9,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+      "brandId": null,
+      "createdAt": "2026-10-06T20:28:36.131Z",
+      "updatedAt": "2026-10-08T07:26:20.818Z",
+      "images": [
+        {
+          "id": "b3fbcce0-b810-4185-b469-2c874062a102",
+          "productId": "e9c044b6-a21c-4e52-b473-577738c49ca0",
+          "url": "https://www.startech.com.bd/image/cache/catalog/monitor/benq/gw2283/gw2283-500x500.jpg",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T20:28:36.131Z"
+        }
+      ],
+      "category": {
+        "id": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+        "name": "Monitor",
+        "slug": "monitor",
+        "description": "Full HD, 2K and 4K monitors with Eye Care technology, gaming displays and office screens with HDMI/VGA connectivity.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 2,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:02.782Z",
+        "updatedAt": "2026-09-26T18:10:02.782Z"
+      },
+      "brand": null,
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "b7b7bff2-485a-4150-990e-35c10e60d2c5",
+      "name": "Acer SA222Q 21.5-inch 100Hz IPS Full HD Monitor",
+      "slug": "acer-sa222q-215-inch-100hz-ips-full-hd-monitor",
+      "sku": "acer-sa222q-215-inch-100hz-ips-full-hd-monitor",
+      "barcode": null,
+      "description": "The Acer SA222Q is an ultra-slim 21.5-inch Full HD monitor designed for home, office, education, entertainment, browsing, and everyday computing. Featuring an IPS panel, Full HD resolution, and a smooth 100Hz refresh rate, it provides clear visuals and a comfortable viewing experience for both work and entertainment.\r\n\r\nWith its slim and modern design, the Acer SA222Q is an excellent choice for customers looking for an affordable and stylish monitor in Moulvibazar.\r\n\r\n### Key Specifications\r\n\r\n* Brand: Acer\r\n* Model: SA222Q\r\n* Screen Size: 21.5-inch\r\n* Resolution: Full HD 1920 × 1080\r\n* Panel Type: IPS\r\n* Refresh Rate: 100Hz\r\n* Display Type: LED\r\n* Aspect Ratio: 16:9\r\n* Design: Ultra Slim\r\n* Usage: Home, Office, Education and Entertainment\r\n* Condition: New / Used, depending on product listing\r\n\r\nThe 100Hz refresh rate provides smoother motion compared with standard 60Hz monitors, making everyday scrolling, browsing, video playback, and general desktop use feel more responsive. The IPS panel offers consistent colors and wide viewing angles, while the Full HD resolution provides sharp and detailed images.\r\n\r\nThe Acer SA222Q is suitable for students, office professionals, freelancers, gamers looking for an entry-level high-refresh-rate display, content consumers, home users, and anyone who needs a reliable monitor for everyday computing.\r\n\r\nTrust Computer, Moulvibazar offers quality computer and technology products with customer support and product assistance. Customers from Moulvibazar and other parts of Bangladesh can contact Trust Computer for current price, stock availability, warranty information, and delivery options.\r\n\r\nWhether you need a monitor for office work, online classes, studying, freelancing, browsing, entertainment, or a home computer setup, the Acer SA222Q 21.5-inch 100Hz IPS Full HD Monitor is a practical and stylish choice.\r\n",
+      "sellingPrice": 12000,
+      "compareAtPrice": 12600,
+      "costPrice": null,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+      "brandId": "83e56f2f-1e9b-441d-836f-218c0a4f9bce",
+      "createdAt": "2026-10-06T20:05:55.967Z",
+      "updatedAt": "2026-10-06T20:05:55.967Z",
+      "images": [
+        {
+          "id": "bb8ef7a9-de50-4b01-b021-32c2095dfd3e",
+          "productId": "b7b7bff2-485a-4150-990e-35c10e60d2c5",
+          "url": "https://www.startech.com.bd/image/cache/catalog/monitor/acer/sa222qe/sa222qe-white-01-500x500.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T20:05:55.967Z"
+        }
+      ],
+      "category": {
+        "id": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+        "name": "Monitor",
+        "slug": "monitor",
+        "description": "Full HD, 2K and 4K monitors with Eye Care technology, gaming displays and office screens with HDMI/VGA connectivity.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 2,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:02.782Z",
+        "updatedAt": "2026-09-26T18:10:02.782Z"
+      },
+      "brand": {
+        "id": "83e56f2f-1e9b-441d-836f-218c0a4f9bce",
+        "name": "Acer",
+        "slug": "acer",
+        "description": null,
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-10-06T03:25:20.826Z",
+        "updatedAt": "2026-10-06T03:25:20.826Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "a6e8eb14-246e-4643-bebb-6456bdbdc83a",
+      "name": "HP M22f 22\" FHD IPS Monitor",
+      "slug": "hp-m22f-22-fhd-ips-monitor",
+      "sku": "hp-m22f-22-fhd-ips-monitor",
+      "barcode": null,
+      "description": "The HP M22f is a sleek and modern 21.5-inch Full HD monitor designed for home, office, education, entertainment, and everyday computing. With its slim profile, Full HD resolution, and comfortable viewing experience, the HP M22f is a practical choice for users looking for a stylish and reliable monitor in Moulvibazar.\r\n\r\nThe monitor provides clear and detailed visuals for office applications, web browsing, online classes, multimedia, document work, and general computer use. Its slim design also helps create a clean and modern workspace.\r\n\r\n### Key Specifications\r\n\r\n* Brand: HP\r\n* Model: M22f\r\n* Screen Size: 21.5-inch\r\n* Resolution: Full HD 1920 × 1080\r\n* Panel Type: IPS\r\n* Display: LED\r\n* Aspect Ratio: 16:9\r\n* Connectivity: HDMI, VGA\r\n* Type: Full HD Monitor\r\n* Design: Slim and modern\r\n* Condition: New / Used, depending on product listing\r\n\r\nThe HP M22f delivers sharp Full HD visuals and wide viewing angles, making it suitable for office work, study, browsing, watching videos, and everyday computer use. Its compact size and slim design make it suitable for both home and professional workspaces.\r\n\r\nThis monitor is suitable for students, office professionals, freelancers, business users, home users, and anyone looking for an affordable Full HD display for everyday computing.\r\n\r\nTrust Computer, Moulvibazar offers quality computer and technology products with customer support and product assistance. Customers from Moulvibazar and other parts of Bangladesh can contact Trust Computer for current price, stock availability, warranty information, and delivery options.\r\n\r\nWhether you need a monitor for office work, online classes, studying, freelancing, browsing, entertainment, or a home computer setup, the HP M22f is a stylish and practical choice.\r\n",
+      "sellingPrice": 15000,
+      "compareAtPrice": 15620,
+      "costPrice": null,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-10-06T19:51:21.869Z",
+      "updatedAt": "2026-10-06T19:51:21.869Z",
+      "images": [
+        {
+          "id": "4cb860d0-42e3-4e98-afc1-d8ae1df821e4",
+          "productId": "a6e8eb14-246e-4643-bebb-6456bdbdc83a",
+          "url": "https://www.startech.com.bd/image/cache/catalog/monitor/hp-monitor/m22f/m22f-500x500.jpg",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T19:51:21.869Z"
+        }
+      ],
+      "category": {
+        "id": "ba548f51-c7b9-4b01-8f46-bbffb934b2a5",
+        "name": "Monitor",
+        "slug": "monitor",
+        "description": "Full HD, 2K and 4K monitors with Eye Care technology, gaming displays and office screens with HDMI/VGA connectivity.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 2,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:02.782Z",
+        "updatedAt": "2026-09-26T18:10:02.782Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "aa1bde32-b562-47db-aa28-09bd5a6b5ed0",
+      "name": "HP  Elitebook 840 g6",
+      "slug": "hp-elitebook-840-g6",
+      "sku": "hp-elitebook-840-g6",
+      "barcode": null,
+      "description": "The HP EliteBook 840 G6 is a reliable",
+      "sellingPrice": 32000,
+      "compareAtPrice": 35000,
+      "costPrice": 27000,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months",
+      "categoryId": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-10-06T19:35:14.920Z",
+      "updatedAt": "2026-10-23T11:00:22.082Z",
+      "images": [
+        {
+          "id": "7e32ff21-3e6c-4d1a-ac41-79159955419a",
+          "productId": "aa1bde32-b562-47db-aa28-09bd5a6b5ed0",
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ04JVpaqfDJLDQvBnBGtbe69L6W9sHiVFQZp8hgKVo9Q&s=10",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-10-06T19:35:14.920Z"
+        }
+      ],
+      "category": {
+        "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+        "name": "Laptop & Computer",
+        "slug": "laptop-computer",
+        "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 1,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:01.611Z",
+        "updatedAt": "2026-09-26T18:10:01.611Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "0057b14e-6740-4374-a165-4633fa332cd7",
+      "name": "HP EliteBook 845 G8 Ryzen 5 Pro 5650U 512GB SSD",
+      "slug": "hp-elitebook-845-g8-ryzen-5-pro-5650u-512gb-ssd",
+      "sku": "hp-elitebook-845-g8-ryzen-5-pro-5650u-512gb-ssd",
+      "barcode": null,
+      "description": "The HP EliteBook 845 G8 is a powerful,",
+      "sellingPrice": 45000,
+      "compareAtPrice": 48000,
+      "costPrice": null,
+      "stock": 9,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": true,
+      "isBestSeller": true,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-09-27T13:12:25.401Z",
+      "updatedAt": "2026-10-23T10:59:02.566Z",
+      "images": [
+        {
+          "id": "846962ae-cfe7-4e36-84e7-055ddb530f6a",
+          "productId": "0057b14e-6740-4374-a165-4633fa332cd7",
+          "url": "https://cdn.bdstall.com/product-image/435198_600X600.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-09-27T13:12:25.401Z"
+        }
+      ],
+      "category": {
+        "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+        "name": "Laptop & Computer",
+        "slug": "laptop-computer",
+        "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 1,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:01.611Z",
+        "updatedAt": "2026-09-26T18:10:01.611Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "82b94964-cecc-410b-9be7-f4965e643c45",
+      "name": "HP 430 G8 i5 11 gen 8 gb ram 256 gb ssd",
+      "slug": "hp-430-g8-i5-11-gen-8-gb-ram-256-gb-ssd-nvme",
+      "sku": "hp-430-g8-i5-11-gen-8-gb-ram-256-gb-ssd nvme",
+      "barcode": null,
+      "description": "HP 430 G8 i5 11 gen 8 gb ram 256 gb ssd",
+      "sellingPrice": 37000,
+      "compareAtPrice": 40000,
+      "costPrice": 310000,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": false,
+      "isBestSeller": false,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-09-27T10:21:20.503Z",
+      "updatedAt": "2026-09-27T10:21:20.503Z",
+      "images": [
+        {
+          "id": "267e0c9a-fdaf-447f-9f60-609ac0b93088",
+          "productId": "82b94964-cecc-410b-9be7-f4965e643c45",
+          "url": "https://cdn.bdstall.com/product-image/443677_600X600.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-09-27T10:21:20.503Z"
+        }
+      ],
+      "category": {
+        "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+        "name": "Laptop & Computer",
+        "slug": "laptop-computer",
+        "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 1,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:01.611Z",
+        "updatedAt": "2026-09-26T18:10:01.611Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "1bd7c88b-f7fc-4eec-a7b5-6b0ecf80e294",
+      "name": "HP 845 G7 8/256",
+      "slug": "hp-845-g7-8256",
+      "sku": "HP 845 G7 8/256",
+      "barcode": null,
+      "description": "The HP EliteBook 845 G7 is a reliable",
+      "sellingPrice": 38000,
+      "compareAtPrice": 42000,
+      "costPrice": 33000,
+      "stock": 10,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": true,
+      "isBestSeller": true,
+      "isActive": true,
+      "warrantyInfo": "12 months warranty",
+      "categoryId": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-09-27T10:18:07.742Z",
+      "updatedAt": "2026-10-23T11:01:20.772Z",
+      "images": [
+        {
+          "id": "222e7b6a-6d81-4859-9c1f-bae401bbfd64",
+          "productId": "1bd7c88b-f7fc-4eec-a7b5-6b0ecf80e294",
+          "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHR7Vp5cwcFSJBss30BBHeRGnI31rFEYadRBEInlfEZQ&s=10",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-09-27T10:18:07.742Z"
+        }
+      ],
+      "category": {
+        "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+        "name": "Laptop & Computer",
+        "slug": "laptop-computer",
+        "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 1,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:01.611Z",
+        "updatedAt": "2026-09-26T18:10:01.611Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    },
+    {
+      "id": "8a217671-e514-4f6b-a6ac-92f2472e5d11",
+      "name": "HP 430 G8 i5 11 gen 8 gb ram 256 gb ssd",
+      "slug": "hp-430-g8-i5-11-gen-8-gb-ram-256-gb-ssd",
+      "sku": "hp-430-g8-i5-11-gen-8-gb-ram-256-gb-ssd",
+      "barcode": null,
+      "description": "The HP ProBook 430 G8 is a compact",
+      "sellingPrice": 37000,
+      "compareAtPrice": 40000,
+      "costPrice": 310000,
+      "stock": 8,
+      "lowStockThreshold": 3,
+      "isFeatured": true,
+      "isNewArrival": true,
+      "isBestSeller": true,
+      "isActive": true,
+      "warrantyInfo": "12 months",
+      "categoryId": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+      "brandId": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+      "createdAt": "2026-09-27T08:24:10.322Z",
+      "updatedAt": "2026-10-23T11:01:55.720Z",
+      "images": [
+        {
+          "id": "0cd391d9-0d97-40a4-8c77-9a1fe5672733",
+          "productId": "8a217671-e514-4f6b-a6ac-92f2472e5d11",
+          "url": "https://cdn.bdstall.com/product-image/441350_600X600.webp",
+          "altText": null,
+          "isPrimary": true,
+          "sortOrder": 0,
+          "createdAt": "2026-09-27T12:36:58.654Z"
+        }
+      ],
+      "category": {
+        "id": "812fb860-ff77-41e8-9b54-e71f445d7ce8",
+        "name": "Laptop & Computer",
+        "slug": "laptop-computer",
+        "description": "Brand new laptops, desktop computers, all-in-one PCs and computing solutions with official warranty in Moulvibazar.",
+        "image": null,
+        "parentId": null,
+        "sortOrder": 1,
+        "isActive": true,
+        "createdAt": "2026-09-26T18:10:01.611Z",
+        "updatedAt": "2026-09-26T18:10:01.611Z"
+      },
+      "brand": {
+        "id": "058fd6a7-9f98-4d89-a566-9be0e3ad55bc",
+        "name": "HP",
+        "slug": "hp",
+        "description": "Official high-efficiency commercial and consumer laptops and computing systems.",
+        "logo": null,
+        "isActive": true,
+        "createdAt": "2026-09-25T07:58:11.920Z",
+        "updatedAt": "2026-09-25T07:58:11.920Z"
+      },
+      "specifications": [],
+      "variants": []
+    }
+  ]
+}

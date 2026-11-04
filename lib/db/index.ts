@@ -19,6 +19,9 @@ export function getDatabaseUrl(): string | undefined {
 
   if (!url) return undefined;
 
+  // Clean BOM and any invisible whitespace
+  url = url.trim().replace(/^[\uFEFF\u200B\u200C\u200D]+/, '').trim();
+
   // Supabase pooler on port 5432 is Session mode; switch to port 6543 (transaction mode)
   if (url.includes('pooler.supabase.com:5432')) {
     url = url.replace('pooler.supabase.com:5432', 'pooler.supabase.com:6543');
@@ -27,6 +30,15 @@ export function getDatabaseUrl(): string | undefined {
   // Ensure pgbouncer=true for PgBouncer pooler connections
   if (url.includes(':6543') && !url.includes('pgbouncer=true')) {
     url += (url.includes('?') ? '&' : '?') + 'pgbouncer=true';
+  }
+
+  // Strip sslmode so pg.Pool's ssl: { rejectUnauthorized: false } takes full effect without being overridden by pg-connection-string
+  url = url.replace(/[?&]sslmode=[^&]+/g, '');
+  if (url.includes('?&')) {
+    url = url.replace('?&', '?');
+  }
+  if (url.endsWith('?')) {
+    url = url.slice(0, -1);
   }
 
   return url;
@@ -48,6 +60,7 @@ function createPrismaClient(): PrismaClient {
     globalForPrisma.pool ??
     new Pool({
       connectionString,
+      ssl: { rejectUnauthorized: false },
       max: 5,
       connectionTimeoutMillis: 10000,
       idleTimeoutMillis: 30000,

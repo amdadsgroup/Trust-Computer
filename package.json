@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
-    "build:worker": "node scripts/patch-opennext.js && opennextjs-cloudflare build",
+    "build": "prisma generate && node scripts/export-catalog-snapshot.js && next build",
+    "build:worker": "node scripts/patch-opennext.js && opennextjs-cloudflare build && node scripts/patch-worker.js",
     "preview:worker": "wrangler dev",
     "deploy:worker": "wrangler deploy",
     "start": "next start",
@@ -32,6 +32,7 @@
     "next": "14.2.15",
     "nodemailer": "^10.0.11",
     "pg": "^8.13.1",
+    "pg-cloudflare": "^1.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "recharts": "^2.12.7",

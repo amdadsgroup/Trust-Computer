@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/db';
+import { getCatalogProductBySlug, getCatalogRelatedProducts } from '@/lib/db/catalog';
 import ProductCard from '@/components/products/ProductCard';
 import ProductDetailActions from './ProductDetailActions';
 import ReviewsSection from '@/components/products/ReviewsSection';
@@ -33,16 +34,7 @@ interface ProductDetailPageProps {
 
 const getProductBySlug = edgeCache(
   async (slug: string) => {
-    return await prisma.product.findUnique({
-      where: { slug },
-      include: {
-        images: { orderBy: { sortOrder: 'asc' } },
-        specifications: { orderBy: { sortOrder: 'asc' } },
-        variants: true,
-        category: true,
-        brand: true,
-      },
-    });
+    return await getCatalogProductBySlug(slug);
   },
   ['product-detail-data'],
   { revalidate: 1800, tags: ['products'] }
@@ -50,32 +42,7 @@ const getProductBySlug = edgeCache(
 
 const getRelatedProducts = edgeCache(
   async (categoryId: string, productId: string) => {
-    return await prisma.product.findMany({
-      where: {
-        categoryId,
-        id: { not: productId },
-        isActive: true,
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        sku: true,
-        sellingPrice: true,
-        compareAtPrice: true,
-        stock: true,
-        lowStockThreshold: true,
-        warrantyInfo: true,
-        images: {
-          select: { url: true, altText: true },
-          orderBy: { sortOrder: 'asc' },
-          take: 1,
-        },
-        category: { select: { name: true, slug: true } },
-        brand: { select: { name: true, slug: true } },
-      },
-      take: 4,
-    });
+    return await getCatalogRelatedProducts(categoryId, productId, 4);
   },
   ['related-products-data'],
   { revalidate: 1800, tags: ['products'] }

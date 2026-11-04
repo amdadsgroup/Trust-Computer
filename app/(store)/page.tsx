@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import prisma from '@/lib/db';
+import { getCatalogDefaultProducts } from '@/lib/db/catalog';
 import ProductCard from '@/components/products/ProductCard';
 import HeroCarousel from '@/components/home/HeroCarousel';
 import AnnouncementTicker from '@/components/home/AnnouncementTicker';
@@ -158,7 +159,7 @@ export default async function HomePage() {
   let { featuredProducts, newArrivals, categories, activeBanners, activeOffers, sections } =
     await getCachedHomePageData();
 
-  // Bulletproof safety net: If cached data yielded no products, fetch live from DB directly at runtime
+  // Bulletproof safety net: If cached data yielded no products, fetch live or fallback from catalog snapshot
   if (featuredProducts.length === 0 || newArrivals.length === 0) {
     try {
       const activeDbProducts = await prisma.product.findMany({
@@ -172,7 +173,12 @@ export default async function HomePage() {
         if (newArrivals.length === 0) newArrivals = activeDbProducts;
       }
     } catch (e) {
-      console.error('Error fetching live fallback products in HomePage:', e);
+      // In Cloudflare Worker runtime, fallback to catalog snapshot
+      const { products } = await getCatalogDefaultProducts(8);
+      if (products.length > 0) {
+        if (featuredProducts.length === 0) featuredProducts = products as any;
+        if (newArrivals.length === 0) newArrivals = products as any;
+      }
     }
   }
 

@@ -1,6 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/db';
+import {
+  getCatalogFilterMetadata,
+  getCatalogDefaultProducts,
+  queryCatalogProducts,
+} from '@/lib/db/catalog';
 import ProductCard from '@/components/products/ProductCard';
 import MobileFilterDrawer from '@/components/products/MobileFilterDrawer';
 import CategoryBrowseBar from '@/components/products/CategoryBrowseBar';
@@ -8,8 +13,6 @@ import ProductSortSelect from '@/components/products/ProductSortSelect';
 import BudgetPriceFilter from '@/components/products/BudgetPriceFilter';
 import { Prisma } from '@prisma/client';
 import { Filter, SlidersHorizontal, Search, X, ChevronLeft, ChevronRight, PackageOpen } from 'lucide-react';
-
-import { edgeCache } from '@/lib/cache-edge';
 
 export const revalidate = 300;
 export const maxDuration = 30;
@@ -49,57 +52,6 @@ const productSelect = {
     select: { name: true, slug: true },
   },
 };
-
-const getCachedFilterMetadata = edgeCache(
-  async () => {
-    const [categories, brands, totalInStore] = await Promise.all([
-      prisma.category.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          description: true,
-          _count: {
-            select: {
-              products: {
-                where: { isActive: true },
-              },
-            },
-          },
-        },
-      }),
-      prisma.brand.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true, slug: true },
-        orderBy: { name: 'asc' },
-      }),
-      prisma.product.count({ where: { isActive: true } }),
-    ]);
-
-    return { categories, brands, totalInStore };
-  },
-  ['catalog-filter-metadata'],
-  { revalidate: 120, tags: ['categories', 'brands', 'products'] }
-);
-
-const getCachedDefaultProducts = edgeCache(
-  async () => {
-    const [products, totalCount] = await Promise.all([
-      prisma.product.findMany({
-        where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
-        take: 12,
-        select: productSelect,
-      }),
-      prisma.product.count({ where: { isActive: true } }),
-    ]);
-    return { products, totalCount };
-  },
-  ['catalog-default-page-1'],
-  { revalidate: 300, tags: ['products'] }
-);
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const sp = searchParams || {};
@@ -175,8 +127,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   try {
     if (isDefaultQuery) {
       const [defaultProds, metaData] = await Promise.all([
-        getCachedDefaultProducts(),
-        getCachedFilterMetadata(),
+        getCatalogDefaultProducts(pageSize),
+        getCatalogFilterMetadata(),
       ]);
       products = defaultProds.products;
       totalCount = defaultProds.totalCount;
@@ -185,21 +137,22 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       totalStoreCount = metaData.totalInStore;
     } else {
       const [productData, metaData] = await Promise.all([
-        Promise.all([
-          prisma.product.findMany({
-            where,
-            orderBy,
-            skip: (page - 1) * pageSize,
-            take: pageSize,
-            select: productSelect,
-          }),
-          prisma.product.count({ where }),
-        ]),
-        getCachedFilterMetadata(),
+        queryCatalogProducts({
+          search: sp.search,
+          category: sp.category,
+          brand: sp.brand,
+          sort: sp.sort,
+          minPrice: sp.minPrice,
+          maxPrice: sp.maxPrice,
+          inStockOnly: sp.inStockOnly,
+          page,
+          pageSize,
+        }),
+        getCatalogFilterMetadata(),
       ]);
 
-      products = productData[0];
-      totalCount = productData[1];
+      products = productData.products;
+      totalCount = productData.totalCount;
       categories = metaData.categories;
       brands = metaData.brands;
       totalStoreCount = metaData.totalInStore;

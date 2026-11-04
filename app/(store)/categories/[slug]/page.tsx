@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/db';
+import { getCatalogCategoryBySlug } from '@/lib/db/catalog';
 import ProductCard from '@/components/products/ProductCard';
 import { PackageOpen, ChevronRight, Home, Filter, SlidersHorizontal, Check, ShieldCheck } from 'lucide-react';
 import { Prisma } from '@prisma/client';
@@ -19,44 +20,52 @@ const getCachedCategoryData = edgeCache(
       searchSlugs.push(fallbackSlug.toLowerCase());
     }
 
-    return await prisma.category.findFirst({
-      where: {
-        slug: {
-          in: searchSlugs,
-        },
-      },
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-        description: true,
-        products: {
-          where: {
-            isActive: true,
+    try {
+      const res = await prisma.category.findFirst({
+        where: {
+          slug: {
+            in: searchSlugs,
           },
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-            sku: true,
-            sellingPrice: true,
-            compareAtPrice: true,
-            stock: true,
-            lowStockThreshold: true,
-            warrantyInfo: true,
-            images: {
-              select: { url: true, altText: true },
-              orderBy: { sortOrder: 'asc' },
-              take: 1,
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          description: true,
+          products: {
+            where: {
+              isActive: true,
             },
-            category: { select: { name: true, slug: true } },
-            brand: { select: { name: true, slug: true } },
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              sku: true,
+              sellingPrice: true,
+              compareAtPrice: true,
+              stock: true,
+              lowStockThreshold: true,
+              warrantyInfo: true,
+              images: {
+                select: { url: true, altText: true },
+                orderBy: { sortOrder: 'asc' },
+                take: 1,
+              },
+              category: { select: { name: true, slug: true } },
+              brand: { select: { name: true, slug: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 24,
           },
-          orderBy: { createdAt: 'desc' },
-          take: 24,
         },
-      },
-    });
+      });
+      if (res) return res;
+    } catch (err) {
+      // Fallback below
+    }
+
+    const fallback = (await getCatalogCategoryBySlug(primarySlug)) || (fallbackSlug ? await getCatalogCategoryBySlug(fallbackSlug) : null);
+    return fallback;
   },
   ['category-page-data-v3'],
   { revalidate: 900, tags: ['categories', 'products'] }
