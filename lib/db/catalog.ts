@@ -1,5 +1,7 @@
 import prisma from '@/lib/db';
 import catalogData from './catalog-snapshot.json';
+import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, isSupabaseConfigured } from '@/lib/supabase/config';
 
 export interface CatalogProduct {
   id: string;
@@ -30,13 +32,13 @@ export interface CatalogProduct {
     sortOrder?: number;
   }>;
   category?: {
-    id: string;
+    id?: string;
     name: string;
     slug: string;
     description?: string | null;
   } | null;
   brand?: {
-    id: string;
+    id?: string;
     name: string;
     slug: string;
   } | null;
@@ -66,7 +68,19 @@ const snapshotCategories = catalogData.categories || [];
 const snapshotBrands = catalogData.brands || [];
 const snapshotTotalInStore = catalogData.totalInStore || snapshotProducts.length;
 
+function getSupabaseClient() {
+  if (!isSupabaseConfigured()) return null;
+  try {
+    return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+  } catch {
+    return null;
+  }
+}
+
 export async function getCatalogFilterMetadata(): Promise<CatalogFilterMetadata> {
+  // 1. Try Prisma ORM
   try {
     const [categories, brands, totalInStore] = await Promise.all([
       prisma.category.findMany({
@@ -97,10 +111,55 @@ export async function getCatalogFilterMetadata(): Promise<CatalogFilterMetadata>
     if (categories && categories.length > 0 && totalInStore > 0) {
       return { categories, brands, totalInStore };
     }
-  } catch (err) {
-    console.warn('[catalog] Runtime DB unavailable for filter metadata, using fallback snapshot.');
+  } catch {
+    // Fall through to Tier 2
   }
 
+  // 2. Try Supabase HTTPS REST
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const [catRes, brandRes, countRes] = await Promise.all([
+        supabase
+          .from('categories')
+          .select('id, name, slug, description, sortOrder, products:products(count)')
+          .eq('isActive', true)
+          .order('sortOrder', { ascending: true }),
+        supabase
+          .from('brands')
+          .select('id, name, slug')
+          .eq('isActive', true)
+          .order('name', { ascending: true }),
+        supabase
+          .from('products')
+          .select('id', { count: 'exact', head: true })
+          .eq('isActive', true),
+      ]);
+
+      if (catRes.data && catRes.data.length > 0) {
+        const formattedCats = catRes.data.map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          description: c.description,
+          sortOrder: c.sortOrder,
+          _count: {
+            products: Array.isArray(c.products) && c.products[0] ? c.products[0].count : 0,
+          },
+        }));
+
+        return {
+          categories: formattedCats,
+          brands: (brandRes.data || []) as any,
+          totalInStore: countRes.count || formattedCats.reduce((acc, x) => acc + x._count.products, 0),
+        };
+      }
+    } catch {
+      // Fall through to Tier 3
+    }
+  }
+
+  // 3. In-memory snapshot fallback
   return {
     categories: snapshotCategories,
     brands: snapshotBrands,
@@ -109,6 +168,7 @@ export async function getCatalogFilterMetadata(): Promise<CatalogFilterMetadata>
 }
 
 export async function getCatalogDefaultProducts(pageSize = 12): Promise<{ products: CatalogProduct[]; totalCount: number }> {
+  // 1. Try Prisma
   try {
     const [products, totalCount] = await Promise.all([
       prisma.product.findMany({
@@ -144,10 +204,33 @@ export async function getCatalogDefaultProducts(pageSize = 12): Promise<{ produc
     if (products && products.length > 0) {
       return { products: products as unknown as CatalogProduct[], totalCount };
     }
-  } catch (err) {
-    console.warn('[catalog] Runtime DB unavailable for default products, using fallback snapshot.');
+  } catch {
+    // Fall through to Tier 2
   }
 
+  // 2. Try Supabase REST
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data, count } = await supabase
+        .from('products')
+        .select('id, name, slug, sku, sellingPrice, compareAtPrice, stock, lowStockThreshold, warrantyInfo, category:categories(name, slug), brand:brands(name, slug), images:product_images(url, altText)', { count: 'exact' })
+        .eq('isActive', true)
+        .order('createdAt', { ascending: false })
+        .limit(pageSize);
+
+      if (data && data.length > 0) {
+        return {
+          products: data as unknown as CatalogProduct[],
+          totalCount: count || data.length,
+        };
+      }
+    } catch {
+      // Fall through to Tier 3
+    }
+  }
+
+  // 3. In-memory snapshot fallback
   const items = snapshotProducts.slice(0, pageSize);
   return { products: items, totalCount: snapshotTotalInStore };
 }
@@ -168,7 +251,7 @@ export async function queryCatalogProducts(params: CatalogQueryParams): Promise<
   const page = Math.max(1, params.page || 1);
   const pageSize = params.pageSize || 12;
 
-  // Try DB first if available
+  // 1. Try Prisma
   try {
     const where: any = { isActive: true };
     if (params.search) {
@@ -236,11 +319,11 @@ export async function queryCatalogProducts(params: CatalogQueryParams): Promise<
     if (dbProducts && dbProducts.length > 0) {
       return { products: dbProducts as unknown as CatalogProduct[], totalCount: dbCount };
     }
-  } catch (err) {
+  } catch {
     // Fall through to memory query below
   }
 
-  // In-memory filtering over snapshot
+  // 2. In-memory filtering over snapshot (instant 0ms)
   let filtered = snapshotProducts.filter((p) => p.isActive);
 
   if (params.search) {
@@ -286,7 +369,6 @@ export async function queryCatalogProducts(params: CatalogQueryParams): Promise<
   } else if (params.sort === 'name_asc') {
     filtered.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   } else {
-    // Default: newest first
     filtered.sort((a, b) => {
       const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -302,6 +384,7 @@ export async function queryCatalogProducts(params: CatalogQueryParams): Promise<
 }
 
 export async function getCatalogProductBySlug(slug: string): Promise<CatalogProduct | null> {
+  // 1. Try Prisma
   try {
     const product = await prisma.product.findUnique({
       where: { slug },
@@ -315,15 +398,33 @@ export async function getCatalogProductBySlug(slug: string): Promise<CatalogProd
     });
 
     if (product) return product as unknown as CatalogProduct;
-  } catch (err) {
-    console.warn(`[catalog] Runtime DB unavailable for product slug "${slug}", using fallback snapshot.`);
+  } catch {
+    // Fall through to Tier 2
   }
 
+  // 2. Try Supabase REST
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('*, images:product_images(*), category:categories(*), brand:brands(*)')
+        .eq('slug', slug)
+        .single();
+
+      if (data) return data as unknown as CatalogProduct;
+    } catch {
+      // Fall through to Tier 3
+    }
+  }
+
+  // 3. Fallback to snapshot
   const fallback = snapshotProducts.find((p) => p.slug === slug);
   return fallback || null;
 }
 
 export async function getCatalogRelatedProducts(categoryId: string, productId: string, limit = 4): Promise<CatalogProduct[]> {
+  // 1. Try Prisma
   try {
     const related = await prisma.product.findMany({
       where: {
@@ -353,16 +454,18 @@ export async function getCatalogRelatedProducts(categoryId: string, productId: s
     });
 
     if (related && related.length > 0) return related as unknown as CatalogProduct[];
-  } catch (err) {
-    // Fall through to snapshot
+  } catch {
+    // Fall through
   }
 
+  // 2. Fallback to snapshot
   return snapshotProducts
     .filter((p) => p.categoryId === categoryId && p.id !== productId && p.isActive)
     .slice(0, limit);
 }
 
 export async function getCatalogCategoryBySlug(slug: string): Promise<any | null> {
+  // 1. Try Prisma
   try {
     const cat = await prisma.category.findUnique({
       where: { slug },
@@ -391,10 +494,11 @@ export async function getCatalogCategoryBySlug(slug: string): Promise<any | null
     });
 
     if (cat) return cat;
-  } catch (err) {
-    console.warn(`[catalog] Runtime DB unavailable for category slug "${slug}", using fallback snapshot.`);
+  } catch {
+    // Fall through
   }
 
+  // 2. Fallback to snapshot
   const catMeta = snapshotCategories.find((c) => c.slug === slug);
   if (!catMeta) return null;
 
@@ -405,4 +509,3 @@ export async function getCatalogCategoryBySlug(slug: string): Promise<any | null
     products: prods,
   };
 }
-
