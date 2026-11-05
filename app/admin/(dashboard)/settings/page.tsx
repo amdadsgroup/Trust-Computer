@@ -1,35 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/db';
 import { updateStoreSettingsAction } from './actions';
 import { Settings, Save, Store, Truck, Phone, MapPin, Facebook, Palette, CreditCard } from 'lucide-react';
+import { getAdminSettingsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminSettingsPage() {
-  let settings: any = null;
-  try {
-    settings = await prisma.siteSettings.findUnique({
-      where: { id: 'default' },
-    });
-  } catch (e) {
-    console.error('Error fetching settings:', e);
-  }
-
-  const current = settings || {
-    storeName: 'Trust Computer-Moulvibazar',
-    ownerName: 'Shiblu Ahmed',
-    phone: '01797854836',
-    email: 'trustcomputermb@gmail.com',
-    address: 'T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar, Bangladesh',
-    facebookUrl: 'https://www.facebook.com/TrustComputerr/',
-    whatsappNumber: '+8801797854836',
-    servicePhone: '01608346407',
-    serviceWhatsapp: '+8801608346407',
-    bkashNumber: '01712556225',
-    deliveryFeeInsideMoulvibazar: 60.0,
-    deliveryFeeOutsideMoulvibazar: 120.0,
-  };
+  const current = await getAdminSettingsPageData();
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

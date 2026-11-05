@@ -1,44 +1,12 @@
 import React from 'react';
-import prisma from '@/lib/db';
 import { BarChart3, TrendingUp, ShoppingBag, Boxes, Award, CheckCircle } from 'lucide-react';
+import { getAdminReportsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminReportsPage() {
-  let ordersByStatus: { status: string; count: number }[] = [];
-  let topSellingItems: any[] = [];
-  let totalSales = 0;
-  let totalOrdersCount = 0;
-
-  try {
-    const [ordersAggregate, statusGroups, orderItems] = await Promise.all([
-      prisma.order.aggregate({
-        _sum: { total: true },
-        _count: { id: true },
-      }),
-      prisma.order.groupBy({
-        by: ['status'],
-        _count: { id: true },
-      }),
-      prisma.orderItem.groupBy({
-        by: ['productName', 'productSku'],
-        _sum: { quantity: true, subtotal: true },
-        orderBy: { _sum: { quantity: 'desc' } },
-        take: 5,
-      }),
-    ]);
-
-    totalOrdersCount = ordersAggregate._count.id || 0;
-    totalSales = Number(ordersAggregate._sum.total || 0);
-
-    ordersByStatus = statusGroups.map((g) => ({
-      status: g.status,
-      count: g._count.id,
-    }));
-    topSellingItems = orderItems;
-  } catch (e) {
-    console.error('Error fetching reports data:', e);
-  }
+  const { totalOrdersCount, totalSales, ordersByStatus, topSellingItems } =
+    await getAdminReportsPageData();
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

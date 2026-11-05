@@ -1,37 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/db';
 import NewProductForm from '@/components/admin/NewProductForm';
 import { ArrowLeft } from 'lucide-react';
-
 import { getAdminCategories } from '@/lib/categories';
+import { getAdminBrandsList } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function NewProductPage() {
-  let categories: any[] = [];
-  let brands: any[] = [];
-
-  try {
-    const [fetchedCategories, fetchedBrands] = await Promise.all([
-      getAdminCategories(),
-      prisma.brand
-        .findMany({
-          where: { isActive: true },
-          orderBy: { name: 'asc' },
-          select: { id: true, name: true },
-        })
-        .catch((err) => {
-          console.warn('Brand fetch warning on new product page:', err);
-          return [];
-        }),
-    ]);
-    categories = fetchedCategories;
-    brands = fetchedBrands;
-  } catch (error) {
-    console.error('Error on new product page, using category defaults:', error);
-    categories = await getAdminCategories();
-  }
+  const [categories, brands] = await Promise.all([
+    getAdminCategories(),
+    getAdminBrandsList(),
+  ]);
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

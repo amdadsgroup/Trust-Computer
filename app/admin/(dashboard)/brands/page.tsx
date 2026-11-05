@@ -1,26 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/db';
 import { Tag, Plus, CheckCircle2, XCircle, Trash2, ArrowLeft } from 'lucide-react';
 import { createBrandAction, toggleBrandStatusAction, deleteBrandAction } from './actions';
+import { getAdminBrandsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminBrandsPage() {
-  let brands: any[] = [];
-
-  try {
-    brands = await prisma.brand.findMany({
-      orderBy: { name: 'asc' },
-      include: {
-        _count: {
-          select: { products: true },
-        },
-      },
-    });
-  } catch (error) {
-    console.error('Error fetching brands:', error);
-  }
+  const brands = await getAdminBrandsPageData();
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

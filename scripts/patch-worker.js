@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.join(__dirname, '..');
+const lockFile = path.join(rootDir, '.worker-building.lock');
+try {
+  if (fs.existsSync(lockFile)) fs.unlinkSync(lockFile);
+} catch {}
 
 function patchFile(filePath, searchStr, replaceStr) {
   if (fs.existsSync(filePath)) {

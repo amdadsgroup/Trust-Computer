@@ -1,28 +1,14 @@
 import React from 'react';
-import { getAllOffersAdmin } from '@/lib/offers';
-import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import OffersManagementClient from '@/components/admin/OffersManagementClient';
+import { getAdminOffersPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminOffersPage() {
   await requireAuth();
 
-  const [offers, products, categories] = await Promise.all([
-    getAllOffersAdmin(),
-    prisma.product.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, sku: true, sellingPrice: true },
-      orderBy: { name: 'asc' },
-      take: 100,
-    }),
-    prisma.category.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, slug: true },
-      orderBy: { name: 'asc' },
-    }),
-  ]);
+  const { offers, products, categories } = await getAdminOffersPageData();
 
   return (
     <div className="space-y-6">

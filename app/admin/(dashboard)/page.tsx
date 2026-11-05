@@ -10,90 +10,12 @@ import {
   Package,
   CheckCircle2,
 } from 'lucide-react';
+import { getAdminDashboardMetrics } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
-async function getDashboardMetrics() {
-  try {
-    const [
-      totalOrders,
-      pendingOrders,
-      lowStockCount,
-      lowStockProducts,
-      recentOrders,
-      paidPaymentsAggregate,
-      totalProductsCount,
-    ] = await Promise.all([
-      prisma.order.count(),
-      prisma.order.count({
-        where: { status: { in: ['PENDING', 'CONFIRMED'] } },
-      }),
-      prisma.product.count({
-        where: {
-          isActive: true,
-          stock: { lte: 3 },
-        },
-      }),
-      prisma.product.findMany({
-        where: {
-          isActive: true,
-          stock: { lte: 3 },
-        },
-        select: {
-          id: true,
-          name: true,
-          sku: true,
-          stock: true,
-        },
-        take: 5,
-      }),
-      prisma.order.findMany({
-        orderBy: { createdAt: 'desc' },
-        take: 6,
-        select: {
-          id: true,
-          orderNumber: true,
-          customerName: true,
-          customerPhone: true,
-          total: true,
-          status: true,
-          createdAt: true,
-        },
-      }),
-      prisma.payment.aggregate({
-        where: { status: 'PAID' },
-        _sum: { amount: true },
-      }),
-      prisma.product.count({ where: { isActive: true } }),
-    ]);
-
-    const totalRevenue = Number(paidPaymentsAggregate._sum.amount || 0);
-
-    return {
-      totalOrders,
-      pendingOrders,
-      lowStockCount,
-      lowStockProducts,
-      recentOrders,
-      totalRevenue,
-      totalProductsCount,
-    };
-  } catch (error) {
-    console.error('Error calculating dashboard metrics:', error);
-    return {
-      totalOrders: 0,
-      pendingOrders: 0,
-      lowStockCount: 0,
-      lowStockProducts: [],
-      recentOrders: [],
-      totalRevenue: 0,
-      totalProductsCount: 0,
-    };
-  }
-}
-
 export default async function AdminDashboardPage() {
-  const metrics = await getDashboardMetrics();
+  const metrics = await getAdminDashboardMetrics();
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">

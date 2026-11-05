@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/db';
 import { CreditCard, CheckCircle2, Clock, AlertTriangle, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import PaymentRowActions from '@/components/admin/PaymentRowActions';
 import PaymentFilters from '@/components/admin/PaymentFilters';
-import { PaymentMethod, PaymentStatus, Prisma } from '@prisma/client';
+import { PaymentMethod, PaymentStatus } from '@prisma/client';
+import { getAdminPaymentsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,86 +24,7 @@ export default async function AdminPaymentsPage({ searchParams }: AdminPaymentsP
   const methodFilter = searchParams?.method || 'ALL';
   const statusFilter = searchParams?.status || 'ALL';
 
-  // Construct database-side filter condition
-  const whereClause: Prisma.PaymentWhereInput = {};
-
-  if (methodFilter !== 'ALL' && Object.values(PaymentMethod).includes(methodFilter as PaymentMethod)) {
-    whereClause.provider = methodFilter as PaymentMethod;
-  }
-
-  if (statusFilter !== 'ALL' && Object.values(PaymentStatus).includes(statusFilter as PaymentStatus)) {
-    whereClause.status = statusFilter as PaymentStatus;
-  }
-
-  if (searchQuery) {
-    whereClause.OR = [
-      { transactionId: { contains: searchQuery, mode: 'insensitive' } },
-      { rawResponseJson: { contains: searchQuery, mode: 'insensitive' } },
-      { notes: { contains: searchQuery, mode: 'insensitive' } },
-      {
-        order: {
-          OR: [
-            { orderNumber: { contains: searchQuery, mode: 'insensitive' } },
-            { customerName: { contains: searchQuery, mode: 'insensitive' } },
-            { customerPhone: { contains: searchQuery, mode: 'insensitive' } },
-          ],
-        },
-      },
-    ];
-  }
-
-  let payments: any[] = [];
-  let totalCount = 0;
-  let totalPaid = 0;
-  let totalPending = 0;
-
-  try {
-    const [fetchedPayments, count, paidAgg, pendingAgg] = await Promise.all([
-      prisma.payment.findMany({
-        where: whereClause,
-        orderBy: { createdAt: 'desc' },
-        take: pageSize,
-        skip: (currentPage - 1) * pageSize,
-        select: {
-          id: true,
-          orderId: true,
-          provider: true,
-          transactionId: true,
-          amount: true,
-          currency: true,
-          status: true,
-          rawResponseJson: true,
-          notes: true,
-          paidAt: true,
-          createdAt: true,
-          order: {
-            select: {
-              id: true,
-              orderNumber: true,
-              customerName: true,
-              customerPhone: true,
-            },
-          },
-        },
-      }),
-      prisma.payment.count({ where: whereClause }),
-      prisma.payment.aggregate({
-        where: { status: PaymentStatus.PAID },
-        _sum: { amount: true },
-      }),
-      prisma.payment.aggregate({
-        where: { status: PaymentStatus.PENDING },
-        _sum: { amount: true },
-      }),
-    ]);
-
-    payments = fetchedPayments;
-    totalCount = count;
-    totalPaid = Number(paidAgg._sum.amount || 0);
-    totalPending = Number(pendingAgg._sum.amount || 0);
-  } catch (e) {
-    console.error('Error fetching payments:', e);
-  }
+  const { payments, totalCount, totalPaid, totalPending } = await getAdminPaymentsPageData(searchParams || {});
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

@@ -1,7 +1,7 @@
 import React from 'react';
-import prisma from '@/lib/db';
 import { requireRole } from '@/lib/auth';
 import { Shield, Clock, User, Filter, AlertCircle, FileText } from 'lucide-react';
+import { getAdminAuditLogsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,36 +14,8 @@ export default async function AdminAuditLogsPage({
 
   const actionFilter = searchParams?.action || '';
   const entityTypeFilter = searchParams?.entityType || '';
-  const currentPage = parseInt(searchParams?.page || '1', 10) || 1;
-  const pageSize = 25;
 
-  const where: any = {};
-  if (actionFilter) where.action = actionFilter;
-  if (entityTypeFilter) where.entityType = entityTypeFilter;
-
-  let totalLogs = 0;
-  let logs: any[] = [];
-
-  try {
-    const [fetchedTotal, fetchedLogs] = await Promise.all([
-      prisma.adminAuditLog.count({ where }),
-      prisma.adminAuditLog.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (currentPage - 1) * pageSize,
-        take: pageSize,
-        include: {
-          user: {
-            select: { name: true, email: true, role: true },
-          },
-        },
-      }),
-    ]);
-    totalLogs = fetchedTotal;
-    logs = fetchedLogs;
-  } catch (error) {
-    console.error('Error fetching audit logs:', error);
-  }
+  const { totalLogs, logs, currentPage, pageSize } = await getAdminAuditLogsPageData(searchParams || {});
 
   const totalPages = Math.ceil(totalLogs / pageSize);
 

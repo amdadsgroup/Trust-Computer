@@ -1,8 +1,8 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-import prisma from '@/lib/db';
 import PaymentDetailsCard, { PaymentDetailsData } from '@/components/admin/PaymentDetailsCard';
 import { business } from '@/lib/business';
+import { getAdminPaymentDetail } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,25 +13,7 @@ interface PaymentDetailPageProps {
 }
 
 export default async function AdminPaymentDetailPage({ params }: PaymentDetailPageProps) {
-  let payment: any = null;
-
-  try {
-    payment = await prisma.payment.findUnique({
-      where: { id: params.id },
-      include: {
-        order: {
-          select: {
-            id: true,
-            orderNumber: true,
-            customerName: true,
-            customerPhone: true,
-          },
-        },
-      },
-    });
-  } catch (err) {
-    console.error('Error loading payment detail:', err);
-  }
+  const payment = await getAdminPaymentDetail(params.id);
 
   if (!payment) {
     notFound();

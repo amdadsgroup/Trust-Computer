@@ -1,9 +1,10 @@
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
 import { brandSchema } from '@/lib/validations';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 function slugify(text: string): string {
   return (text || '')
@@ -41,14 +42,30 @@ export async function createBrandAction(formData: FormData) {
       return { error: validation.error.errors.map((e) => e.message).join(', ') };
     }
 
-    const existing = await prisma.brand.findUnique({ where: { slug } });
-    if (existing) {
-      return { error: `A brand with slug "${slug}" already exists.` };
+    let brand: any = null;
+    try {
+      const existing = await prisma.brand.findUnique({ where: { slug } });
+      if (existing) {
+        return { error: `A brand with slug "${slug}" already exists.` };
+      }
+      brand = await prisma.brand.create({
+        data: { name, slug, description, logo, isActive: true },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { data: existing } = await sb.from('brands').select('id').eq('slug', slug).maybeSingle();
+      if (existing) {
+        return { error: `A brand with slug "${slug}" already exists.` };
+      }
+      const { data: created, error } = await sb
+        .from('brands')
+        .insert({ name, slug, description, logo, isActive: true })
+        .select()
+        .single();
+      if (error || !created) throw new Error(error?.message || 'Failed to insert brand');
+      brand = created;
     }
-
-    const brand = await prisma.brand.create({
-      data: { name, slug, description, logo, isActive: true },
-    });
 
     try {
       await recordAuditLog({
@@ -72,13 +89,27 @@ export async function toggleBrandStatusAction(brandId: string) {
   try {
     const session = await requireAuth();
 
-    const current = await prisma.brand.findUnique({ where: { id: brandId } });
-    if (!current) return { error: 'Brand not found.' };
+    let brandName = '';
+    let newStatus = true;
 
-    const updated = await prisma.brand.update({
-      where: { id: brandId },
-      data: { isActive: !current.isActive },
-    });
+    try {
+      const current = await prisma.brand.findUnique({ where: { id: brandId } });
+      if (!current) return { error: 'Brand not found.' };
+      newStatus = !current.isActive;
+      brandName = current.name;
+      await prisma.brand.update({
+        where: { id: brandId },
+        data: { isActive: newStatus },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { data: current } = await sb.from('brands').select('name, isActive').eq('id', brandId).single();
+      if (!current) return { error: 'Brand not found.' };
+      newStatus = !current.isActive;
+      brandName = current.name;
+      await sb.from('brands').update({ isActive: newStatus, updatedAt: new Date().toISOString() }).eq('id', brandId);
+    }
 
     try {
       await recordAuditLog({
@@ -86,7 +117,7 @@ export async function toggleBrandStatusAction(brandId: string) {
         action: 'BRAND_STATUS_TOGGLE',
         entityType: 'Brand',
         entityId: brandId,
-        details: { name: current.name, isActive: updated.isActive },
+        details: { name: brandName, isActive: newStatus },
       });
     } catch (_) {}
 
@@ -101,19 +132,31 @@ export async function deleteBrandAction(brandId: string) {
   try {
     const session = await requireAuth();
 
-    const productCount = await prisma.product.count({
-      where: { brandId },
-    });
+    try {
+      const productCount = await prisma.product.count({
+        where: { brandId },
+      });
 
-    if (productCount > 0) {
-      return {
-        error: `Cannot delete this brand because ${productCount} products are assigned to it. Reassign or delete those products first.`,
-      };
+      if (productCount > 0) {
+        return {
+          error: `Cannot delete this brand because ${productCount} products are assigned to it. Reassign or delete those products first.`,
+        };
+      }
+
+      await prisma.brand.delete({
+        where: { id: brandId },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { count } = await sb.from('products').select('id', { count: 'exact', head: true }).eq('brandId', brandId);
+      if ((count ?? 0) > 0) {
+        return {
+          error: `Cannot delete this brand because ${count} products are assigned to it. Reassign or delete those products first.`,
+        };
+      }
+      await sb.from('brands').delete().eq('id', brandId);
     }
-
-    const deleted = await prisma.brand.delete({
-      where: { id: brandId },
-    });
 
     try {
       await recordAuditLog({
@@ -121,7 +164,6 @@ export async function deleteBrandAction(brandId: string) {
         action: 'BRAND_DELETE',
         entityType: 'Brand',
         entityId: brandId,
-        details: { name: deleted.name },
       });
     } catch (_) {}
 

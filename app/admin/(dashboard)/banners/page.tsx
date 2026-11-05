@@ -1,13 +1,13 @@
 import React from 'react';
-import { getAllBannersAdmin } from '@/lib/banners';
 import BannerManagementClient from './BannerManagementClient';
 import { requireAuth } from '@/lib/auth';
+import { getAdminBannersPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminBannersPage() {
   await requireAuth();
-  const banners = await getAllBannersAdmin();
+  const banners = await getAdminBannersPageData();
 
   return (
     <div className="space-y-6">

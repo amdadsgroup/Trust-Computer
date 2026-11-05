@@ -1,8 +1,8 @@
 import React from 'react';
-import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import { notFound, redirect } from 'next/navigation';
 import EditCouponForm from './EditCouponForm';
+import { getAdminCouponById } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,9 +14,7 @@ export default async function AdminEditCouponPage({
   const session = await requireAuth().catch(() => null);
   if (!session) redirect('/admin/login');
 
-  const coupon = await prisma.coupon.findUnique({
-    where: { id: params.id },
-  });
+  const coupon = await getAdminCouponById(params.id);
 
   if (!coupon) {
     notFound();

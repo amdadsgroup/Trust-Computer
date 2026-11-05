@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Plus, Tag, CheckCircle2, XCircle, Calendar, Users, Trash2 } from 'lucide-react';
 import { toggleCouponActiveAction, deleteCouponAction } from './actions';
+import { getAdminCouponsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,18 +12,7 @@ export default async function AdminCouponsPage() {
   const session = await requireAuth().catch(() => null);
   if (!session) redirect('/admin/login');
 
-  let coupons: any[] = [];
-
-  try {
-    coupons = await prisma.coupon.findMany({
-      include: {
-        _count: { select: { usages: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-  } catch (error) {
-    console.error('Failed to fetch coupons:', error);
-  }
+  const coupons = await getAdminCouponsPageData();
 
   const now = new Date();
 

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/db';
 import { Search, ShoppingBag, Eye, Clock, CheckCircle2, XCircle, Truck, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getAdminOrdersPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,60 +15,12 @@ interface AdminOrdersPageProps {
 }
 
 export default async function AdminOrdersPage({ searchParams }: AdminOrdersPageProps) {
-  const where: any = {};
   const currentStatus = searchParams.status || 'ALL';
   const searchQuery = searchParams.search?.trim() || '';
   const currentPage = Math.max(1, parseInt(searchParams.page || '1', 10));
   const pageSize = 25;
 
-  if (currentStatus !== 'ALL') {
-    where.status = currentStatus;
-  }
-
-  if (searchQuery) {
-    where.OR = [
-      { orderNumber: { contains: searchQuery, mode: 'insensitive' } },
-      { customerPhone: { contains: searchQuery, mode: 'insensitive' } },
-      { customerName: { contains: searchQuery, mode: 'insensitive' } },
-    ];
-  }
-
-  let orders: any[] = [];
-  let totalCount = 0;
-
-  try {
-    const [fetchedOrders, count] = await Promise.all([
-      prisma.order.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: pageSize,
-        skip: (currentPage - 1) * pageSize,
-        select: {
-          id: true,
-          orderNumber: true,
-          customerName: true,
-          customerPhone: true,
-          cityArea: true,
-          total: true,
-          paymentMethod: true,
-          paymentStatus: true,
-          status: true,
-          createdAt: true,
-          items: {
-            select: {
-              quantity: true,
-            },
-          },
-        },
-      }),
-      prisma.order.count({ where }),
-    ]);
-
-    orders = fetchedOrders;
-    totalCount = count;
-  } catch (e) {
-    console.error('Error fetching admin orders:', e);
-  }
+  const { orders, totalCount } = await getAdminOrdersPageData(searchParams);
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

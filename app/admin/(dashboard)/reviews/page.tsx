@@ -17,21 +17,25 @@ export default async function AdminReviewsPage() {
   });
 
   // Calculate overall store average rating
-  const stats = await prisma.review.aggregate({
-    where: { status: 'APPROVED' },
-    _avg: { rating: true },
-  });
-
-  const averageRating = Number((stats._avg.rating ?? 5).toFixed(1));
+  let averageRating = 5.0;
+  try {
+    const stats = await prisma.review.aggregate({
+      where: { status: 'APPROVED' },
+      _avg: { rating: true },
+    });
+    if (stats._avg.rating) {
+      averageRating = Number(stats._avg.rating.toFixed(1));
+    }
+  } catch {}
 
   // Serialize Decimal objects from Product sellingPrice for client component props
   const serializedReviews = reviews.map((r) => ({
     ...r,
-    createdAt: r.createdAt.toISOString(),
-    updatedAt: r.updatedAt.toISOString(),
-    images: r.images.map((img) => ({
+    createdAt: r.createdAt instanceof Date ? r.createdAt.toISOString() : String(r.createdAt),
+    updatedAt: r.updatedAt instanceof Date ? r.updatedAt.toISOString() : String(r.updatedAt),
+    images: (r.images || []).map((img: any) => ({
       ...img,
-      createdAt: img.createdAt.toISOString(),
+      createdAt: img.createdAt instanceof Date ? img.createdAt.toISOString() : String(img.createdAt),
     })),
     product: r.product
       ? {

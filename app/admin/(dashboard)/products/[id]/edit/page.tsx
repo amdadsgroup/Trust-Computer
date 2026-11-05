@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import prisma from '@/lib/db';
 import EditProductForm from '@/components/admin/EditProductForm';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 import { getAdminCategories } from '@/lib/categories';
+import { getAdminProductDetail, getAdminBrandsList } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,39 +15,11 @@ interface EditProductPageProps {
 }
 
 export default async function EditProductPage({ params }: EditProductPageProps) {
-  let product: any = null;
-  let categories: any[] = [];
-  let brands: any[] = [];
-
-  try {
-    const [fetchedProduct, fetchedCategories, fetchedBrands] = await Promise.all([
-      prisma.product.findUnique({
-        where: { id: params.id },
-        include: {
-          category: { select: { id: true, name: true } },
-          brand: { select: { id: true, name: true } },
-          images: { orderBy: { sortOrder: 'asc' } },
-        },
-      }),
-      getAdminCategories(),
-      prisma.brand
-        .findMany({
-          where: { isActive: true },
-          orderBy: { name: 'asc' },
-          select: { id: true, name: true },
-        })
-        .catch((err) => {
-          console.warn('Brand fetch warning on edit product page:', err);
-          return [];
-        }),
-    ]);
-
-    product = fetchedProduct;
-    categories = fetchedCategories;
-    brands = fetchedBrands;
-  } catch (error) {
-    console.error('Error on edit product page:', error);
-  }
+  const [product, categories, brands] = await Promise.all([
+    getAdminProductDetail(params.id),
+    getAdminCategories(),
+    getAdminBrandsList(),
+  ]);
 
   if (!product) {
     notFound();

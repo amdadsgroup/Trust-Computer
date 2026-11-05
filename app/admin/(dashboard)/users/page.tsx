@@ -1,32 +1,14 @@
 import React from 'react';
-import prisma from '@/lib/db';
 import { requireRole } from '@/lib/auth';
 import { Users, UserPlus, ShieldCheck, Mail, Phone, Clock, AlertCircle } from 'lucide-react';
 import { createUserAction, toggleUserStatusAction, updateUserRoleAction } from './actions';
+import { getAdminUsersPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminUsersPage() {
   const currentSession = await requireRole(['OWNER', 'ADMIN']);
-
-  let users: any[] = [];
-  try {
-    users = await prisma.user.findMany({
-      orderBy: { createdAt: 'asc' },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        phone: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
-  } catch (err) {
-    console.error('Error fetching admin users:', err);
-  }
+  const users = await getAdminUsersPageData();
 
   const roleBadges: Record<string, { bg: string; text: string; label: string }> = {
     OWNER: { bg: 'bg-purple-50 border-purple-200 text-purple-700', text: 'text-purple-700', label: 'Owner' },

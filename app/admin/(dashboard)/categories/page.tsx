@@ -2,7 +2,7 @@ import React from 'react';
 import prisma from '@/lib/db';
 import { requireAuth } from '@/lib/auth';
 import CategoriesManagementClient from './CategoriesManagementClient';
-
+import { getAdminCategoriesPageData } from '@/lib/db/admin-service';
 import { DEFAULT_CATEGORIES } from '@/lib/categories-data';
 
 export const dynamic = 'force-dynamic';
@@ -10,25 +10,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminCategoriesPage() {
   await requireAuth();
 
-  let categories: any[] = [];
-  let brands: any[] = [];
-
-  try {
-    const [fetchedCategories, fetchedBrands] = await Promise.all([
-      prisma.category.findMany({
-        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
-        include: { _count: { select: { products: true } } },
-      }),
-      prisma.brand.findMany({
-        orderBy: { name: 'asc' },
-        include: { _count: { select: { products: true } } },
-      }),
-    ]);
-    categories = fetchedCategories;
-    brands = fetchedBrands;
-  } catch (error) {
-    console.error('Error fetching categories/brands:', error);
-  }
+  let { categories, brands } = await getAdminCategoriesPageData();
 
   if (!categories || categories.length === 0) {
     categories = DEFAULT_CATEGORIES.map((d) => ({

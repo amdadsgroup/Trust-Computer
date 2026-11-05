@@ -21,6 +21,7 @@ import {
 } from './actions';
 import { getAdminCategories } from '@/lib/categories';
 import ProductDeleteButton from '@/components/admin/ProductDeleteButton';
+import { getAdminProductsPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,86 +41,7 @@ export default async function AdminProductsPage({ searchParams }: AdminProductsP
   const currentPage = Math.max(1, parseInt(sp.page || '1', 10));
   const pageSize = 25;
 
-  const where: any = {};
-
-  // Text search
-  if (sp.search?.trim()) {
-    where.OR = [
-      { name: { contains: sp.search.trim(), mode: 'insensitive' } },
-      { sku: { contains: sp.search.trim(), mode: 'insensitive' } },
-    ];
-  }
-
-  // Category filter
-  if (sp.category) {
-    where.categoryId = sp.category;
-  }
-
-  // Brand filter
-  if (sp.brand) {
-    where.brandId = sp.brand;
-  }
-
-  // Status filter
-  if (sp.status === 'active') {
-    where.isActive = true;
-  } else if (sp.status === 'inactive') {
-    where.isActive = false;
-  }
-
-  // Stock filter
-  if (sp.stock === 'out-of-stock') {
-    where.stock = { lte: 0 };
-  } else if (sp.stock === 'low-stock') {
-    where.stock = { gt: 0, lte: prisma.product.fields.lowStockThreshold };
-  } else if (sp.stock === 'in-stock') {
-    where.stock = { gt: 3 }; // above typical threshold
-  }
-
-  let products: any[] = [];
-  let totalCount = 0;
-  let categories: any[] = [];
-  let brands: any[] = [];
-
-  try {
-    const [fetchedProducts, count, fetchedCategories, fetchedBrands] = await Promise.all([
-      prisma.product.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        take: pageSize,
-        skip: (currentPage - 1) * pageSize,
-        select: {
-          id: true,
-          name: true,
-          slug: true,
-          sku: true,
-          sellingPrice: true,
-          compareAtPrice: true,
-          stock: true,
-          lowStockThreshold: true,
-          isActive: true,
-          isFeatured: true,
-          category: { select: { id: true, name: true } },
-          brand: { select: { id: true, name: true } },
-          images: { take: 1, select: { url: true } },
-        },
-      }),
-      prisma.product.count({ where }),
-      getAdminCategories(),
-      prisma.brand.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true },
-        orderBy: { name: 'asc' },
-      }),
-    ]);
-
-    products = fetchedProducts;
-    totalCount = count;
-    categories = fetchedCategories;
-    brands = fetchedBrands;
-  } catch (e) {
-    console.error('Error fetching admin products:', e);
-  }
+  const { products, totalCount, categories, brands } = await getAdminProductsPageData(sp);
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

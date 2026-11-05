@@ -13,6 +13,7 @@ import {
   Search,
 } from 'lucide-react';
 import InventoryProductSelector from './InventoryProductSelector';
+import { getAdminInventoryPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,48 +33,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
   const typeFilter = searchParams.type || '';
   const searchFilter = searchParams.search?.trim() || '';
 
-  const movementsWhere: any = {};
-  if (typeFilter) movementsWhere.type = typeFilter;
-  if (searchFilter) {
-    movementsWhere.product = {
-      OR: [
-        { name: { contains: searchFilter, mode: 'insensitive' } },
-        { sku: { contains: searchFilter, mode: 'insensitive' } },
-      ],
-    };
-  }
-
-  let movements: any[] = [];
-  let totalMovements = 0;
-
-  try {
-    const [fetchedMovements, movementsCount] = await Promise.all([
-      prisma.inventoryMovement.findMany({
-        where: movementsWhere,
-        orderBy: { createdAt: 'desc' },
-        take: MOVEMENTS_PER_PAGE,
-        skip: (currentPage - 1) * MOVEMENTS_PER_PAGE,
-        select: {
-          id: true,
-          type: true,
-          quantity: true,
-          previousStock: true,
-          newStock: true,
-          reason: true,
-          referenceId: true,
-          createdAt: true,
-          product: { select: { name: true, sku: true } },
-          user: { select: { name: true } },
-        },
-      }),
-      prisma.inventoryMovement.count({ where: movementsWhere }),
-    ]);
-
-    movements = fetchedMovements;
-    totalMovements = movementsCount;
-  } catch (e) {
-    console.error('Error fetching inventory page data:', e);
-  }
+  const { movements, totalMovements } = await getAdminInventoryPageData(searchParams);
 
   const totalMovementPages = Math.ceil(totalMovements / MOVEMENTS_PER_PAGE);
 
@@ -245,7 +205,7 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {movements.length > 0 ? (
-                  movements.map((m) => {
+                  movements.map((m: any) => {
                     const isPositive = m.quantity > 0;
                     return (
                       <tr key={m.id} className="hover:bg-slate-50">
@@ -259,10 +219,10 @@ export default async function AdminInventoryPage({ searchParams }: AdminInventor
                         </td>
                         <td className="py-3">
                           <span className="font-bold text-slate-800 block line-clamp-1">
-                            {m.product.name}
+                            {m.product?.name || 'Product'}
                           </span>
                           <span className="font-mono text-slate-400 text-[10px]">
-                            SKU: {m.product.sku}
+                            SKU: {m.product?.sku || 'N/A'}
                           </span>
                         </td>
                         <td className="py-3">

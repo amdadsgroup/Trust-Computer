@@ -6,6 +6,7 @@
 import prisma from '@/lib/db';
 import { ReviewStatus } from '@prisma/client';
 import { edgeCache } from '@/lib/cache-edge';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface CreateReviewInput {
   productId: string;
@@ -379,61 +380,109 @@ export async function getAdminReviews(options: AdminReviewListOptions = {}) {
 
   const skip = (page - 1) * pageSize;
 
-  const [reviews, totalCount, allCount, pendingCount, approvedCount, rejectedCount, reportedCount] =
-    await Promise.all([
-      prisma.review.findMany({
-        where: whereClause,
-        include: {
-          product: {
-            select: {
-              id: true,
-              name: true,
-              slug: true,
-              sku: true,
-              sellingPrice: true,
-              images: {
-                select: { url: true, altText: true },
-                orderBy: { sortOrder: 'asc' },
-                take: 1,
+  try {
+    const [reviews, totalCount, allCount, pendingCount, approvedCount, rejectedCount, reportedCount] =
+      await Promise.all([
+        prisma.review.findMany({
+          where: whereClause,
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                sku: true,
+                sellingPrice: true,
+                images: {
+                  select: { url: true, altText: true },
+                  orderBy: { sortOrder: 'asc' },
+                  take: 1,
+                },
               },
             },
-          },
-          customer: {
-            select: {
-              id: true,
-              email: true,
-              fullName: true,
-              avatarUrl: true,
+            customer: {
+              select: {
+                id: true,
+                email: true,
+                fullName: true,
+                avatarUrl: true,
+              },
             },
+            images: true,
           },
-          images: true,
-        },
-        orderBy: { createdAt: 'desc' },
-        take: pageSize,
-        skip,
-      }),
-      prisma.review.count({ where: whereClause }),
-      prisma.review.count(),
-      prisma.review.count({ where: { status: ReviewStatus.PENDING } }),
-      prisma.review.count({ where: { status: ReviewStatus.APPROVED } }),
-      prisma.review.count({ where: { status: ReviewStatus.REJECTED } }),
-      prisma.review.count({ where: { status: ReviewStatus.REPORTED } }),
-    ]);
+          orderBy: { createdAt: 'desc' },
+          take: pageSize,
+          skip,
+        }),
+        prisma.review.count({ where: whereClause }),
+        prisma.review.count(),
+        prisma.review.count({ where: { status: ReviewStatus.PENDING } }),
+        prisma.review.count({ where: { status: ReviewStatus.APPROVED } }),
+        prisma.review.count({ where: { status: ReviewStatus.REJECTED } }),
+        prisma.review.count({ where: { status: ReviewStatus.REPORTED } }),
+      ]);
 
-  return {
-    reviews,
-    totalCount,
-    page,
-    pageSize,
-    totalPages: Math.ceil(totalCount / pageSize) || 1,
-    counts: {
-      all: allCount,
-      pending: pendingCount,
-      approved: approvedCount,
-      rejected: rejectedCount,
-      reported: reportedCount,
-    },
-  };
+    return {
+      reviews,
+      totalCount,
+      page,
+      pageSize,
+      totalPages: Math.ceil(totalCount / pageSize) || 1,
+      counts: {
+        all: allCount,
+        pending: pendingCount,
+        approved: approvedCount,
+        rejected: rejectedCount,
+        reported: reportedCount,
+      },
+    };
+  } catch {
+    const sb = createAdminClient();
+    if (sb) {
+      try {
+        let query = sb.from('reviews').select('*, product:products(id, name, slug, sku, sellingPrice), images:review_images(*)', { count: 'exact' });
+        if (status !== 'ALL') query = query.eq('status', status);
+        if (rating) query = query.eq('rating', rating);
+
+        const from = skip;
+        const to = skip + pageSize - 1;
+
+        const [res, allRes, pendRes, appRes, rejRes, repRes] = await Promise.all([
+          query.order('createdAt', { ascending: false }).range(from, to),
+          sb.from('reviews').select('id', { count: 'exact', head: true }),
+          sb.from('reviews').select('id', { count: 'exact', head: true }).eq('status', 'PENDING'),
+          sb.from('reviews').select('id', { count: 'exact', head: true }).eq('status', 'APPROVED'),
+          sb.from('reviews').select('id', { count: 'exact', head: true }).eq('status', 'REJECTED'),
+          sb.from('reviews').select('id', { count: 'exact', head: true }).eq('status', 'REPORTED'),
+        ]);
+
+        const totalCount = res.count ?? (res.data || []).length;
+        return {
+          reviews: res.data || [],
+          totalCount,
+          page,
+          pageSize,
+          totalPages: Math.ceil(totalCount / pageSize) || 1,
+          counts: {
+            all: allRes.count ?? 0,
+            pending: pendRes.count ?? 0,
+            approved: appRes.count ?? 0,
+            rejected: rejRes.count ?? 0,
+            reported: repRes.count ?? 0,
+          },
+        };
+      } catch {}
+    }
+
+    return {
+      reviews: [],
+      totalCount: 0,
+      page,
+      pageSize,
+      totalPages: 1,
+      counts: { all: 0, pending: 0, approved: 0, rejected: 0, reported: 0 },
+    };
+  }
 }
 
 /**

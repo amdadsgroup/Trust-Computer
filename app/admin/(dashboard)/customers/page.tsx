@@ -1,7 +1,7 @@
 import React from 'react';
-import prisma from '@/lib/db';
 import Link from 'next/link';
 import { Users, ShoppingBag, MapPin, Mail, Phone, Calendar, Search } from 'lucide-react';
+import { getAdminCustomersPageData } from '@/lib/db/admin-service';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,52 +10,11 @@ export default async function AdminCustomersPage({
 }: {
   searchParams: { search?: string; page?: string };
 }) {
-  // Note: auth is already handled by the admin layout (getSession + redirect)
   const page = Math.max(1, parseInt(searchParams.page || '1', 10));
   const pageSize = 25;
   const search = searchParams.search?.trim() || '';
 
-  let customers: any[] = [];
-  let totalCount = 0;
-
-  try {
-    const where = search
-      ? {
-          OR: [
-            { fullName: { contains: search, mode: 'insensitive' as const } },
-            { email: { contains: search, mode: 'insensitive' as const } },
-            { phone: { contains: search, mode: 'insensitive' as const } },
-          ],
-        }
-      : {};
-
-    [customers, totalCount] = await Promise.all([
-      prisma.customerProfile.findMany({
-        where,
-        select: {
-          id: true,
-          fullName: true,
-          email: true,
-          phone: true,
-          createdAt: true,
-          _count: {
-            select: { orders: true, addresses: true },
-          },
-          orders: {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-            select: { createdAt: true, total: true, status: true },
-          },
-        },
-        orderBy: { createdAt: 'desc' },
-        take: pageSize,
-        skip: (page - 1) * pageSize,
-      }),
-      prisma.customerProfile.count({ where }),
-    ]);
-  } catch (error) {
-    console.error('Failed to fetch customers:', error);
-  }
+  const { customers, totalCount } = await getAdminCustomersPageData(searchParams);
 
   const totalPages = Math.ceil(totalCount / pageSize);
 

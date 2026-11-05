@@ -2,6 +2,10 @@ const fs = require('fs');
 const path = require('path');
 
 const rootDir = path.join(__dirname, '..');
+const lockFile = path.join(rootDir, '.worker-building.lock');
+try {
+  fs.writeFileSync(lockFile, '1', 'utf8');
+} catch {}
 
 const targetPath = path.join(
   rootDir,

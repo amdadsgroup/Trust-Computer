@@ -1,9 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import prisma from '@/lib/db';
 import { ALLOWED_STATUS_TRANSITIONS } from '@/lib/orders';
 import { changeOrderStatusAction, markPaymentAsPaidAction } from '../actions';
+import { getAdminOrderDetail } from '@/lib/db/admin-service';
 import {
   ArrowLeft,
   ShoppingBag,
@@ -26,23 +26,7 @@ interface AdminOrderDetailPageProps {
 }
 
 export default async function AdminOrderDetailPage({ params }: AdminOrderDetailPageProps) {
-  let order: any = null;
-
-  try {
-    order = await prisma.order.findUnique({
-      where: { id: params.id },
-      include: {
-        items: true,
-        payments: true,
-        statusHistory: {
-          orderBy: { createdAt: 'desc' },
-          include: { user: { select: { name: true } } },
-        },
-      },
-    });
-  } catch (e) {
-    console.error('Error fetching admin order detail:', e);
-  }
+  const order = await getAdminOrderDetail(params.id);
 
   if (!order) {
     notFound();

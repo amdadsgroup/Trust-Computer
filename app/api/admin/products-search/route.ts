@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/db';
 import { getSession } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function GET(request: NextRequest) {
   // Auth check — must be admin
@@ -38,6 +39,19 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ products });
   } catch (error) {
+    // Fallback to Supabase REST
+    const sb = createAdminClient();
+    if (sb) {
+      try {
+        let query = sb.from('products').select('id, name, sku, stock').eq('isActive', true);
+        if (q) {
+          query = query.or(`name.ilike.%${q}%,sku.ilike.%${q}%`);
+        }
+        const { data } = await query.order('name', { ascending: true }).limit(limit);
+        return NextResponse.json({ products: data || [] });
+      } catch {}
+    }
+
     console.error('Product search API error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

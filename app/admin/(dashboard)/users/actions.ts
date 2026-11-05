@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import prisma from '@/lib/db';
 import { requireRole, recordAuditLog } from '@/lib/auth';
 import { z } from 'zod';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 const userCreateSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -34,24 +35,48 @@ export async function createUserAction(formData: FormData) {
   }
 
   try {
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      return { error: 'An account with this email address already exists.' };
-    }
-
     const salt = await bcrypt.genSalt(12);
     const passwordHash = await bcrypt.hash(password, salt);
+    let newUser: any = null;
 
-    const newUser = await prisma.user.create({
-      data: {
-        name,
-        email,
-        passwordHash,
-        role,
-        phone,
-        isActive: true,
-      },
-    });
+    try {
+      const existing = await prisma.user.findUnique({ where: { email } });
+      if (existing) {
+        return { error: 'An account with this email address already exists.' };
+      }
+
+      newUser = await prisma.user.create({
+        data: {
+          name,
+          email,
+          passwordHash,
+          role,
+          phone,
+          isActive: true,
+        },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { data: existing } = await sb.from('users').select('id').eq('email', email).maybeSingle();
+      if (existing) {
+        return { error: 'An account with this email address already exists.' };
+      }
+      const { data: created, error } = await sb
+        .from('users')
+        .insert({
+          name,
+          email,
+          passwordHash,
+          role,
+          phone,
+          isActive: true,
+        })
+        .select()
+        .single();
+      if (error || !created) throw new Error(error?.message || 'Failed to create user');
+      newUser = created;
+    }
 
     await recordAuditLog({
       userId: session.userId,
@@ -76,25 +101,44 @@ export async function toggleUserStatusAction(targetUserId: string) {
   }
 
   try {
-    const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
-    if (!targetUser) return { error: 'User not found.' };
+    let email = '';
+    let newStatus = true;
 
-    // Prevent non-owners from toggling owners
-    if (targetUser.role === 'OWNER' && session.role !== 'OWNER') {
-      return { error: 'You do not have permission to modify an Owner account.' };
+    try {
+      const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
+      if (!targetUser) return { error: 'User not found.' };
+
+      if (targetUser.role === 'OWNER' && session.role !== 'OWNER') {
+        return { error: 'You do not have permission to modify an Owner account.' };
+      }
+
+      newStatus = !targetUser.isActive;
+      email = targetUser.email;
+      await prisma.user.update({
+        where: { id: targetUserId },
+        data: { isActive: newStatus },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { data: targetUser } = await sb.from('users').select('email, role, isActive').eq('id', targetUserId).single();
+      if (!targetUser) return { error: 'User not found.' };
+
+      if (targetUser.role === 'OWNER' && session.role !== 'OWNER') {
+        return { error: 'You do not have permission to modify an Owner account.' };
+      }
+
+      newStatus = !targetUser.isActive;
+      email = targetUser.email;
+      await sb.from('users').update({ isActive: newStatus, updatedAt: new Date().toISOString() }).eq('id', targetUserId);
     }
-
-    const updated = await prisma.user.update({
-      where: { id: targetUserId },
-      data: { isActive: !targetUser.isActive },
-    });
 
     await recordAuditLog({
       userId: session.userId,
       action: 'USER_STATUS_TOGGLE',
       entityType: 'User',
       entityId: targetUserId,
-      details: { email: targetUser.email, isActive: updated.isActive },
+      details: { email, isActive: newStatus },
     });
 
     revalidatePath('/admin/users');
@@ -108,20 +152,36 @@ export async function updateUserRoleAction(targetUserId: string, newRole: 'OWNER
   const session = await requireRole(['OWNER']);
 
   try {
-    const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
-    if (!targetUser) return { error: 'User not found.' };
+    let email = '';
+    let oldRole = '';
 
-    const updated = await prisma.user.update({
-      where: { id: targetUserId },
-      data: { role: newRole },
-    });
+    try {
+      const targetUser = await prisma.user.findUnique({ where: { id: targetUserId } });
+      if (!targetUser) return { error: 'User not found.' };
+      email = targetUser.email;
+      oldRole = targetUser.role;
+
+      await prisma.user.update({
+        where: { id: targetUserId },
+        data: { role: newRole },
+      });
+    } catch {
+      const sb = createAdminClient();
+      if (!sb) throw new Error('Database service unavailable');
+      const { data: targetUser } = await sb.from('users').select('email, role').eq('id', targetUserId).single();
+      if (!targetUser) return { error: 'User not found.' };
+      email = targetUser.email;
+      oldRole = targetUser.role;
+
+      await sb.from('users').update({ role: newRole, updatedAt: new Date().toISOString() }).eq('id', targetUserId);
+    }
 
     await recordAuditLog({
       userId: session.userId,
       action: 'USER_ROLE_UPDATE',
       entityType: 'User',
       entityId: targetUserId,
-      details: { email: targetUser.email, oldRole: targetUser.role, newRole },
+      details: { email, oldRole, newRole },
     });
 
     revalidatePath('/admin/users');
