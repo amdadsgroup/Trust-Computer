@@ -13,3 +13,4 @@ if (process.env.BUILDING_NEXT) {
     env: { ...process.env, BUILDING_NEXT: '1' }
   });
 }
+
