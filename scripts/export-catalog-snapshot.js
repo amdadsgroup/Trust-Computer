@@ -75,8 +75,15 @@ async function main() {
 
 main()
   .catch(err => {
-    console.error('[export-catalog-snapshot] Error:', err);
-    process.exit(1);
+    console.warn('[export-catalog-snapshot] Warning during snapshot refresh:', err.message);
+    const outPath = path.join(__dirname, '..', 'lib', 'db', 'catalog-snapshot.json');
+    if (fs.existsSync(outPath)) {
+      console.log('[export-catalog-snapshot] Using existing catalog snapshot: ' + outPath);
+      process.exit(0);
+    } else {
+      console.error('[export-catalog-snapshot] Fatal: No existing snapshot found.');
+      process.exit(1);
+    }
   })
   .finally(() => prisma.$disconnect());
 

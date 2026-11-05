@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && node scripts/export-catalog-snapshot.js && next build",
+    "build": "node scripts/build-dispatcher.js",
+    "build:next": "prisma generate && node scripts/export-catalog-snapshot.js && next build",
     "build:worker": "node scripts/patch-opennext.js && opennextjs-cloudflare build && node scripts/patch-worker.js",
     "preview:worker": "wrangler dev",
     "deploy:worker": "wrangler deploy",
