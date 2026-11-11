@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/db';
+import { getCatalogFilterMetadata } from '@/lib/db/catalog';
 import {
   Home,
   ChevronRight,
@@ -146,7 +147,15 @@ export default async function CategoriesPage() {
     categories = fetchedCats;
     totalProductsCount = totalCount;
   } catch (error) {
-    console.error('Error loading categories:', error);
+    try {
+      const meta = await getCatalogFilterMetadata();
+      if (meta?.categories && meta.categories.length > 0) {
+        categories = meta.categories;
+        totalProductsCount = meta.totalInStore;
+      }
+    } catch {
+      console.error('Error loading categories:', error);
+    }
   }
 
   // Fallback defaults if DB has few or empty categories

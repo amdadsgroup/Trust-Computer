@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/db';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { orderTrackingSchema } from '@/lib/validations';
 import {
   Truck,
@@ -36,16 +37,37 @@ export default async function TrackOrderPage({ searchParams }: TrackOrderPagePro
       error = 'Please provide a valid Order Number and an 11-digit Bangladesh phone number.';
     } else {
       try {
-        order = await prisma.order.findFirst({
-          where: {
-            orderNumber: sp.orderNumber.trim(),
-            customerPhone: sp.phone.trim(),
-          },
-          include: {
-            items: true,
-            statusHistory: { orderBy: { createdAt: 'desc' } },
-          },
-        });
+        try {
+          order = await prisma.order.findFirst({
+            where: {
+              orderNumber: sp.orderNumber.trim(),
+              customerPhone: sp.phone.trim(),
+            },
+            include: {
+              items: true,
+              statusHistory: { orderBy: { createdAt: 'desc' } },
+            },
+          });
+        } catch (prismaErr) {
+          const sb = createAdminClient();
+          if (!sb) throw prismaErr;
+          const { data: sbOrder, error: sbErr } = await sb
+            .from('orders')
+            .select('*, items:order_items(*), statusHistory:order_status_history(*)')
+            .eq('orderNumber', sp.orderNumber.trim())
+            .eq('customerPhone', sp.phone.trim())
+            .maybeSingle();
+          if (sbErr) throw new Error(sbErr.message);
+          if (sbOrder) {
+            if (Array.isArray(sbOrder.statusHistory)) {
+              sbOrder.statusHistory.sort(
+                (a: any, b: any) =>
+                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+              );
+            }
+            order = sbOrder;
+          }
+        }
 
         if (!order) {
           error =

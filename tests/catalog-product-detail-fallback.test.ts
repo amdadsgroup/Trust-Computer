@@ -174,3 +174,4 @@ describe('Catalog Product Detail Cloudflare Fallback', () => {
     expect(related[0].specifications).toEqual([]);
   });
 });
+

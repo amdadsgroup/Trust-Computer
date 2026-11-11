@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import prisma from '@/lib/db';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 86400; // Cache sitemap at Vercel Edge for 24 hours
 
@@ -21,27 +22,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [products, categories] = await Promise.all([
-      prisma.product.findMany({
-        where: { isActive: true },
-        select: { slug: true, updatedAt: true },
-      }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        select: { slug: true, updatedAt: true },
-      }),
-    ]);
+    let products: Array<{ slug: string; updatedAt: Date | string }> = [];
+    let categories: Array<{ slug: string; updatedAt: Date | string }> = [];
+
+    try {
+      const [dbProducts, dbCategories] = await Promise.all([
+        prisma.product.findMany({
+          where: { isActive: true },
+          select: { slug: true, updatedAt: true },
+        }),
+        prisma.category.findMany({
+          where: { isActive: true },
+          select: { slug: true, updatedAt: true },
+        }),
+      ]);
+      products = dbProducts;
+      categories = dbCategories;
+    } catch (prismaErr) {
+      const sb = createAdminClient();
+      if (!sb) throw prismaErr;
+      const [prodsRes, catsRes] = await Promise.all([
+        sb.from('products').select('slug, updatedAt').eq('isActive', true),
+        sb.from('categories').select('slug, updatedAt').eq('isActive', true),
+      ]);
+      products = prodsRes.data || [];
+      categories = catsRes.data || [];
+    }
 
     const productUrls: MetadataRoute.Sitemap = products.map((p) => ({
       url: `${baseUrl}/products/${p.slug}`,
-      lastModified: p.updatedAt,
+      lastModified: p.updatedAt ? new Date(p.updatedAt) : new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
 
     const categoryUrls: MetadataRoute.Sitemap = categories.map((c) => ({
       url: `${baseUrl}/categories/${c.slug}`,
-      lastModified: c.updatedAt,
+      lastModified: c.updatedAt ? new Date(c.updatedAt) : new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     }));
