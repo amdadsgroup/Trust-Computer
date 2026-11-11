@@ -1,6 +1,9 @@
 import { Prisma, InventoryMovementType } from '@prisma/client';
 import prisma from '@/lib/db';
 import { getValidAdminUserId } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
+
+class InventoryDomainError extends Error {}
 
 export interface RecordMovementParams {
   productId: string;
@@ -19,34 +22,105 @@ export async function adjustInventory(
   params: RecordMovementParams,
   tx?: Prisma.TransactionClient
 ) {
-  const client = tx || prisma;
+  if (tx) {
+    return adjustInventoryWithPrisma(params, tx);
+  }
 
-  // 1. Fetch current product stock
+  try {
+    return await adjustInventoryWithPrisma(params, prisma);
+  } catch (err) {
+    if (err instanceof InventoryDomainError) {
+      throw err;
+    }
+
+    const sb = createAdminClient();
+    if (!sb) throw err;
+
+    const { data: product, error: prodErr } = await sb
+      .from('products')
+      .select('id, stock, name, sku')
+      .eq('id', params.productId)
+      .maybeSingle();
+
+    if (prodErr) throw new Error(prodErr.message);
+    if (!product) {
+      throw new InventoryDomainError(`Product not found: ${params.productId}`);
+    }
+
+    const previousStock = product.stock;
+    const newStock = previousStock + params.quantity;
+
+    if (newStock < 0) {
+      throw new InventoryDomainError(
+        `Insufficient inventory for "${product.name}" (SKU: ${product.sku}). Available: ${previousStock}, Requested: ${Math.abs(params.quantity)}`
+      );
+    }
+
+    const now = new Date().toISOString();
+    const { data: updatedProduct, error: updErr } = await sb
+      .from('products')
+      .update({ stock: newStock, updatedAt: now })
+      .eq('id', params.productId)
+      .select()
+      .single();
+
+    if (updErr || !updatedProduct) {
+      throw new Error(updErr?.message || 'Failed to update product stock.');
+    }
+
+    const validUserId = await getValidAdminUserId(params.userId);
+    const { data: movement, error: movErr } = await sb
+      .from('inventory_movements')
+      .insert({
+        id: crypto.randomUUID(),
+        productId: params.productId,
+        type: params.type,
+        quantity: params.quantity,
+        previousStock,
+        newStock,
+        reason: params.reason,
+        referenceId: params.referenceId || null,
+        createdByUserId: validUserId,
+        createdAt: now,
+      })
+      .select()
+      .single();
+
+    if (movErr || !movement) {
+      throw new Error(movErr?.message || 'Failed to record inventory movement.');
+    }
+
+    return { product: updatedProduct, movement };
+  }
+}
+
+async function adjustInventoryWithPrisma(
+  params: RecordMovementParams,
+  client: Prisma.TransactionClient | typeof prisma
+) {
   const product = await client.product.findUnique({
     where: { id: params.productId },
     select: { id: true, stock: true, name: true, sku: true },
   });
 
   if (!product) {
-    throw new Error(`Product not found: ${params.productId}`);
+    throw new InventoryDomainError(`Product not found: ${params.productId}`);
   }
 
   const previousStock = product.stock;
   const newStock = previousStock + params.quantity;
 
   if (newStock < 0) {
-    throw new Error(
+    throw new InventoryDomainError(
       `Insufficient inventory for "${product.name}" (SKU: ${product.sku}). Available: ${previousStock}, Requested: ${Math.abs(params.quantity)}`
     );
   }
 
-  // 2. Update product stock atomically
   const updatedProduct = await client.product.update({
     where: { id: params.productId },
     data: { stock: newStock },
   });
 
-  // 3. Record immutable inventory movement ledger
   const validUserId = await getValidAdminUserId(params.userId);
 
   const movement = await client.inventoryMovement.create({
@@ -73,10 +147,23 @@ export async function verifyStockAvailability(
   items: Array<{ productId: string; quantity: number }>
 ) {
   const productIds = items.map((i) => i.productId);
-  const products = await prisma.product.findMany({
-    where: { id: { in: productIds } },
-    select: { id: true, name: true, sku: true, stock: true, isActive: true },
-  });
+  let products: Array<{ id: string; name: string; sku: string; stock: number; isActive: boolean }> = [];
+
+  try {
+    products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true, sku: true, stock: true, isActive: true },
+    });
+  } catch (err) {
+    const sb = createAdminClient();
+    if (!sb) throw err;
+    const { data, error } = await sb
+      .from('products')
+      .select('id, name, sku, stock, isActive')
+      .in('id', productIds);
+    if (error) throw new Error(error.message);
+    products = data || [];
+  }
 
   const productMap = new Map(products.map((p) => [p.id, p]));
   const errors: string[] = [];

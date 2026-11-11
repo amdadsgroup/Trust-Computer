@@ -3,6 +3,8 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { revalidateEdgeTag } from '@/lib/cache-edge';
 
 export async function updateStoreSettingsAction(formData: FormData) {
   const session = await requireAuth();
@@ -20,45 +22,54 @@ export async function updateStoreSettingsAction(formData: FormData) {
   const deliveryFeeInside = parseFloat((formData.get('deliveryFeeInsideMoulvibazar') as string) || '60');
   const deliveryFeeOutside = parseFloat((formData.get('deliveryFeeOutsideMoulvibazar') as string) || '120');
 
+  const payload = {
+    storeName,
+    ownerName,
+    phone,
+    email,
+    address,
+    facebookUrl,
+    whatsappNumber,
+    servicePhone,
+    serviceWhatsapp,
+    bkashNumber,
+    deliveryFeeInsideMoulvibazar: deliveryFeeInside,
+    deliveryFeeOutsideMoulvibazar: deliveryFeeOutside,
+  };
+
   try {
-    const updated = await prisma.siteSettings.upsert({
-      where: { id: 'default' },
-      update: {
-        storeName,
-        ownerName,
-        phone,
-        email,
-        address,
-        facebookUrl,
-        whatsappNumber,
-        servicePhone,
-        serviceWhatsapp,
-        bkashNumber,
-        deliveryFeeInsideMoulvibazar: deliveryFeeInside,
-        deliveryFeeOutsideMoulvibazar: deliveryFeeOutside,
-      },
-      create: {
-        id: 'default',
-        storeName,
-        ownerName,
-        phone,
-        email,
-        address,
-        facebookUrl,
-        whatsappNumber,
-        servicePhone,
-        serviceWhatsapp,
-        bkashNumber,
-        deliveryFeeInsideMoulvibazar: deliveryFeeInside,
-        deliveryFeeOutsideMoulvibazar: deliveryFeeOutside,
-      },
-    });
+    let settingsId = 'default';
+    try {
+      const updated = await prisma.siteSettings.upsert({
+        where: { id: 'default' },
+        update: payload,
+        create: { id: 'default', ...payload },
+      });
+      settingsId = updated.id;
+    } catch (prismaErr) {
+      const sb = createAdminClient();
+      if (!sb) throw prismaErr;
+      const { data: updated, error } = await sb
+        .from('site_settings')
+        .upsert(
+          {
+            id: 'default',
+            ...payload,
+            updatedAt: new Date().toISOString(),
+          },
+          { onConflict: 'id' }
+        )
+        .select('id')
+        .single();
+      if (error || !updated) throw new Error(error?.message || 'Failed to update settings.');
+      settingsId = updated.id;
+    }
 
     await recordAuditLog({
       userId: session.userId,
       action: 'SETTINGS_UPDATE',
       entityType: 'SiteSettings',
-      entityId: updated.id,
+      entityId: settingsId,
       details: {
         storeName,
         salesPhone: phone,
@@ -70,6 +81,7 @@ export async function updateStoreSettingsAction(formData: FormData) {
     });
 
     revalidateTag('settings');
+    revalidateEdgeTag('settings');
     revalidatePath('/admin/settings');
     return { success: true };
   } catch (error: any) {

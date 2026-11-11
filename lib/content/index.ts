@@ -1,5 +1,6 @@
 import prisma from '@/lib/db';
 import { recordAuditLog } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface ContentPageData {
   slug: string;
@@ -131,8 +132,27 @@ export async function getContentPage(slug: string): Promise<ContentPageData> {
         updatedBy: page.updatedBy,
       };
     }
-  } catch (err) {
-    console.warn(`ContentPage DB fetch error for slug "${slug}", falling back to verified default:`, err);
+  } catch {
+    try {
+      const sb = createAdminClient();
+      if (sb) {
+        const { data: page } = await sb
+          .from('content_pages')
+          .select('slug, title, content, isDraft, updatedAt, updatedBy')
+          .eq('slug', slug)
+          .maybeSingle();
+        if (page) {
+          return {
+            slug: page.slug,
+            title: page.title,
+            content: page.content,
+            isDraft: page.isDraft,
+            updatedAt: page.updatedAt ? new Date(page.updatedAt) : undefined,
+            updatedBy: page.updatedBy,
+          };
+        }
+      }
+    } catch {}
   }
 
   const defaultPage = DEFAULT_POLICY_PAGES[slug];
@@ -158,22 +178,68 @@ export async function updateContentPage(
   data: { title: string; content: string; isDraft: boolean },
   userId?: string
 ) {
-  const result = await (prisma as any).contentPage.upsert({
-    where: { slug },
-    update: {
-      title: data.title,
-      content: data.content,
-      isDraft: data.isDraft,
-      updatedBy: userId,
-    },
-    create: {
-      slug,
-      title: data.title,
-      content: data.content,
-      isDraft: data.isDraft,
-      updatedBy: userId,
-    },
-  });
+  let result: any;
+  try {
+    result = await (prisma as any).contentPage.upsert({
+      where: { slug },
+      update: {
+        title: data.title,
+        content: data.content,
+        isDraft: data.isDraft,
+        updatedBy: userId,
+      },
+      create: {
+        slug,
+        title: data.title,
+        content: data.content,
+        isDraft: data.isDraft,
+        updatedBy: userId,
+      },
+    });
+  } catch (err) {
+    const sb = createAdminClient();
+    if (!sb) throw err;
+    const now = new Date().toISOString();
+    const { data: existing } = await sb
+      .from('content_pages')
+      .select('id')
+      .eq('slug', slug)
+      .maybeSingle();
+
+    if (existing) {
+      const { data: updated, error } = await sb
+        .from('content_pages')
+        .update({
+          title: data.title,
+          content: data.content,
+          isDraft: data.isDraft,
+          updatedBy: userId || null,
+          updatedAt: now,
+        })
+        .eq('slug', slug)
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      result = updated;
+    } else {
+      const { data: created, error } = await sb
+        .from('content_pages')
+        .insert({
+          id: crypto.randomUUID(),
+          slug,
+          title: data.title,
+          content: data.content,
+          isDraft: data.isDraft,
+          updatedBy: userId || null,
+          createdAt: now,
+          updatedAt: now,
+        })
+        .select()
+        .single();
+      if (error) throw new Error(error.message);
+      result = created;
+    }
+  }
 
   await recordAuditLog({
     userId,

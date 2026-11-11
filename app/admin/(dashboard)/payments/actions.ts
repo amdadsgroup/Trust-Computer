@@ -4,6 +4,7 @@ import prisma from '@/lib/db';
 import { requireAuth, recordAuditLog } from '@/lib/auth';
 import { PaymentStatus } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface PaymentActionResponse {
   success: boolean;
@@ -11,9 +12,102 @@ export interface PaymentActionResponse {
   error?: string;
 }
 
-/**
- * Admin action to manually verify a bKash or other pending payment
- */
+interface PaymentWithOrderRecord {
+  orderId: string;
+  amount: unknown;
+  transactionId: string | null;
+  rawResponseJson: string | null;
+  order: { id: string; orderNumber: string };
+}
+
+function parseRawMeta(rawResponseJson: string | null): Record<string, any> {
+  try {
+    return rawResponseJson ? JSON.parse(rawResponseJson) : {};
+  } catch {
+    return {};
+  }
+}
+
+async function getPaymentWithOrder(paymentId: string): Promise<PaymentWithOrderRecord | null> {
+  try {
+    return await prisma.payment.findUnique({
+      where: { id: paymentId },
+      include: {
+        order: { select: { id: true, orderNumber: true } },
+      },
+    });
+  } catch (prismaErr) {
+    const sb = createAdminClient();
+    if (!sb) throw prismaErr;
+    const { data, error } = await sb
+      .from('payments')
+      .select('orderId, amount, transactionId, rawResponseJson, order:orders(id, orderNumber)')
+      .eq('id', paymentId)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!data) return null;
+
+    const ord = Array.isArray(data.order) ? data.order[0] : data.order;
+    return {
+      orderId: data.orderId,
+      amount: data.amount,
+      transactionId: data.transactionId,
+      rawResponseJson: data.rawResponseJson,
+      order: ord || { id: data.orderId, orderNumber: '' },
+    };
+  }
+}
+
+async function applyPaymentAndOrderStatus(params: {
+  paymentId: string;
+  orderId: string;
+  status: PaymentStatus;
+  paidAt?: Date;
+  rawResponseJson: string;
+  notes: string;
+}) {
+  const { paymentId, orderId, status, paidAt, rawResponseJson, notes } = params;
+
+  try {
+    await prisma.$transaction([
+      prisma.payment.update({
+        where: { id: paymentId },
+        data: {
+          status,
+          ...(paidAt ? { paidAt } : {}),
+          rawResponseJson,
+          notes,
+        },
+      }),
+      prisma.order.update({
+        where: { id: orderId },
+        data: { paymentStatus: status },
+      }),
+    ]);
+  } catch (prismaErr) {
+    const sb = createAdminClient();
+    if (!sb) throw prismaErr;
+    const nowIso = new Date().toISOString();
+    const { error: payErr } = await sb
+      .from('payments')
+      .update({
+        status,
+        ...(paidAt ? { paidAt: paidAt.toISOString() } : {}),
+        rawResponseJson,
+        notes,
+        updatedAt: nowIso,
+      })
+      .eq('id', paymentId);
+    if (payErr) throw new Error(payErr.message);
+
+    const { error: ordErr } = await sb
+      .from('orders')
+      .update({ paymentStatus: status, updatedAt: nowIso })
+      .eq('id', orderId);
+    if (ordErr) throw new Error(ordErr.message);
+  }
+}
+
 /**
  * Admin action to manually verify a bKash or other pending payment
  */
@@ -26,30 +120,14 @@ export async function verifyPaymentAction(
 
     const paymentId = typeof param === 'string' ? param : param.paymentId;
     const adminNote = (typeof param === 'object' ? param.adminNote : adminNoteParam) || '';
+    const verifiedAt = new Date();
 
-    const payment = await prisma.payment.findUnique({
-      where: { id: paymentId },
-      include: {
-        order: {
-          select: { id: true, orderNumber: true },
-        },
-      },
-    });
-
+    const payment = await getPaymentWithOrder(paymentId);
     if (!payment) {
       return { success: false, error: 'Payment record not found.' };
     }
 
-    let existingMeta: Record<string, any> = {};
-    try {
-      if (payment.rawResponseJson) {
-        existingMeta = JSON.parse(payment.rawResponseJson);
-      }
-    } catch {
-      existingMeta = {};
-    }
-
-    const verifiedAt = new Date();
+    const existingMeta = parseRawMeta(payment.rawResponseJson);
     const updatedMeta = {
       ...existingMeta,
       status: 'verified',
@@ -63,24 +141,14 @@ export async function verifyPaymentAction(
       ? `Verified by ${session.name} (${session.email}) on ${verifiedAt.toLocaleDateString('en-BD')}. Note: ${adminNote.trim()}`
       : `Verified by ${session.name} (${session.email}) on ${verifiedAt.toLocaleDateString('en-BD')}`;
 
-    // Transactionally update payment and order status
-    await prisma.$transaction([
-      prisma.payment.update({
-        where: { id: paymentId },
-        data: {
-          status: PaymentStatus.PAID,
-          paidAt: verifiedAt,
-          rawResponseJson: JSON.stringify(updatedMeta),
-          notes: notesSummary,
-        },
-      }),
-      prisma.order.update({
-        where: { id: payment.orderId },
-        data: {
-          paymentStatus: PaymentStatus.PAID,
-        },
-      }),
-    ]);
+    await applyPaymentAndOrderStatus({
+      paymentId,
+      orderId: payment.orderId,
+      status: PaymentStatus.PAID,
+      paidAt: verifiedAt,
+      rawResponseJson: JSON.stringify(updatedMeta),
+      notes: notesSummary,
+    });
 
     await recordAuditLog({
       userId: session.userId,
@@ -122,30 +190,14 @@ export async function rejectPaymentAction(
       (typeof param === 'object' ? param.rejectionReason : reasonParam) || 'Transaction could not be verified'
     ).trim();
     const adminNote = (typeof param === 'object' ? param.adminNote : adminNoteParam) || '';
+    const rejectedAt = new Date();
 
-    const payment = await prisma.payment.findUnique({
-      where: { id: paymentId },
-      include: {
-        order: {
-          select: { id: true, orderNumber: true },
-        },
-      },
-    });
-
+    const payment = await getPaymentWithOrder(paymentId);
     if (!payment) {
       return { success: false, error: 'Payment record not found.' };
     }
 
-    let existingMeta: Record<string, any> = {};
-    try {
-      if (payment.rawResponseJson) {
-        existingMeta = JSON.parse(payment.rawResponseJson);
-      }
-    } catch {
-      existingMeta = {};
-    }
-
-    const rejectedAt = new Date();
+    const existingMeta = parseRawMeta(payment.rawResponseJson);
     const updatedMeta = {
       ...existingMeta,
       status: 'rejected',
@@ -159,23 +211,13 @@ export async function rejectPaymentAction(
       ? `Rejected: ${cleanReason} (by ${session.name} on ${rejectedAt.toLocaleDateString('en-BD')}). Note: ${adminNote.trim()}`
       : `Rejected: ${cleanReason} (by ${session.name} on ${rejectedAt.toLocaleDateString('en-BD')})`;
 
-    // Transactionally update payment and order status without deleting transaction records
-    await prisma.$transaction([
-      prisma.payment.update({
-        where: { id: paymentId },
-        data: {
-          status: PaymentStatus.FAILED,
-          rawResponseJson: JSON.stringify(updatedMeta),
-          notes: notesSummary,
-        },
-      }),
-      prisma.order.update({
-        where: { id: payment.orderId },
-        data: {
-          paymentStatus: PaymentStatus.FAILED,
-        },
-      }),
-    ]);
+    await applyPaymentAndOrderStatus({
+      paymentId,
+      orderId: payment.orderId,
+      status: PaymentStatus.FAILED,
+      rawResponseJson: JSON.stringify(updatedMeta),
+      notes: notesSummary,
+    });
 
     await recordAuditLog({
       userId: session.userId,

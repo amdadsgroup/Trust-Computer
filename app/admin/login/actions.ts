@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import prisma from '@/lib/db';
 import { adminLoginSchema } from '@/lib/validations';
 import { verifyPassword, hashPassword, setSessionCookie, clearSessionCookie, recordAuditLog, getValidAdminUserId } from '@/lib/auth';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 const INITIAL_OWNER_EMAIL = (process.env.INITIAL_OWNER_EMAIL || 'trustcomputermb@gmail.com').toLowerCase().trim();
 const INITIAL_OWNER_PASSWORD = process.env.INITIAL_OWNER_PASSWORD || 'Trust@Moulvibazar2026!';
@@ -24,20 +25,34 @@ export async function loginAdminAction(formData: FormData) {
     let user: any = null;
     try {
       user = await prisma.user.findUnique({ where: { email } });
-    } catch (dbErr) {
-      console.warn('DB lookup during login warning:', dbErr);
+    } catch {
+      try {
+        const sb = createAdminClient();
+        if (sb) {
+          const { data } = await sb.from('users').select('*').eq('email', email).maybeSingle();
+          user = data;
+        }
+      } catch {}
     }
 
 
     if (isMasterOwner) {
       if (!user) {
-        user = await prisma.user.findFirst({
-          where: { role: 'OWNER' },
-        }).catch(() => null);
+        try {
+          user = await prisma.user.findFirst({ where: { role: 'OWNER' } });
+        } catch {
+          try {
+            const sb = createAdminClient();
+            if (sb) {
+              const { data } = await sb.from('users').select('*').eq('role', 'OWNER').limit(1).maybeSingle();
+              user = data;
+            }
+          } catch {}
+        }
 
         if (!user) {
+          const passwordHash = await hashPassword(INITIAL_OWNER_PASSWORD);
           try {
-            const passwordHash = await hashPassword(INITIAL_OWNER_PASSWORD);
             user = await prisma.user.create({
               data: {
                 email: INITIAL_OWNER_EMAIL,
@@ -49,7 +64,28 @@ export async function loginAdminAction(formData: FormData) {
               },
             });
           } catch {
-            // ignore
+            try {
+              const sb = createAdminClient();
+              if (sb) {
+                const now = new Date().toISOString();
+                const { data } = await sb
+                  .from('users')
+                  .insert({
+                    id: crypto.randomUUID(),
+                    email: INITIAL_OWNER_EMAIL,
+                    passwordHash,
+                    name: INITIAL_OWNER_NAME,
+                    phone: '01797854836',
+                    role: 'OWNER',
+                    isActive: true,
+                    createdAt: now,
+                    updatedAt: now,
+                  })
+                  .select()
+                  .single();
+                user = data;
+              }
+            } catch {}
           }
         }
       }

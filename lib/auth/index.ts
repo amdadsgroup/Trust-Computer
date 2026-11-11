@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import prisma from '@/lib/db';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export type UserRole = 'OWNER' | 'ADMIN' | 'STAFF';
 
@@ -103,20 +104,39 @@ export async function recordAuditLog(params: {
   details?: Record<string, unknown>;
   ipAddress?: string;
 }) {
-  try {
-    const validUserId = await getValidAdminUserId(params.userId);
+  const validUserId = await getValidAdminUserId(params.userId);
+  const detailsJson = params.details ? JSON.stringify(params.details) : undefined;
 
+  try {
     await prisma.adminAuditLog.create({
       data: {
         userId: validUserId || undefined,
         action: params.action,
         entityType: params.entityType,
         entityId: params.entityId,
-        detailsJson: params.details ? JSON.stringify(params.details) : undefined,
+        detailsJson,
         ipAddress: params.ipAddress,
       },
     });
   } catch (error) {
+    try {
+      const sb = createAdminClient();
+      if (sb) {
+        const { error: sbError } = await sb.from('admin_audit_logs').insert({
+          id: crypto.randomUUID(),
+          userId: validUserId || null,
+          action: params.action,
+          entityType: params.entityType,
+          entityId: params.entityId || null,
+          detailsJson: detailsJson || null,
+          ipAddress: params.ipAddress || null,
+          createdAt: new Date().toISOString(),
+        });
+        if (!sbError) return;
+      }
+    } catch {
+      // Ignore fallback audit log error
+    }
     console.error('Audit log recording failed:', error);
   }
 }
@@ -141,7 +161,19 @@ export async function getValidAdminUserId(userId?: string | null): Promise<strin
       });
       if (user) return user.id;
     } catch {
-      // ignore db error, continue to fallback
+      try {
+        const sb = createAdminClient();
+        if (sb) {
+          const { data: sbUser } = await sb
+            .from('users')
+            .select('id')
+            .eq('id', userId)
+            .maybeSingle();
+          if (sbUser) return sbUser.id;
+        }
+      } catch {
+        // ignore fallback error
+      }
     }
   }
 
@@ -153,7 +185,20 @@ export async function getValidAdminUserId(userId?: string | null): Promise<strin
     });
     if (owner) return owner.id;
   } catch {
-    // ignore
+    try {
+      const sb = createAdminClient();
+      if (sb) {
+        const { data: sbOwner } = await sb
+          .from('users')
+          .select('id')
+          .eq('role', 'OWNER')
+          .limit(1)
+          .maybeSingle();
+        if (sbOwner) return sbOwner.id;
+      }
+    } catch {
+      // ignore fallback error
+    }
   }
 
   return null;
