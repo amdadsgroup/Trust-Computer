@@ -37,41 +37,31 @@ import {
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Computer Shop in Moulvibazar | Laptop, CCTV & Computer Products | Trust Computer',
+  title: 'Trust Computer Kusumbagh Showroom | CCTV, Networking & IT Solutions in Moulvibazar',
   description:
-    'Looking for the trusted computer shop in Moulvibazar? Trust Computer at T.S Plaza, Kusumbagh offers laptops, desktop PCs, CCTV cameras, accessories, and expert computer servicing. Hotline: 01797854836.',
+    'Visit Trust Computer at T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar for genuine CCTV surveillance systems, networking equipment, tech accessories, and expert technical servicing. Hotline: 01797854836.',
   keywords: [
-    'computer shop Moulvibazar',
-    'computer shop in Moulvibazar',
-    'laptop shop Moulvibazar',
-    'computer store Moulvibazar',
-    'computer accessories Moulvibazar',
+    'Trust Computer Kusumbagh',
+    'Trust Computer Moulvibazar showroom',
     'CCTV camera Moulvibazar',
-    'CCTV shop Moulvibazar',
-    'laptop collection Moulvibazar',
-    'desktop computer Moulvibazar',
-    'computer parts Moulvibazar',
+    'CCTV showroom Moulvibazar',
+    'Hikvision Dahua Moulvibazar',
     'monitor price Moulvibazar',
     'router price Moulvibazar',
     'SSD price Moulvibazar',
     'printer price Moulvibazar',
     'computer service Moulvibazar',
     'CCTV service Moulvibazar',
-    'computer dealer Moulvibazar',
-    'computer showroom Moulvibazar',
-    'best computer shop in Moulvibazar',
-    'best laptop shop in Moulvibazar',
-    'computer products in Moulvibazar',
-    'where to buy laptop in Moulvibazar',
+    'IT showroom Moulvibazar',
     'where to buy CCTV camera in Moulvibazar',
   ],
   alternates: {
     canonical: 'https://trustcomputermb.com/moulvibazar',
   },
   openGraph: {
-    title: 'Computer Shop in Moulvibazar | Laptop, CCTV & Computer Products | Trust Computer',
+    title: 'Trust Computer Kusumbagh Showroom | CCTV, Networking & IT Solutions in Moulvibazar',
     description:
-      'Looking for the trusted computer shop in Moulvibazar? Trust Computer at T.S Plaza, Kusumbagh offers genuine laptops, desktop PCs, CCTV cameras, accessories & computer servicing.',
+      'Visit Trust Computer at T.S Plaza, Kusumbagh, Moulvibazar for genuine CCTV cameras, networking gear, IT hardware, and technical servicing.',
     url: 'https://trustcomputermb.com/moulvibazar',
     siteName: 'Trust Computer-Moulvibazar',
     images: [
@@ -156,7 +146,7 @@ export default async function MoulvibazarLandingPage() {
 
   const breadcrumbs = [
     { name: 'Home', url: '/' },
-    { name: 'Moulvibazar Computer Shop', url: '/moulvibazar' },
+    { name: 'Kusumbagh Showroom', url: '/moulvibazar' },
   ];
 
   const structuredData = [
@@ -176,7 +166,7 @@ export default async function MoulvibazarLandingPage() {
           <nav className="flex items-center gap-2 text-xs text-slate-400 mb-6">
             <Link href="/" className="hover:text-white transition">Home</Link>
             <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
-            <span className="text-white font-medium">Moulvibazar Computer Shop</span>
+            <span className="text-white font-medium">Kusumbagh Showroom</span>
           </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -187,7 +177,7 @@ export default async function MoulvibazarLandingPage() {
               </div>
 
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
-                Computer Shop in Moulvibazar
+                Trust Computer — Kusumbagh IT & CCTV Showroom
               </h1>
 
               <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl">

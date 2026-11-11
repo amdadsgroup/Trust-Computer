@@ -44,10 +44,10 @@ export const metadata: Metadata = {
     '- Your Trust, Our Technology - | Trust Computer-Moulvibazar is your trusted destination for quality computers, laptops, components, and CCTV surveillance systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh, Moulvibazar. Hotline: 01797854836.',
   keywords: [
     'Trust Computer Moulvibazar',
-    'Computer shop in Moulvibazar',
+    'Trust Computer Kusumbagh',
     'CCTV camera Moulvibazar',
-    'Laptop Moulvibazar',
-    'Desktop PC Moulvibazar',
+    'CCTV showroom Moulvibazar',
+    'IT hardware Moulvibazar',
     'Hikvision Moulvibazar',
     'Dahua Moulvibazar',
     'Networking Moulvibazar',

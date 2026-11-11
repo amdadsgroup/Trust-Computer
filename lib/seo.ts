@@ -32,7 +32,7 @@ export function getLocalBusinessSchema() {
       `${BASE_URL}/images/hero-banner-2.jpg`,
     ],
     description:
-      'Trust Computer-Moulvibazar is the trusted computer showroom, laptop shop, and CCTV security camera solution center in Moulvibazar. Located at T.S Plaza (2nd Floor), Kusumbagh Point.',
+      'Trust Computer-Moulvibazar is a Kusumbagh showroom for CCTV security systems, networking equipment, IT hardware, and technical service in Moulvibazar. Located at T.S Plaza (2nd Floor), Kusumbagh Point.',
     telephone: business.sales.phoneIntl,
     email: business.email,
     priceRange: '৳৳',

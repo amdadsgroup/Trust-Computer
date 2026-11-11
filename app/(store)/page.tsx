@@ -27,9 +27,9 @@ export const revalidate = 300;
 export const maxDuration = 30;
 
 export const metadata: Metadata = {
-  title: 'Trust Computer-Moulvibazar | Computer, Laptop & CCTV Shop in Moulvibazar',
+  title: 'Trust Computer-Moulvibazar | CCTV Security, Tech & IT Showroom',
   description:
-    'Trust Computer-Moulvibazar: Trusted destination for laptops, desktop computers, components, and CCTV camera systems in Moulvibazar. T.S Plaza (2nd Floor), Kusumbagh. Hotline: 01797854836.',
+    'Trust Computer-Moulvibazar: Trusted showroom for CCTV camera systems, networking gear, computing hardware, and technical support in Kusumbagh, Moulvibazar. T.S Plaza (2nd Floor). Hotline: 01797854836.',
   alternates: {
     canonical: 'https://trustcomputermb.com',
   },

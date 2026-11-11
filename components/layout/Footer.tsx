@@ -196,7 +196,7 @@ export default function Footer() {
               <li>
                 <Link href="/moulvibazar" className="hover:text-white transition text-sky-400 font-bold flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-                  <span>Computer Shop Moulvibazar</span>
+                  <span>Kusumbagh Showroom</span>
                 </Link>
               </li>
               <li>

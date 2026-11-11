@@ -502,7 +502,7 @@ export default function Header({ initialCategoryCounts }: { initialCategoryCount
             >
               <span className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-rose-500" />
-                <span>Computer Shop Moulvibazar</span>
+                <span>Kusumbagh Showroom</span>
               </span>
               <span className="text-[10px] bg-[#2A3B97] text-white px-2 py-0.5 rounded-full font-semibold">
                 Showroom

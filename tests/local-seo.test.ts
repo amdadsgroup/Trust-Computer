@@ -91,7 +91,7 @@ describe('Trust Computer - Moulvibazar Local SEO Module', () => {
 
       const content = fs.readFileSync(pagePath, 'utf-8');
       // SEO Title & H1
-      expect(content).toContain('Computer Shop in Moulvibazar');
+      expect(content).toContain('Kusumbagh IT & CCTV Showroom');
       // Real Location
       expect(content).toContain('T.S Plaza');
       expect(content).toContain('Kusumbagh');
