@@ -255,6 +255,42 @@ export async function getProductReviews(options: ReviewListOptions) {
 
     return { reviews, totalCount, limit, offset };
   } catch (error) {
+    const sb = createAdminClient();
+    if (sb) {
+      try {
+        let query = sb
+          .from('reviews')
+          .select('*, images:review_images(*), customer:customer_profiles(fullName, avatarUrl)', {
+            count: 'exact',
+          })
+          .eq('productId', productId)
+          .eq('status', status);
+
+        if (rating && rating >= 1 && rating <= 5) {
+          query = query.eq('rating', rating);
+        }
+        if (isVerifiedOnly) {
+          query = query.eq('isVerifiedPurchase', true);
+        }
+
+        if (sortBy === 'highest') {
+          query = query.order('rating', { ascending: false }).order('createdAt', { ascending: false });
+        } else if (sortBy === 'lowest') {
+          query = query.order('rating', { ascending: true }).order('createdAt', { ascending: false });
+        } else {
+          query = query.order('createdAt', { ascending: false });
+        }
+
+        const { data, count } = await query.range(offset, offset + limit - 1);
+        return {
+          reviews: data || [],
+          totalCount: count ?? (data || []).length,
+          limit,
+          offset,
+        };
+      } catch {}
+    }
+
     console.error('Failed to get product reviews:', error);
     return { reviews: [], totalCount: 0, limit, offset };
   }
@@ -314,6 +350,49 @@ export async function getProductReviewStats(productId: string) {
       breakdown,
     };
   } catch (error) {
+    const sb = createAdminClient();
+    if (sb) {
+      try {
+        const { data } = await sb
+          .from('reviews')
+          .select('rating')
+          .eq('productId', productId)
+          .eq('status', ReviewStatus.APPROVED);
+
+        if (data) {
+          const totalReviews = data.length;
+          const sum = data.reduce((acc: number, r: any) => acc + Number(r.rating || 0), 0);
+          const averageRating = totalReviews > 0 ? Number((sum / totalReviews).toFixed(1)) : 0;
+          const breakdown: Record<number, { count: number; percentage: number }> = {
+            5: { count: 0, percentage: 0 },
+            4: { count: 0, percentage: 0 },
+            3: { count: 0, percentage: 0 },
+            2: { count: 0, percentage: 0 },
+            1: { count: 0, percentage: 0 },
+          };
+          let positiveCount = 0;
+          for (const r of data) {
+            const star = Number(r.rating);
+            if (breakdown[star]) breakdown[star].count += 1;
+            if (star >= 4) positiveCount += 1;
+          }
+          for (const star of [1, 2, 3, 4, 5]) {
+            breakdown[star].percentage =
+              totalReviews > 0 ? Math.round((breakdown[star].count / totalReviews) * 100) : 0;
+          }
+          const recommendedPercentage =
+            totalReviews > 0 ? Math.round((positiveCount / totalReviews) * 100) : 100;
+
+          return {
+            averageRating,
+            totalReviews,
+            recommendedPercentage,
+            breakdown,
+          };
+        }
+      } catch {}
+    }
+
     console.error('Failed to get product review stats:', error);
     return {
       averageRating: 0,

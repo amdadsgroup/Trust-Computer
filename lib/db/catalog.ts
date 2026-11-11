@@ -383,6 +383,19 @@ export async function queryCatalogProducts(params: CatalogQueryParams): Promise<
   return { products: paginated, totalCount };
 }
 
+function normalizeCatalogProduct(product: any): CatalogProduct {
+  return {
+    ...product,
+    images: Array.isArray(product.images)
+      ? [...product.images].sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      : [],
+    specifications: Array.isArray(product.specifications)
+      ? [...product.specifications].sort((a: any, b: any) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
+      : [],
+    variants: Array.isArray(product.variants) ? product.variants : [],
+  } as unknown as CatalogProduct;
+}
+
 export async function getCatalogProductBySlug(slug: string): Promise<CatalogProduct | null> {
   // 1. Try Prisma
   try {
@@ -397,7 +410,7 @@ export async function getCatalogProductBySlug(slug: string): Promise<CatalogProd
       },
     });
 
-    if (product) return product as unknown as CatalogProduct;
+    if (product) return normalizeCatalogProduct(product);
   } catch {
     // Fall through to Tier 2
   }
@@ -406,13 +419,24 @@ export async function getCatalogProductBySlug(slug: string): Promise<CatalogProd
   const supabase = getSupabaseClient();
   if (supabase) {
     try {
-      const { data } = await supabase
+      let { data, error } = await supabase
         .from('products')
-        .select('*, images:product_images(*), category:categories(*), brand:brands(*)')
+        .select(
+          '*, images:product_images(*), specifications:product_specifications(*), variants:product_variants(*), category:categories(*), brand:brands(*)'
+        )
         .eq('slug', slug)
-        .single();
+        .maybeSingle();
 
-      if (data) return data as unknown as CatalogProduct;
+      if (error) {
+        const basicRes = await supabase
+          .from('products')
+          .select('*, images:product_images(*), category:categories(*), brand:brands(*)')
+          .eq('slug', slug)
+          .maybeSingle();
+        data = basicRes.data;
+      }
+
+      if (data) return normalizeCatalogProduct(data);
     } catch {
       // Fall through to Tier 3
     }
@@ -420,7 +444,7 @@ export async function getCatalogProductBySlug(slug: string): Promise<CatalogProd
 
   // 3. Fallback to snapshot
   const fallback = snapshotProducts.find((p) => p.slug === slug);
-  return fallback || null;
+  return fallback ? normalizeCatalogProduct(fallback) : null;
 }
 
 export async function getCatalogRelatedProducts(categoryId: string, productId: string, limit = 4): Promise<CatalogProduct[]> {
@@ -455,10 +479,32 @@ export async function getCatalogRelatedProducts(categoryId: string, productId: s
 
     if (related && related.length > 0) return related as unknown as CatalogProduct[];
   } catch {
-    // Fall through
+    // Fall through to Tier 2
   }
 
-  // 2. Fallback to snapshot
+  // 2. Try Supabase REST
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select(
+          'id, name, slug, sku, sellingPrice, compareAtPrice, stock, lowStockThreshold, warrantyInfo, images:product_images(url, altText, sortOrder), category:categories(name, slug), brand:brands(name, slug)'
+        )
+        .eq('categoryId', categoryId)
+        .neq('id', productId)
+        .eq('isActive', true)
+        .limit(limit);
+
+      if (data && data.length > 0) {
+        return data.map((p: any) => normalizeCatalogProduct(p));
+      }
+    } catch {
+      // Fall through to Tier 3
+    }
+  }
+
+  // 3. Fallback to snapshot
   return snapshotProducts
     .filter((p) => p.categoryId === categoryId && p.id !== productId && p.isActive)
     .slice(0, limit);
@@ -495,10 +541,40 @@ export async function getCatalogCategoryBySlug(slug: string): Promise<any | null
 
     if (cat) return cat;
   } catch {
-    // Fall through
+    // Fall through to Tier 2
   }
 
-  // 2. Fallback to snapshot
+  // 2. Try Supabase REST
+  const supabase = getSupabaseClient();
+  if (supabase) {
+    try {
+      const { data: cat } = await supabase
+        .from('categories')
+        .select('id, name, slug, description, sortOrder')
+        .eq('slug', slug)
+        .maybeSingle();
+
+      if (cat) {
+        const { data: prods } = await supabase
+          .from('products')
+          .select(
+            'id, name, slug, sku, sellingPrice, compareAtPrice, stock, lowStockThreshold, warrantyInfo, images:product_images(url, altText, sortOrder), category:categories(name, slug), brand:brands(name, slug)'
+          )
+          .eq('categoryId', cat.id)
+          .eq('isActive', true)
+          .order('createdAt', { ascending: false });
+
+        return {
+          ...cat,
+          products: (prods || []).map((p: any) => normalizeCatalogProduct(p)),
+        };
+      }
+    } catch {
+      // Fall through to Tier 3
+    }
+  }
+
+  // 3. Fallback to snapshot
   const catMeta = snapshotCategories.find((c) => c.slug === slug);
   if (!catMeta) return null;
 

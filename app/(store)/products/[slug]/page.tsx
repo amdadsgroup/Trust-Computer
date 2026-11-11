@@ -74,7 +74,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       openGraph: {
         title: ((product.category?.slug || '').toLowerCase().includes('laptop') || (product.category?.slug || '').toLowerCase().includes('computer') || (product.name || '').toLowerCase().includes('laptop') || (product.name || '').toLowerCase().includes('computer')) ? `${product.name} | Trust Computer Moulvibazar` : `${product.name} Price in Moulvibazar | Trust Computer`,
         description: `Buy ${product.name} in Moulvibazar at Trust Computer. Genuine product, official warranty. Showroom at T.S Plaza, Kusumbagh.`,
-        images: product.images[0]?.url ? [{ url: product.images[0].url }] : [],
+        images: product.images?.[0]?.url ? [{ url: product.images[0].url }] : [],
       },
     };
   } catch {
@@ -102,27 +102,28 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   try {
     product = await getProductBySlug(params.slug);
 
-    if (!product || !product.isActive) {
-      notFound();
-    }
+    if (product && product.isActive) {
+      if (product.categoryId) {
+        relatedProducts = await getRelatedProducts(product.categoryId, product.id);
+      }
 
-    if (product.categoryId) {
-      relatedProducts = await getRelatedProducts(product.categoryId, product.id);
+      const [cachedStats, cachedReviews] = await Promise.all([
+        getCachedProductReviewStats(product.id),
+        getCachedInitialProductReviews(product.id),
+      ]);
+      reviewStats = cachedStats;
+      initialReviews = cachedReviews.reviews || [];
     }
-
-    const [cachedStats, cachedReviews] = await Promise.all([
-      getCachedProductReviewStats(product.id),
-      getCachedInitialProductReviews(product.id),
-    ]);
-    reviewStats = cachedStats;
-    initialReviews = cachedReviews.reviews || [];
   } catch (e) {
     console.error('Error fetching product detail:', e);
   }
 
-  if (!product) {
+  if (!product || !product.isActive) {
     notFound();
   }
+
+  const productImages = Array.isArray(product.images) ? product.images : [];
+  const productSpecifications = Array.isArray(product.specifications) ? product.specifications : [];
 
   const price = Number(product.sellingPrice);
   const comparePrice = product.compareAtPrice ? Number(product.compareAtPrice) : null;
@@ -143,7 +144,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    image: product.images.map((img: any) => img.url),
+    image: productImages.map((img: any) => img.url),
     description: product.description,
     sku: product.sku,
     offers: {
@@ -214,12 +215,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         {/* Gallery Column */}
         <div className="space-y-4">
           <div className="relative aspect-square bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden flex items-center justify-center p-6">
-            {product.images[0]?.url ? (
+            {productImages[0]?.url ? (
               <Image
-                src={product.images[0].url}
+                src={productImages[0].url}
                 alt={product.name}
                 fill
                 priority
+                unoptimized={Boolean(productImages[0].url.startsWith('data:'))}
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-contain p-4"
               />
@@ -234,14 +236,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
 
           {/* Thumbnail list if multiple images exist */}
-          {product.images.length > 1 && (
+          {productImages.length > 1 && (
             <div className="flex gap-3 overflow-x-auto pb-2">
-              {product.images.map((img: any, idx: number) => (
+              {productImages.map((img: any, idx: number) => (
                 <div
                   key={img.id || idx}
                   className="relative w-20 h-20 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden flex-shrink-0 cursor-pointer hover:border-brand transition"
                 >
-                  <Image src={img.url} alt={product.name} fill sizes="80px" className="object-cover p-1" />
+                  <Image
+                    src={img.url}
+                    alt={product.name}
+                    fill
+                    unoptimized={Boolean(img.url?.startsWith('data:'))}
+                    sizes="80px"
+                    className="object-cover p-1"
+                  />
                 </div>
               ))}
             </div>
@@ -349,7 +358,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               sku: product.sku,
               price,
               compareAtPrice: comparePrice,
-              image: product.images[0]?.url,
+              image: productImages[0]?.url,
               stock: product.stock,
               category: product.category,
               brand: product.brand,
@@ -419,7 +428,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         </div>
 
         {/* Specifications Table */}
-        {product.specifications.length > 0 && (
+        {productSpecifications.length > 0 && (
           <div>
             <h2 className="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3 mb-4">
               Technical Specifications
@@ -427,7 +436,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <div className="border border-slate-200 rounded-2xl overflow-hidden">
               <table className="w-full text-left text-xs sm:text-sm">
                 <tbody>
-                  {product.specifications.map((spec: any, idx: number) => (
+                  {productSpecifications.map((spec: any, idx: number) => (
                     <tr
                       key={spec.id || idx}
                       className={idx % 2 === 0 ? 'bg-slate-50' : 'bg-white'}
@@ -485,7 +494,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   compareAtPrice: rel.compareAtPrice ? Number(rel.compareAtPrice) : null,
                   stock: rel.stock,
                   lowStockThreshold: rel.lowStockThreshold,
-                  images: rel.images,
+                  images: Array.isArray(rel.images) ? rel.images : [],
                   category: rel.category,
                   brand: rel.brand,
                   warrantyInfo: rel.warrantyInfo,
